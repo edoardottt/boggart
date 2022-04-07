@@ -1,0 +1,23 @@
+type: "raw"
+requests:
+  - request:
+    id: "1"
+    method: "GET"
+    endpoint: "/"
+    response-type: "raw"
+    content-type: "html"
+    content:
+      |
+      <html>
+      <head>
+        <title>Hello</title>
+      </head>
+      <body>
+        <h1>Hello!</h1>
+      </body>
+      </html>
+  - request:
+    id: "default"
+    response-type: "file"
+    content-type: "html"
+    content: "404.html"
