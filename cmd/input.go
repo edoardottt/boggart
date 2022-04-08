@@ -24,3 +24,38 @@ func ReadTemplate(filename string) (Template, error) {
 
 	return result, nil
 }
+
+//TemplateIdUnique checks if in a raw template there are
+//duplicate request IDs.
+//True for shodan template
+func TemplateIdUnique(tmpl Template) bool {
+	if tmpl.Type == "raw" {
+		keys := make(map[string]bool)
+		list := []string{}
+		for _, entry := range tmpl.Requests {
+			if _, value := keys[entry.Id]; !value {
+				keys[entry.Id] = true
+				list = append(list, entry.Id)
+			}
+		}
+		return len(tmpl.Requests) == len(list)
+	}
+	return true
+}
+
+//MissingTemplateDefault checks if in a raw template there is
+//a request with a default action.
+//True for shodan template
+func MissingTemplateDefault(tmpl Template) bool {
+	var missing = true
+	if tmpl.Type == "raw" {
+		for _, entry := range tmpl.Requests {
+			if entry.Id == "default" {
+				missing = false
+			}
+		}
+	} else {
+		return false
+	}
+	return missing
+}
