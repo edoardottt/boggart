@@ -1,9 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"log"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	tmpl, err := ReadTemplate("../config.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Default().Println(tmpl)
 }
