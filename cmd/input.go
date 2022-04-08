@@ -41,3 +41,19 @@ func TemplateIdUnique(tmpl Template) bool {
 	}
 	return true
 }
+
+//MissingTemplateDefault checks if in a raw template there is
+//a request with a default action.
+func MissingTemplateDefault(tmpl Template) bool {
+	var missing = true
+	if tmpl.Type == "raw" {
+		for _, entry := range tmpl.Requests {
+			if entry.Id == "default" {
+				missing = false
+			}
+		}
+	} else {
+		return false
+	}
+	return missing
+}
