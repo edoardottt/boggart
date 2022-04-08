@@ -1,4 +1,4 @@
-package strings
+package slice
 
 //RemoveDuplicateValues removes duplicates from a slice of strings.
 func RemoveDuplicateValues(strSlice []string) []string {

@@ -24,3 +24,20 @@ func ReadTemplate(filename string) (Template, error) {
 
 	return result, nil
 }
+
+//TemplateIdUnique checks if in a raw template there are
+//duplicate request IDs.
+func TemplateIdUnique(tmpl Template) bool {
+	if tmpl.Type == "raw" {
+		keys := make(map[string]bool)
+		list := []string{}
+		for _, entry := range tmpl.Requests {
+			if _, value := keys[entry.Id]; !value {
+				keys[entry.Id] = true
+				list = append(list, entry.Id)
+			}
+		}
+		return len(tmpl.Requests) == len(list)
+	}
+	return true
+}
