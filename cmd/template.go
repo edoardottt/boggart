@@ -41,7 +41,8 @@ type Request struct {
 	Content      string       `yaml:"content,omitempty"`
 }
 
-//Template is the struct defining the structure of a configuration template
+//Template is the struct defining the structure of a configuration template.
+//The configuration file has to be a valid YAML file.
 type Template struct {
 	Type     TemplateType `yaml:"type,omitempty"`
 	Requests []Request    `yaml:"requests,omitempty"`
