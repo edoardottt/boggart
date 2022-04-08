@@ -2,7 +2,7 @@ type: "raw"
 requests:
   - request:
     id: "1"
-    method: "GET"
+    methods: ["GET", "POST"]
     endpoint: "/"
     response-type: "raw"
     content-type: "html"

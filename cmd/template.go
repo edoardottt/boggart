@@ -31,10 +31,11 @@ const (
 	FileResponseType ResponseType = "file"
 )
 
-//Request is the struct defining an HTTP request
+//Request is the struct defining an HTTP request structure in a
+//valid template
 type Request struct {
-	Id           string       `yaml:"id,omitempty"`
-	Method       HttpMethod   `yaml:"method,omitempty"`
+	Id           string       `yaml:"id"` //Id is mandatory
+	Methods      []HttpMethod `yaml:"methods,omitempty"`
 	Endpoint     string       `yaml:"endpoint,omitempty"`
 	ResponseType ResponseType `yaml:"response-type,omitempty"`
 	ContentType  string       `yaml:"content-type,omitempty"`
