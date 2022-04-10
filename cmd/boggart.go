@@ -2,6 +2,9 @@ package main
 
 import (
 	"log"
+
+	"github.com/edoardottt/boggart/pkg/template"
+	"github.com/edoardottt/boggart/server/honeypot"
 )
 
 func main() {
@@ -9,5 +12,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if !template.CheckTemplate(tmpl) {
+		log.Fatal("wrong template format!")
+	}
+	honeypot.RawHoneypot(tmpl)
 	log.Default().Println(tmpl)
 }
