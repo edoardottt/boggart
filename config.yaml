@@ -1,4 +1,4 @@
-# ! Same as examples/basic-raw.yaml !
+# Same as examples/basic-raw.yaml
 type: "raw"
 requests:
   - request:
