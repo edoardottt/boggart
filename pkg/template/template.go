@@ -129,17 +129,17 @@ func RootEndpointExists(tmpl Template) bool {
 	return true
 }
 
-//DefaultResponse returns the default response.
-//Empty string for shodan template
-func DefaultResponse(tmpl Template) string {
+//Default returns the default response.
+//Empty request for shodan template
+func Default(tmpl Template) Request {
 	if tmpl.Type == "raw" {
 		for _, entry := range tmpl.Requests {
 			if entry.Id == "default" {
-				return entry.Content
+				return entry
 			}
 		}
 	}
-	return ""
+	return Request{}
 }
 
 //HttpMethodsAsString transforms a slice of HttpMethod to a
