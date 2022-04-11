@@ -141,3 +141,13 @@ func DefaultResponse(tmpl Template) string {
 	}
 	return ""
 }
+
+//HttpMethodsAsString transforms a slice of HttpMethod to a
+//slice of strings.
+func HttpMethodsAsString(methods []HttpMethod) []string {
+	var result []string
+	for _, method := range methods {
+		result = append(result, string(method))
+	}
+	return result
+}
