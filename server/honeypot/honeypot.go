@@ -27,7 +27,7 @@ func fileWriter(w http.ResponseWriter, req *http.Request, inputFile string) {
 func RawHoneypot(tmpl template.Template) {
 
 	r := mux.NewRouter()
-	var staticPath = "../public/honeypot/"
+	var staticPath = "public/honeypot/"
 
 	//registering endpoints
 	for _, request := range tmpl.Requests {
@@ -69,7 +69,7 @@ func RawHoneypot(tmpl template.Template) {
 
 	srv := &http.Server{
 		Handler: r,
-		Addr:    "127.0.0.1:8090",
+		Addr:    ":8090",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
