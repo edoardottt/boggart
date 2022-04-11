@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  mongo:
+    image: 'mongo:latest'
+    container_name: 'mongo'
+    volumes:
+      - /mongo-volume:/data/db
+    ports:
+      - '27017:27017'
+
+  boggart:
+    restart: always
+    build: .
+    ports:
+      - "8090:8090"

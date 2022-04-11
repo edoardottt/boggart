@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	tmpl, err := ReadTemplate("../config.yaml")
+	tmpl, err := ReadTemplate("config.yaml")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -16,5 +16,4 @@ func main() {
 		log.Fatal("wrong template format!")
 	}
 	honeypot.RawHoneypot(tmpl)
-	log.Default().Println(tmpl)
 }
