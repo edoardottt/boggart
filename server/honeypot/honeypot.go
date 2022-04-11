@@ -20,10 +20,12 @@ func RawHoneypot(tmpl template.Template) {
 	r := mux.NewRouter()
 
 	for _, request := range tmpl.Requests {
-		request2 := request
-		r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
-			genericWriter(w, r, request2.Content)
-		})
+		if request.Id != "default" {
+			request2 := request
+			r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
+				genericWriter(w, r, request2.Content)
+			}).Methods(template.HttpMethodsAsString(request2.Methods)...)
+		}
 	}
 	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, template.DefaultResponse(tmpl))
