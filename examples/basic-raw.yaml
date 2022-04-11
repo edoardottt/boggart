@@ -5,7 +5,7 @@ requests:
     methods: ["GET", "POST"]
     endpoint: "/"
     response-type: "raw"
-    content-type: "html"
+    content-type: "text/html"
     content:
       |
       <html>
@@ -19,5 +19,5 @@ requests:
   - request:
     id: "default"
     response-type: "file"
-    content-type: "html"
+    content-type: "text/html"
     content: "404.html"
