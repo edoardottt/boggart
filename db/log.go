@@ -24,3 +24,24 @@ func InsertLog(client *mongo.Client, collection *mongo.Collection, record Log) {
 	}
 	fmt.Println("Inserted: ", result.InsertedID)
 }
+
+/*
+TEST
+
+connString := os.Getenv("MONGO_CONN")
+	//connString := "mongodb://hostname:27017"
+	dbName := os.Getenv("DB_NAME")
+	client, _ := db.ConnectDB(connString)
+
+	database := db.GetDatabase(client, dbName)
+
+	collection := db.GetLogs(database)
+
+	bodyBytes, err := io.ReadAll(req.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	bodyString := string(bodyBytes)
+
+	db.InsertLog(client, collection, db.Log{req.RemoteAddr, bodyString, 1})
+*/
