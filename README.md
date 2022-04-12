@@ -1,5 +1,5 @@
 # boggart
-Extremely experimental honeypot system that mimics specific hosts, behaviors and CVEs.
+Highly customizable low-interaction experimental honeypot that mimics specific hosts, behaviors, and CVEs.
 
 Installation 📡
 -------
