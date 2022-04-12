@@ -1,6 +1,10 @@
 # Start from the latest golang base image
 FROM golang:latest
 
+# Add env vars
+ENV MONGO_CONN="mongodb://172.17.0.1:27017"
+ENV DB_NAME="boggart"
+
 # Add Maintainer Info
 LABEL maintainer="edoardottt <edoardott@gmail.com>"
 
