@@ -32,3 +32,15 @@ func ConnectDB(connectionString string) (*mongo.Client, context.Context) {
 	fmt.Println("Connected to MongoDB!") //!! DEBUG !!
 	return client, ctx
 }
+
+//GetDatabase returns the pointer to the database (input).
+func GetDatabase(client *mongo.Client, databaseName string) *mongo.Database {
+	database := client.Database(databaseName)
+
+	return database
+}
+
+//GetLogs returns the collection of logs
+func GetLogs(database *mongo.Database) *mongo.Collection {
+	return database.Collection("logs")
+}
