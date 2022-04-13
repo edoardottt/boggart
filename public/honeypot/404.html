@@ -1,11 +1,42 @@
 <html>
 
 <head>
-    <title>404</title>
+    <title>404 Not Found</title>
+    <style>
+        #container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .box {
+            width: 100%;
+            text-align: center;
+        }
+
+        #red {
+            color: red;
+            font-size: 500%;
+        }
+
+        #black {
+            color: black;
+            font-size: 500%;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Content not found!</h1>
+    <div id="container">
+        <div class="box" id="red">
+            <h1 class="content">This is a 404.</h1>
+        </div>
+        <div class="box" id="black">
+            <h2 class="content2">Content not found!</h2>
+        </div>
+    </div>
 </body>
 
 </html>
