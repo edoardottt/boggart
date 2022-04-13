@@ -1,0 +1,7 @@
+type: "raw"
+requests:
+  - request:
+    id: "default"
+    response-type: "file"
+    content-type: "text/html"
+    content: "apache-404.html"
