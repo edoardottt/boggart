@@ -11,9 +11,12 @@ import (
 //Log defines the structure of a log record
 //in the database
 type Log struct {
-	Ip        string `json:"ip Str"`
-	Raw       string `json:"raw Str"`
-	Timestamp int64  `json:"timestamp Int"`
+	Ip        string              `json:"ip Str"`
+	Method    string              `json:"method Str"`
+	Path      string              `json:"path Str"`
+	Headers   map[string][]string `json:"headers Str"`
+	Body      string              `json:"body Str"`
+	Timestamp int64               `json:"timestamp Int"`
 }
 
 //InsertLog inserts a log record into the logs collection
@@ -43,5 +46,5 @@ connString := os.Getenv("MONGO_CONN")
 	}
 	bodyString := string(bodyBytes)
 
-	db.InsertLog(client, collection, db.Log{req.RemoteAddr, bodyString, 1})
+	db.InsertLog(client, collection, db.Log{...})
 */
