@@ -2,10 +2,12 @@ package shodan
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 /*
@@ -19,8 +21,12 @@ const (
 )
 
 //GetShodanApiKey returns the Shodan Api Key
-func GetShodanApiKey() string {
-	return os.Getenv("SHODAN_KEY")
+func GetShodanApiKey() (string, error) {
+	apiKey := os.Getenv("SHODAN_KEY")
+	if strings.Trim(apiKey, " ") == "" {
+		return "", errors.New("shodan: Api key is empty")
+	}
+	return apiKey, nil
 }
 
 //ApiInfoResponse defines the structure of the Info
