@@ -4,9 +4,10 @@ FROM golang:latest
 # Add env vars
 ENV MONGO_CONN="mongodb://172.17.0.1:27017"
 ENV DB_NAME="boggart"
+ENV SHODAN_KEY=""
 
 # Add Maintainer Info
-LABEL maintainer="edoardottt <edoardott@gmail.com>"
+LABEL maintainer="edoardottt <edoardoottavianelli.it>"
 
 # Set the Current Working Directory inside the container
 WORKDIR /boggart

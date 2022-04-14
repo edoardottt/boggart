@@ -2,5 +2,9 @@
 .git
 .cache
 
+# ignore examples and docs
+/examples
+/docs
+
 # ignore all markdown files
 *.md
