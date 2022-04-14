@@ -12,8 +12,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if !template.CheckTemplate(tmpl) {
-		log.Fatal("wrong template format!")
+	//Check Template format
+	if _, err := template.CheckTemplate(tmpl); err != nil {
+		log.Fatal(err)
 	}
 	honeypot.RawHoneypot(tmpl)
 }
