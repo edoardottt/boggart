@@ -8,6 +8,10 @@ import (
 	"os"
 )
 
+/*
+reference: https://developer.shodan.io/api
+*/
+
 const (
 	baseUrl        = "https://api.shodan.io"
 	hostIpEndpoint = "/shodan/host/"
