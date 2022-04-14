@@ -1,6 +1,12 @@
 type: "raw"
 requests:
   - request:
+    id: "1"
+    endpoint: "/"
+    response-type: "file"
+    content-type: "text/html"
+    content: "index.html"
+  - request:
     id: "default"
     response-type: "file"
     content-type: "text/html"
