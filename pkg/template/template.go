@@ -5,32 +5,35 @@ import (
 	"strings"
 )
 
-//TemplateType contains all the types that a template can assume
-type TemplateType string
+//Type contains all the types that a template can assume
+type Type string
 
+//Types a template can assume
 const (
-	RawTemplateType    TemplateType = "raw"
-	ShodanTemplateType TemplateType = "shodan"
+	RawTemplateType    Type = "raw"
+	ShodanTemplateType Type = "shodan"
 )
 
-//HttpMethod contains all the methods that a HTTP request can assume
-type HttpMethod string
+//HTTPMethod contains all the methods that a HTTP request can assume
+type HTTPMethod string
 
+//HTTP Methods a request can have
 const (
-	MethodGet     HttpMethod = "GET"
-	MethodHead    HttpMethod = "HEAD"
-	MethodPost    HttpMethod = "POST"
-	MethodPut     HttpMethod = "PUT"
-	MethodPatch   HttpMethod = "PATCH" // RFC 5789
-	MethodDelete  HttpMethod = "DELETE"
-	MethodConnect HttpMethod = "CONNECT"
-	MethodOptions HttpMethod = "OPTIONS"
-	MethodTrace   HttpMethod = "TRACE"
+	MethodGet     HTTPMethod = "GET"
+	MethodHead    HTTPMethod = "HEAD"
+	MethodPost    HTTPMethod = "POST"
+	MethodPut     HTTPMethod = "PUT"
+	MethodPatch   HTTPMethod = "PATCH" // RFC 5789
+	MethodDelete  HTTPMethod = "DELETE"
+	MethodConnect HTTPMethod = "CONNECT"
+	MethodOptions HTTPMethod = "OPTIONS"
+	MethodTrace   HTTPMethod = "TRACE"
 )
 
 //ResponseType contains all the types that a HTTP response can assume
 type ResponseType string
 
+//Types a response can have
 const (
 	RawResponseType  ResponseType = "raw"
 	FileResponseType ResponseType = "file"
@@ -39,8 +42,8 @@ const (
 //Request is the struct defining an HTTP request structure in a
 //valid template
 type Request struct {
-	Id           string       `yaml:"id"` //Id is mandatory
-	Methods      []HttpMethod `yaml:"methods,omitempty"`
+	ID           string       `yaml:"id"` //Id is mandatory
+	Methods      []HTTPMethod `yaml:"methods,omitempty"`
 	Endpoint     string       `yaml:"endpoint,omitempty"`
 	ResponseType ResponseType `yaml:"response-type,omitempty"`
 	ContentType  string       `yaml:"content-type,omitempty"`
@@ -50,9 +53,9 @@ type Request struct {
 //Template is the struct defining the structure of a configuration template.
 //The configuration file has to be a valid YAML file.
 type Template struct {
-	Type     TemplateType `yaml:"type,omitempty"`
-	Requests []Request    `yaml:"requests,omitempty"`
-	Ip       string       `yaml:"ip,omitempty"`
+	Type     Type      `yaml:"type,omitempty"`
+	Requests []Request `yaml:"requests,omitempty"`
+	IP       string    `yaml:"ip,omitempty"`
 }
 
 //CheckTemplate checks if a generic template is formatted in a proper way.
@@ -71,7 +74,7 @@ func CheckTemplate(tmpl Template) (bool, error) {
 
 //CheckRawTeplate checks if a raw template is formatted in a proper way.
 func CheckRawTeplate(tmpl Template) (bool, error) {
-	if !TemplateIdUnique(tmpl) {
+	if !IDUnique(tmpl) {
 		return false, errors.New("template: request IDs are not unique")
 	}
 	if MissingTemplateDefault(tmpl) {
@@ -90,20 +93,20 @@ func CheckRawTeplate(tmpl Template) (bool, error) {
 
 //CheckShodanTemplate checks if a shodan template is formatted in a proper way.
 func CheckShodanTemplate(tmpl Template) bool {
-	return tmpl.Ip != ""
+	return tmpl.IP != ""
 }
 
-//TemplateIdUnique checks if in a raw template there are
+//IDUnique checks if in a raw template there are
 //duplicate request IDs.
 //True for shodan template
-func TemplateIdUnique(tmpl Template) bool {
+func IDUnique(tmpl Template) bool {
 	if tmpl.Type == "raw" {
 		keys := make(map[string]bool)
 		list := []string{}
 		for _, entry := range tmpl.Requests {
-			if _, value := keys[entry.Id]; !value {
-				keys[entry.Id] = true
-				list = append(list, entry.Id)
+			if _, value := keys[entry.ID]; !value {
+				keys[entry.ID] = true
+				list = append(list, entry.ID)
 			}
 		}
 		return len(tmpl.Requests) == len(list)
@@ -118,7 +121,7 @@ func MissingTemplateDefault(tmpl Template) bool {
 	var missing = true
 	if tmpl.Type == "raw" {
 		for _, entry := range tmpl.Requests {
-			if entry.Id == "default" {
+			if entry.ID == "default" {
 				missing = false
 			}
 		}
@@ -147,7 +150,7 @@ func RootEndpointExists(tmpl Template) bool {
 func Default(tmpl Template) Request {
 	if tmpl.Type == "raw" {
 		for _, entry := range tmpl.Requests {
-			if entry.Id == "default" {
+			if entry.ID == "default" {
 				return entry
 			}
 		}
@@ -155,9 +158,9 @@ func Default(tmpl Template) Request {
 	return Request{}
 }
 
-//HttpMethodsAsString transforms a slice of HttpMethod to a
+//HTTPMethodsAsString transforms a slice of HttpMethod to a
 //slice of strings.
-func HttpMethodsAsString(methods []HttpMethod) []string {
+func HTTPMethodsAsString(methods []HTTPMethod) []string {
 	var result []string
 	for _, method := range methods {
 		result = append(result, string(method))
@@ -170,24 +173,24 @@ func HttpMethodsAsString(methods []HttpMethod) []string {
 //True for shodan template
 func CheckRequests(tmpl Template) (bool, error) {
 	for _, entry := range tmpl.Requests {
-		if strings.Trim(entry.Id, " ") == "" {
+		if strings.Trim(entry.ID, " ") == "" {
 			return false, errors.New("template: missing id in request")
 		}
-		if entry.Id != "default" {
+		if entry.ID != "default" {
 			if strings.Trim(entry.Endpoint, " ") == "" {
-				return false, errors.New("template: missing endpoint in request with id " + entry.Id)
+				return false, errors.New("template: missing endpoint in request with id " + entry.ID)
 			}
 			if len(entry.Methods) == 0 {
-				return false, errors.New("template: missing methods in request with id " + entry.Id)
+				return false, errors.New("template: missing methods in request with id " + entry.ID)
 			}
 			if strings.Trim(string(entry.ResponseType), " ") == "" {
-				return false, errors.New("template: missing response type in request with id " + entry.Id)
+				return false, errors.New("template: missing response type in request with id " + entry.ID)
 			}
 			if strings.Trim(entry.ContentType, " ") == "" {
-				return false, errors.New("template: missing content type in request with id " + entry.Id)
+				return false, errors.New("template: missing content type in request with id " + entry.ID)
 			}
 			if strings.Trim(entry.Content, " ") == "" {
-				return false, errors.New("template: missing content in request with id " + entry.Id)
+				return false, errors.New("template: missing content in request with id " + entry.ID)
 			}
 		}
 	}
