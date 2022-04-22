@@ -23,8 +23,8 @@ func fileWriter(w http.ResponseWriter, req *http.Request, inputFile string) {
 	fmt.Fprint(w, content)
 }
 
-//RawHoneypot > to be filled
-func RawHoneypot(tmpl template.Template) {
+//Raw > to be filled
+func Raw(tmpl template.Template) {
 
 	r := mux.NewRouter()
 	var staticPath = "public/honeypot/"

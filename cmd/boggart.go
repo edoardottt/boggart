@@ -16,5 +16,5 @@ func main() {
 	if _, err := template.CheckTemplate(tmpl); err != nil {
 		log.Fatal(err)
 	}
-	honeypot.RawHoneypot(tmpl)
+	honeypot.Raw(tmpl)
 }
