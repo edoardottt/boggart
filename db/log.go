@@ -11,7 +11,7 @@ import (
 //Log defines the structure of a log record
 //in the database
 type Log struct {
-	Ip        string              `json:"ip Str"`
+	IP        string              `json:"ip Str"`
 	Method    string              `json:"method Str"`
 	Path      string              `json:"path Str"`
 	Headers   map[string][]string `json:"headers Str"`

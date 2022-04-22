@@ -2,10 +2,18 @@ type: "raw"
 requests:
   - request:
     id: "1"
+    methods: "GET"
     endpoint: "/"
     response-type: "file"
     content-type: "text/html"
     content: "index.html"
+  - request:
+    id: "2"
+    methods: "GET"
+    endpoint: "/icons/ubuntu-logo.png"
+    response-type: "file"
+    content-type: "image/png"
+    content: "icons/ubuntu-logo.png"
   - request:
     id: "default"
     response-type: "file"

@@ -3,6 +3,7 @@ package shodan
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,13 +16,13 @@ reference: https://developer.shodan.io/api
 */
 
 const (
-	baseUrl        = "https://api.shodan.io"
-	hostIpEndpoint = "/shodan/host/"
+	baseURL        = "https://api.shodan.io"
+	hostIPEndpoint = "/shodan/host/"
 	apiInfo        = "/api-info"
 )
 
-//GetShodanApiKey returns the Shodan Api Key
-func GetShodanApiKey() (string, error) {
+//GetShodanAPIKey returns the Shodan Api Key
+func GetShodanAPIKey() (string, error) {
 	apiKey := os.Getenv("SHODAN_KEY")
 	if strings.Trim(apiKey, " ") == "" {
 		return "", errors.New("shodan: Api key is empty")
@@ -29,9 +30,9 @@ func GetShodanApiKey() (string, error) {
 	return apiKey, nil
 }
 
-//ApiInfoResponse defines the structure of the Info
+//APIInfoResponse defines the structure of the Info
 //Api response
-type ApiInfoResponse struct {
+type APIInfoResponse struct {
 	ScanCredits int `json:"scan_credits"`
 	UsageLimits struct {
 		ScanCredits  int `json:"scan_credits"`
@@ -39,7 +40,7 @@ type ApiInfoResponse struct {
 		MonitoredIps int `json:"monitored_ips"`
 	} `json:"usage_limits"`
 	Plan         string `json:"plan"`
-	Https        bool   `json:"https"`
+	HTTPS        bool   `json:"https"`
 	Unlocked     bool   `json:"unlocked"`
 	QueryCredits int    `json:"query_credits"`
 	MonitoredIps int    `json:"monitored_ips"`
@@ -47,10 +48,10 @@ type ApiInfoResponse struct {
 	Telnet       bool   `json:"telnet"`
 }
 
-//ShodanApiInfo returns the struct ApiInfoResponse filled
+//APIInfo returns the struct ApiInfoResponse filled
 //with the Api account information
-func ApiInfo(apiKey string) ApiInfoResponse {
-	resp, err := http.Get(baseUrl + apiInfo + "?=" + apiKey)
+func APIInfo(apiKey string) APIInfoResponse {
+	resp, err := http.Get(baseURL + apiInfo + "?key=" + apiKey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +59,16 @@ func ApiInfo(apiKey string) ApiInfoResponse {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var response ApiInfoResponse
-	json.Unmarshal([]byte(body), &response)
+	var response APIInfoResponse
+	err = json.Unmarshal([]byte(body), &response)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return response
+}
+
+//HostIPInfo > TODO
+func HostIPInfo(hostIP string, apiKey string) {
+	url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
+	fmt.Println(url)
 }

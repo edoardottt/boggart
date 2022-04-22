@@ -23,7 +23,7 @@ func fileWriter(w http.ResponseWriter, req *http.Request, inputFile string) {
 	fmt.Fprint(w, content)
 }
 
-//RawHoneypot
+//RawHoneypot > to be filled
 func RawHoneypot(tmpl template.Template) {
 
 	r := mux.NewRouter()
@@ -31,21 +31,21 @@ func RawHoneypot(tmpl template.Template) {
 
 	//registering endpoints
 	for _, request := range tmpl.Requests {
-		if request.Id != "default" {
+		if request.ID != "default" {
 			request2 := request
 			if request2.ResponseType == "raw" {
 
 				r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 					genericWriter(w, r, request2.Content)
-				}).Methods(template.HttpMethodsAsString(request2.Methods)...)
+				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
 
 			} else if request2.ResponseType == "file" {
 
 				r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 					fileWriter(w, r, staticPath+request2.Content)
-				}).Methods(template.HttpMethodsAsString(request2.Methods)...)
+				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
 			}
 		}
 	}
