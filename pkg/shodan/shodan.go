@@ -3,6 +3,7 @@ package shodan
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -50,7 +51,7 @@ type APIInfoResponse struct {
 //APIInfo returns the struct ApiInfoResponse filled
 //with the Api account information
 func APIInfo(apiKey string) APIInfoResponse {
-	resp, err := http.Get(baseURL + apiInfo + "?=" + apiKey)
+	resp, err := http.Get(baseURL + apiInfo + "?key=" + apiKey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,6 +60,15 @@ func APIInfo(apiKey string) APIInfoResponse {
 		log.Fatal(err)
 	}
 	var response APIInfoResponse
-	json.Unmarshal([]byte(body), &response)
+	err = json.Unmarshal([]byte(body), &response)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return response
+}
+
+//HostIPInfo > TODO
+func HostIPInfo(hostIP string, apiKey string) {
+	url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
+	fmt.Println(url)
 }
