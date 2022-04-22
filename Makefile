@@ -1,5 +1,13 @@
 SHELL := /bin/bash
 
+#---Run testcases---
+test:
+	go test ./...
+
+#---Run linter---
+lint:
+	golangci-lint run
+
 #---Run the service---
 up:
 	docker-compose up
@@ -11,10 +19,6 @@ stop:
 #---Delete the service---
 down:
 	docker-compose down
-
-#---Run testcases---
-test:
-	go test ./...
 
 #---Delete the image created---
 clean:
