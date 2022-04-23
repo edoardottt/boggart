@@ -97,8 +97,10 @@ func Raw(tmpl template.Template) {
 
 	// DB setup
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
-	dbName := os.Getenv("DB_NAME")
-	client, _ := db.ConnectDB(connString)
+	dbName := os.Getenv("MONGO_DB")
+	dbUser := os.Getenv("MONGO_USER")
+	dbPass := os.Getenv("MONGO_PASS")
+	client := db.ConnectDB(connString, dbName, dbUser, dbPass)
 
 	// Routes setup
 	r := mux.NewRouter()

@@ -3,7 +3,10 @@ FROM golang:latest
 
 # Add env vars
 ENV MONGO_CONN="mongodb://172.17.0.1:27017"
-ENV DB_NAME="boggart"
+ENV MONGO_DB="boggart"
+ENV MONGO_USER="boggart"
+# !!! Change the default password for security !!!
+ENV MONGO_PASS="traggob"
 ENV SHODAN_KEY=""
 
 # Add Maintainer Info

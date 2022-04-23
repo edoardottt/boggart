@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -13,14 +12,15 @@ import (
 //ConnectDB creates and returns a client connected by a
 //connection string to mongoDB.
 //Also checks the connection if everything is ok.
-func ConnectDB(connectionString string) (*mongo.Client, context.Context) {
-	client, err := mongo.NewClient(options.Client().ApplyURI(connectionString))
-	if err != nil {
-		log.Fatal(err)
+func ConnectDB(connectionString string, dbName string, user string, pass string) *mongo.Client {
+	credential := options.Credential{
+		AuthMechanism: "SCRAM-SHA-256",
+		AuthSource:    dbName,
+		Username:      user,
+		Password:      pass,
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	err = client.Connect(ctx)
+	clientOpts := options.Client().ApplyURI(connectionString).SetAuth(credential)
+	client, err := mongo.Connect(context.TODO(), clientOpts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +30,7 @@ func ConnectDB(connectionString string) (*mongo.Client, context.Context) {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!") //!! DEBUG !!
-	return client, ctx
+	return client
 }
 
 //GetDatabase returns the pointer to the database (input).
