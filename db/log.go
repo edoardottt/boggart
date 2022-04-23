@@ -72,11 +72,26 @@ func GetLogsByMethod(client *mongo.Client, collection *mongo.Collection, ctx con
 	return result, nil
 }
 
-//GetLogsByPath returns a slice of logs with the defined HTTP Method.
+//GetLogsByPath returns a slice of logs with the defined Path.
 //If the Path is not present in the database err won't be nil.
 func GetLogsByPath(client *mongo.Client, collection *mongo.Collection, ctx context.Context, path string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"path": path}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+//GetLogsByBody returns a slice of logs with the defined Body.
+//If the Body is not present in the database err won't be nil.
+func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx context.Context, body string) ([]Log, error) {
+	var result []Log
+	filter := bson.M{"body": body}
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, err
