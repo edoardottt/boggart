@@ -41,3 +41,18 @@ func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.
 	}
 	return result, nil
 }
+
+//GetLogsByIP returns a slice of logs with the defined IP.
+//If the IP is not present in the database err won't be nil.
+func GetLogsByIP(client *mongo.Client, collection *mongo.Collection, ctx context.Context, IP string) ([]Log, error) {
+	var result []Log
+	filter := bson.M{"ip": IP}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
