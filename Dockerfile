@@ -27,4 +27,5 @@ RUN cd cmd && go build -o boggart
 # Run the Go app
 CMD ["./cmd/boggart"]
 
-EXPOSE 8090
+# Honeypot
+EXPOSE 8092
