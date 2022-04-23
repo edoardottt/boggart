@@ -2,19 +2,19 @@ version: "3"
 
 services:
 
-  boggart:
-    build: "."
-    ports:
-      - "8092:8092"
-    restart: always
-
   mongo:
-    command:
-      - "--auth"
     container_name: mongo
     image: "mongo:latest"
-    ports:
-      - "27017:27017"
+    expose:
+      - "27017"
     restart: always
     volumes:
       - "/mongo-volume:/data/db"
+
+  boggart:
+    build: "."
+    depends_on:
+      - 'mongo'
+    ports:
+      - "8092:8092"
+    restart: always
