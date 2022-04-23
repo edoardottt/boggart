@@ -2,8 +2,8 @@
 FROM golang:latest
 
 # Add env vars
-ENV MONGO_CONN="mongodb://172.17.0.1:27017"
-ENV DB_NAME="boggart"
+ENV MONGO_CONN="mongodb://mongo:27017"
+ENV MONGO_DB="boggart"
 ENV SHODAN_KEY=""
 
 # Add Maintainer Info
@@ -27,4 +27,5 @@ RUN cd cmd && go build -o boggart
 # Run the Go app
 CMD ["./cmd/boggart"]
 
-EXPOSE 8090
+# Honeypot
+EXPOSE 8092

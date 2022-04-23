@@ -13,7 +13,7 @@ import (
 //ConnectDB creates and returns a client connected by a
 //connection string to mongoDB.
 //Also checks the connection if everything is ok.
-func ConnectDB(connectionString string) (*mongo.Client, context.Context) {
+func ConnectDB(connectionString string) *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(connectionString))
 	if err != nil {
 		log.Fatal(err)
@@ -30,7 +30,7 @@ func ConnectDB(connectionString string) (*mongo.Client, context.Context) {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!") //!! DEBUG !!
-	return client, ctx
+	return client
 }
 
 //GetDatabase returns the pointer to the database (input).

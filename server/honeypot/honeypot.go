@@ -97,8 +97,8 @@ func Raw(tmpl template.Template) {
 
 	// DB setup
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
-	dbName := os.Getenv("DB_NAME")
-	client, _ := db.ConnectDB(connString)
+	dbName := os.Getenv("MONGO_DB")
+	client := db.ConnectDB(connString)
 
 	// Routes setup
 	r := mux.NewRouter()
@@ -144,7 +144,7 @@ func Raw(tmpl template.Template) {
 
 	srv := &http.Server{
 		Handler: r,
-		Addr:    ":8090",
+		Addr:    ":8092",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
