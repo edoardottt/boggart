@@ -56,3 +56,18 @@ func GetLogsByIP(client *mongo.Client, collection *mongo.Collection, ctx context
 	}
 	return result, nil
 }
+
+//GetLogsByMethod returns a slice of logs with the defined HTTP Method.
+//If the Method is not present in the database err won't be nil.
+func GetLogsByMethod(client *mongo.Client, collection *mongo.Collection, ctx context.Context, method string) ([]Log, error) {
+	var result []Log
+	filter := bson.M{"method": method}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
