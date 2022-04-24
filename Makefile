@@ -24,6 +24,10 @@ down:
 clean:
 	docker rmi boggart_boggart:latest
 
+#---Delete the mongo-volume volume---
+cleanvol:
+	sudo rm -rf /mongo-volume
+
 #---Prune---
 prune:
 	docker system prune -f
