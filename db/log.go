@@ -1,6 +1,6 @@
 /*
 =======================
-		boggart
+	boggart
 =======================
 
 This program is free software: you can redistribute it and/or modify
