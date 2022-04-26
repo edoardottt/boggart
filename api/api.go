@@ -43,5 +43,39 @@ func LogsDateHandler(w http.ResponseWriter, req *http.Request, dbName string, cl
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
+}
 
+//LogsRangeHandler >
+func LogsRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//IPInfoHandler >
+func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsIPHandler >
+func LogsIPHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsIPDateHandler >
+func LogsIPDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsIPRangeHandler >
+func LogsIPRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
 }
