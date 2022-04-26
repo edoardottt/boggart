@@ -20,3 +20,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
 package api
+
+import (
+	"fmt"
+	"net/http"
+
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
+//HealthCheck tells you if the API server is listening
+func HealthCheck(w http.ResponseWriter, req *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	//specify status code
+	w.WriteHeader(http.StatusOK)
+
+	//update response writer
+	fmt.Fprintf(w, "OK")
+}
+
+//LogsDateHandler >
+func LogsDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+
+}

@@ -20,3 +20,45 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 */
 
 package api
+
+import (
+	"log"
+	"net/http"
+	"os"
+	"time"
+
+	"github.com/edoardottt/boggart/db"
+	"github.com/gorilla/mux"
+)
+
+//ApiServer > to be filled
+func ApiServer() {
+
+	// DB setup
+	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
+	dbName := os.Getenv("MONGO_DB")
+	client := db.ConnectDB(connString)
+
+	// Routes setup
+	r := mux.NewRouter()
+
+	//Health
+	r.HandleFunc(Health, func(w http.ResponseWriter, r *http.Request) {
+		HealthCheck(w, r)
+	}).Methods("GET")
+
+	//LogsDate
+	r.HandleFunc(LogsDate, func(w http.ResponseWriter, r *http.Request) {
+		LogsDateHandler(w, r, dbName, client)
+	}).Methods("GET")
+
+	srv := &http.Server{
+		Handler: r,
+		Addr:    ":8094",
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	log.Fatal(srv.ListenAndServe())
+}

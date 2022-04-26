@@ -23,6 +23,8 @@ package api
 
 //Api routes
 const (
+	Health = "/api/health"
+
 	LogsDate  = "/api/{date}"
 	LogsRange = "/api/{range}"
 
