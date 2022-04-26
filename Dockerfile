@@ -29,3 +29,6 @@ CMD ["./cmd/boggart"]
 
 # Honeypot
 EXPOSE 8092
+
+# API
+EXPOSE 8094
