@@ -23,6 +23,9 @@ package api
 
 //Api routes
 const (
+	LogsDate  = "/api/{date}"
+	LogsRange = "/api/{range}"
+
 	IPInfo      = "/api/{ip}"
 	LogsIP      = "/api/logs/ip/{ip}"
 	LogsIPDate  = "/api/logs/ip/{ip}/{date}"
