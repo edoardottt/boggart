@@ -24,6 +24,7 @@ package main
 import (
 	"log"
 
+	"github.com/edoardottt/boggart/api"
 	"github.com/edoardottt/boggart/pkg/template"
 	"github.com/edoardottt/boggart/server/honeypot"
 )
@@ -37,5 +38,6 @@ func main() {
 	if _, err := template.CheckTemplate(tmpl); err != nil {
 		log.Fatal(err)
 	}
-	honeypot.Raw(tmpl)
+	go honeypot.Raw(tmpl)
+	api.ApiServer()
 }
