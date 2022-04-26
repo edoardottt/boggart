@@ -79,3 +79,45 @@ func LogsIPRangeHandler(w http.ResponseWriter, req *http.Request, dbName string,
 
 	fmt.Fprint(w, "TODO")
 }
+
+//LogsPathHandler >
+func LogsPathHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsPathDateHandler >
+func LogsPathDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsPathRangeHandler >
+func LogsPathRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsMethodHandler >
+func LogsMethodHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsMethodDateHandler >
+func LogsMethodDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}
+
+//LogsMethodRangeHandler >
+func LogsMethodRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+	w.Header().Add("Content-Type", "application/json")
+
+	fmt.Fprint(w, "TODO")
+}

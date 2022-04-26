@@ -84,6 +84,36 @@ func ApiServer() {
 		LogsIPRangeHandler(w, r, dbName, client)
 	}).Methods("GET")
 
+	//LogsPath
+	r.HandleFunc(LogsPath, func(w http.ResponseWriter, r *http.Request) {
+		LogsPathHandler(w, r, dbName, client)
+	}).Methods("GET")
+
+	//LogsPathDate
+	r.HandleFunc(LogsPathDate, func(w http.ResponseWriter, r *http.Request) {
+		LogsPathDateHandler(w, r, dbName, client)
+	}).Methods("GET")
+
+	//LogsPathRange
+	r.HandleFunc(LogsPathRange, func(w http.ResponseWriter, r *http.Request) {
+		LogsPathRangeHandler(w, r, dbName, client)
+	}).Methods("GET")
+
+	//LogsMethod
+	r.HandleFunc(LogsMethod, func(w http.ResponseWriter, r *http.Request) {
+		LogsMethodHandler(w, r, dbName, client)
+	}).Methods("GET")
+
+	//LogsMethodDate
+	r.HandleFunc(LogsMethodDate, func(w http.ResponseWriter, r *http.Request) {
+		LogsMethodDateHandler(w, r, dbName, client)
+	}).Methods("GET")
+
+	//LogsMethodRange
+	r.HandleFunc(LogsMethodRange, func(w http.ResponseWriter, r *http.Request) {
+		LogsMethodRangeHandler(w, r, dbName, client)
+	}).Methods("GET")
+
 	srv := &http.Server{
 		Handler: r,
 		Addr:    ":8094",
