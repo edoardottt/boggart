@@ -6,7 +6,7 @@ services:
     container_name: mongo
     image: "mongo:latest"
     expose:
-      - "27017"
+      - "27017" # exposed only internally
     restart: always
     volumes:
       - "/mongo-volume:/data/db"
@@ -16,6 +16,6 @@ services:
     depends_on:
       - 'mongo'
     ports:
-      - "8092:8092" #honeypot
-      - "8094:8094" #API
+      - "8092:8092" # honeypot
+      - "8094:8094" # API
     restart: always
