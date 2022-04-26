@@ -16,5 +16,6 @@ services:
     depends_on:
       - 'mongo'
     ports:
-      - "8092:8092"
+      - "8092:8092" #honeypot
+      - "8094:8094" #API
     restart: always
