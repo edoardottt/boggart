@@ -23,6 +23,8 @@ package api
 
 //Api routes
 const (
+	NotFound = "/"
+
 	Health = "/api/health"
 
 	LogsDate  = "/api/{date}"

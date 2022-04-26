@@ -22,6 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -41,6 +42,12 @@ func ApiServer() {
 
 	// Routes setup
 	r := mux.NewRouter()
+
+	//NotFound
+	r.HandleFunc(NotFound, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "404 page not found")
+	}).Methods("GET")
 
 	//Health
 	r.HandleFunc(Health, func(w http.ResponseWriter, r *http.Request) {
