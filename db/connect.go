@@ -23,7 +23,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -50,7 +49,6 @@ func ConnectDB(connectionString string) *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Connected to MongoDB!") //!! DEBUG !!
 	return client
 }
 

@@ -125,6 +125,10 @@ func Raw(tmpl template.Template) {
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
 	dbName := os.Getenv("MONGO_DB")
 	client := db.ConnectDB(connString)
+	// ------- debug -------
+	if client != nil {
+		fmt.Println("HONEYPOT: Connected to MongoDB!")
+	}
 
 	// Routes setup
 	r := mux.NewRouter()
