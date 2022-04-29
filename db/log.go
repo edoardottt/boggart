@@ -144,3 +144,92 @@ func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx conte
 	}
 	return result, nil
 }
+
+//GetLogsByRange returns a slice of logs within the defined range (date to date).
+//If the Range is not present in the database err won't be nil.
+func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx context.Context, dateStart time.Time, dateEnd time.Time) ([]Log, error) {
+	var result []Log
+	filter := bson.M{
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": dateStart.Unix()}},
+			{"timestamp": bson.M{"$lt": dateEnd.Unix()}},
+		},
+	}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+//GetLogsByIPAndDate returns a slice of logs from the defined IP
+//and within the defined date.
+//If the Date is not present in the database err won't be nil.
+func GetLogsByIPAndDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time, IP string) ([]Log, error) {
+	var result []Log
+	nextDateInt := date.Add(time.Hour * 24).Unix()
+	filter := bson.M{
+		"ip": IP,
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": date.Unix()}},
+			{"timestamp": bson.M{"$lt": nextDateInt}},
+		},
+	}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+//GetLogsByPathAndDate returns a slice of logs with the defined Path
+//and within the defined date.
+//If the Date is not present in the database err won't be nil.
+func GetLogsByPathAndDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time, path string) ([]Log, error) {
+	var result []Log
+	nextDateInt := date.Add(time.Hour * 24).Unix()
+	filter := bson.M{
+		"path": path,
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": date.Unix()}},
+			{"timestamp": bson.M{"$lt": nextDateInt}},
+		},
+	}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+//GetLogsByMethodAndDate returns a slice of logs with the defined Method
+//and within the defined date.
+//If the Date is not present in the database err won't be nil.
+func GetLogsByMethodAndDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time, method string) ([]Log, error) {
+	var result []Log
+	nextDateInt := date.Add(time.Hour * 24).Unix()
+	filter := bson.M{
+		"method": method,
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": date.Unix()}},
+			{"timestamp": bson.M{"$lt": nextDateInt}},
+		},
+	}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}

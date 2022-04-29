@@ -27,10 +27,11 @@ const (
 
 	Health = "/api/health"
 
+	IPInfo = "/api/{ip}"
+
 	LogsDate  = "/api/date/{date}"
 	LogsRange = "/api/range/{range}"
 
-	IPInfo      = "/api/{ip}"
 	LogsIP      = "/api/logs/ip/{ip}"
 	LogsIPDate  = "/api/logs/ip/{ip}/date/{date}"
 	LogsIPRange = "/api/logs/ip/{ip}/range/{range}"
