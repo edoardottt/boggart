@@ -25,6 +25,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -113,6 +114,27 @@ func GetLogsByPath(client *mongo.Client, collection *mongo.Collection, ctx conte
 func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx context.Context, body string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"body": body}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+//GetLogsByDate returns a slice of logs within the defined date.
+//If the Date is not present in the database err won't be nil.
+func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time) ([]Log, error) {
+	var result []Log
+	nextDateInt := date.Add(time.Hour * 24).Unix()
+	filter := bson.M{
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": date.Unix()}},
+			{"timestamp": bson.M{"$lt": nextDateInt}},
+		},
+	}
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, err
