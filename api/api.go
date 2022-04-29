@@ -117,9 +117,8 @@ func LogsIPDateHandler(w http.ResponseWriter, req *http.Request, dbName string, 
 	collection := db.GetLogs(database)
 
 	vars := mux.Vars(req)
-	date := vars["date"]
 	ip := vars["ip"]
-	dateT, err := time.Parse("2006-01-02", date)
+	dateT, err := time.Parse("2006-01-02", vars["date"])
 
 	// 400 BAD REQUEST: Time format != YYYY-MM-DD
 	if err != nil {
@@ -127,7 +126,14 @@ func LogsIPDateHandler(w http.ResponseWriter, req *http.Request, dbName string, 
 		fmt.Fprint(w, "Cannot convert the date. Time format is YYYY-MM-DD.")
 		return
 	}
-	logs, err := db.GetLogsByIPAndDate(client, collection, ctx, dateT, ip)
+
+	filter := db.BuildFilter(map[string]interface{}{})
+	filter = db.AddMultipleCondition(filter, "$and", []bson.M{
+		{"timestamp": bson.M{"$gte": dateT.Unix()}},
+		{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
+	})
+	filter = db.AddCondition(filter, "ip", ip)
+	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
 
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {

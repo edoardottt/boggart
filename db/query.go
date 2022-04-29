@@ -40,7 +40,7 @@ func BuildFilter(query map[string]interface{}) bson.M {
 
 //AddCondition returns the query passed as input with
 //the query passed as input.
-func AddCondition(query bson.M, condition string, add bson.M) bson.M {
+func AddCondition(query bson.M, condition string, add interface{}) bson.M {
 	query[condition] = add
 	return query
 }
