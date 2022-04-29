@@ -28,6 +28,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/edoardottt/boggart/db"
@@ -51,8 +52,10 @@ func genericWriter(w http.ResponseWriter, req *http.Request, dbName string, clie
 	}
 	bodyString := string(bodyBytes)
 
+	remoteIP := strings.Split(req.RemoteAddr, ":")[0]
+
 	db.InsertLog(client, collection, ctx, db.Log{
-		IP:        req.RemoteAddr,
+		IP:        remoteIP,
 		Method:    req.Method,
 		Path:      req.RequestURI,
 		Headers:   req.Header,
@@ -101,8 +104,10 @@ func fileWriter(w http.ResponseWriter, req *http.Request, dbName string, client 
 	}
 	bodyString := string(bodyBytes)
 
+	remoteIP := strings.Split(req.RemoteAddr, ":")[0]
+
 	db.InsertLog(client, collection, ctx, db.Log{
-		IP:        req.RemoteAddr,
+		IP:        remoteIP,
 		Method:    req.Method,
 		Path:      req.RequestURI,
 		Headers:   req.Header,
