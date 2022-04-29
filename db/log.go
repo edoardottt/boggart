@@ -144,3 +144,23 @@ func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx conte
 	}
 	return result, nil
 }
+
+//GetLogsByRange returns a slice of logs within the defined range (date to date).
+//If the Range is not present in the database err won't be nil.
+func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx context.Context, dateStart time.Time, dateEnd time.Time) ([]Log, error) {
+	var result []Log
+	filter := bson.M{
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": dateStart.Unix()}},
+			{"timestamp": bson.M{"$lt": dateEnd.Unix()}},
+		},
+	}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
