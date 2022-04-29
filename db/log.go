@@ -128,7 +128,13 @@ func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx conte
 //If the Date is not present in the database err won't be nil.
 func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time) ([]Log, error) {
 	var result []Log
-	filter := bson.M{"timestamp": date}
+	nextDate := date.Add(time.Hour * 24)
+	filter := bson.M{
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": date}},
+			{"timestamp": bson.M{"$lt": nextDate}},
+		},
+	}
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, err
