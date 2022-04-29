@@ -197,9 +197,8 @@ func LogsMethodDateHandler(w http.ResponseWriter, req *http.Request, dbName stri
 	collection := db.GetLogs(database)
 
 	vars := mux.Vars(req)
-	date := vars["date"]
 	method := vars["method"]
-	dateT, err := time.Parse("2006-01-02", date)
+	dateT, err := time.Parse("2006-01-02", vars["date"])
 
 	// 400 BAD REQUEST: Time format != YYYY-MM-DD
 	if err != nil {
@@ -207,7 +206,14 @@ func LogsMethodDateHandler(w http.ResponseWriter, req *http.Request, dbName stri
 		fmt.Fprint(w, "Cannot convert the date. Time format is YYYY-MM-DD.")
 		return
 	}
-	logs, err := db.GetLogsByMethodAndDate(client, collection, ctx, dateT, method)
+
+	filter := db.BuildFilter(map[string]interface{}{})
+	filter = db.AddMultipleCondition(filter, "$and", []bson.M{
+		{"timestamp": bson.M{"$gte": dateT.Unix()}},
+		{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
+	})
+	filter = db.AddCondition(filter, "method", method)
+	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
 
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
