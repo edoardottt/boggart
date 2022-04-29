@@ -188,6 +188,29 @@ func GetLogsByIPAndDate(client *mongo.Client, collection *mongo.Collection, ctx 
 	return result, nil
 }
 
+//GetLogsByPathAndDate returns a slice of logs with the defined Path
+//and within the defined date.
+//If the Date is not present in the database err won't be nil.
+func GetLogsByPathAndDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time, path string) ([]Log, error) {
+	var result []Log
+	nextDateInt := date.Add(time.Hour * 24).Unix()
+	filter := bson.M{
+		"path": path,
+		"$and": []bson.M{
+			{"timestamp": bson.M{"$gte": date.Unix()}},
+			{"timestamp": bson.M{"$lt": nextDateInt}},
+		},
+	}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
 //GetLogsByMethodAndDate returns a slice of logs with the defined Method
 //and within the defined date.
 //If the Date is not present in the database err won't be nil.
