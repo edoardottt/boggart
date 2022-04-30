@@ -6,7 +6,9 @@ Installation 📡
 
 [Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/) are needed.
 
-- `git clone https://github.com/edoardottt/boggart`
+```
+git clone https://github.com/edoardottt/boggart
+```
 
 Usage 💻
 -------
