@@ -3,11 +3,16 @@ Highly customizable low-interaction experimental honeypot that mimics specific h
 
 Installation 📡
 -------
-todo
+
+[Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/) are needed.
+
+- `git clone https://github.com/edoardottt/boggart`
 
 Usage 💻
 -------
-todo
+
+- Edit the configuration file `config.yaml`
+- Execute `make up` (inside the boggart folder)
 
 License 📝
 -------
