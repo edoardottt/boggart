@@ -66,3 +66,18 @@ func GetLogsWithFilter(client *mongo.Client, collection *mongo.Collection, ctx c
 	}
 	return result, nil
 }
+
+//GetAggregatedLogs returns a slice of aggregated logs
+//using the filter taken as input.
+//If the result is empty err won't be nil.
+func GetAggregatedLogs(client *mongo.Client, collection *mongo.Collection, ctx context.Context, filter []bson.M) ([]Log, error) {
+	var result []Log
+	cursor, err := collection.Aggregate(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
