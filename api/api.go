@@ -34,6 +34,7 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //HealthCheck tells you if the API server is listening
@@ -91,26 +92,31 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	}
 
 	filter := db.BuildFilter(map[string]interface{}{"ip": ip})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
+	findOptions := options.Find()
+	// Sort by `timestamp` field descending
+	findOptions.SetSort(bson.D{{"timestamp", -1}})
+	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter, findOptions)
 
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data2.")
-		fmt.Println(err)
+		fmt.Fprint(w, "Error while retrieving data.")
+		fmt.Println(err) //DEBUG: logging!
 		return
 	}
 
-	// here len(logs) is the number of requests performed.
-
-	last, err := LastActivity(w, req, dbName, client, ip)
+	i, err := strconv.ParseInt(fmt.Sprint(logs[0].Timestamp), 10, 64)
+	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, "Error while retrieving data.")
+		fmt.Println(err) //DEBUG: logging!
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(IPInfoResponse{
 		Logs:         len(logs),
-		LastActivity: last,
+		LastActivity: time.Unix(i, 0),
 		TopMethods:   topMethods,
 		TopPaths:     topPaths,
 		TopBodies:    topBodies,
@@ -184,12 +190,10 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	}
 	logs, err := db.GetAggregatedLogs(client, collection, ctx, filter)
 
-	fmt.Println(err)
-
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data1.")
+		fmt.Fprint(w, "Error while retrieving data.")
 		return nil, err
 	}
 
@@ -203,61 +207,9 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	var result []string
 	for i := 0; i < howMany; i++ {
 		if i < len(logs) {
-			var elem string
-			if what == "method" {
-				elem = logs[i].Method
-			}
-			if what == "path" {
-				elem = logs[i].Path
-			}
-			if what == "body" {
-				elem = logs[i].Body
-			}
-			result = append(result, elem)
+			result = append(result, logs[i].ID)
 		}
 	}
 
 	return result, nil
-}
-
-//LastActivity >
-func LastActivity(w http.ResponseWriter, req *http.Request, dbName string,
-	client *mongo.Client, IP string) (time.Time, error) {
-
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-
-	filter := []bson.M{
-		{"$match": bson.M{"ip": IP}},
-		{"$sort": bson.M{"timestamp": -1}},
-		{"$limit": 1},
-	}
-	logs, err := db.GetAggregatedLogs(client, collection, ctx, filter)
-
-	fmt.Println(err)
-
-	// 500 INTERNAL SERVER ERROR: generic error
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data3.")
-		return time.Time{}, err
-	}
-
-	// 200: but
-	if len(logs) == 0 {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "no stats available for the specified IP.")
-		return time.Time{}, errors.New("no stats available for the specified IP.")
-	}
-
-	i, err := strconv.ParseInt(fmt.Sprint(logs[0].Timestamp), 10, 64)
-	// 500 INTERNAL SERVER ERROR: generic error
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data4.")
-		return time.Time{}, err
-	}
-	return time.Unix(i, 0), nil
 }
