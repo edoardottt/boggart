@@ -22,3 +22,5 @@ requests:
     response-type: "file"
     content-type: "text/html"
     content: "404.html"
+
+ignore: ["/favicon.ico"]

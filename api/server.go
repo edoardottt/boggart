@@ -58,64 +58,29 @@ func ApiServer() {
 		HealthCheck(w, r)
 	}).Methods("GET")
 
-	//LogsDate
-	r.HandleFunc(LogsDate, func(w http.ResponseWriter, r *http.Request) {
-		LogsDateHandler(w, r, dbName, client)
-	}).Methods("GET")
-
-	//LogsRange
-	r.HandleFunc(LogsRange, func(w http.ResponseWriter, r *http.Request) {
-		LogsRangeHandler(w, r, dbName, client)
-	}).Methods("GET")
-
 	//IPInfo
 	r.HandleFunc(IPInfo, func(w http.ResponseWriter, r *http.Request) {
 		IPInfoHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//LogsIP
-	r.HandleFunc(LogsIP, func(w http.ResponseWriter, r *http.Request) {
-		LogsIPHandler(w, r, dbName, client)
+	//ApiLogs
+	r.HandleFunc(ApiLogs, func(w http.ResponseWriter, r *http.Request) {
+		LogsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//LogsIPDate
-	r.HandleFunc(LogsIPDate, func(w http.ResponseWriter, r *http.Request) {
-		LogsIPDateHandler(w, r, dbName, client)
+	//ApiDetect
+	r.HandleFunc(ApiDetect, func(w http.ResponseWriter, r *http.Request) {
+		LogsDetectHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//LogsIPRange
-	r.HandleFunc(LogsIPRange, func(w http.ResponseWriter, r *http.Request) {
-		LogsIPRangeHandler(w, r, dbName, client)
+	//ApiStats
+	r.HandleFunc(ApiStats, func(w http.ResponseWriter, r *http.Request) {
+		StatsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//LogsPath
-	r.HandleFunc(LogsPath, func(w http.ResponseWriter, r *http.Request) {
-		LogsPathHandler(w, r, dbName, client)
-	}).Methods("GET")
-
-	//LogsPathDate
-	r.HandleFunc(LogsPathDate, func(w http.ResponseWriter, r *http.Request) {
-		LogsPathDateHandler(w, r, dbName, client)
-	}).Methods("GET")
-
-	//LogsPathRange
-	r.HandleFunc(LogsPathRange, func(w http.ResponseWriter, r *http.Request) {
-		LogsPathRangeHandler(w, r, dbName, client)
-	}).Methods("GET")
-
-	//LogsMethod
-	r.HandleFunc(LogsMethod, func(w http.ResponseWriter, r *http.Request) {
-		LogsMethodHandler(w, r, dbName, client)
-	}).Methods("GET")
-
-	//LogsMethodDate
-	r.HandleFunc(LogsMethodDate, func(w http.ResponseWriter, r *http.Request) {
-		LogsMethodDateHandler(w, r, dbName, client)
-	}).Methods("GET")
-
-	//LogsMethodRange
-	r.HandleFunc(LogsMethodRange, func(w http.ResponseWriter, r *http.Request) {
-		LogsMethodRangeHandler(w, r, dbName, client)
+	//ApiStatsDB
+	r.HandleFunc(ApiStatsDB, func(w http.ResponseWriter, r *http.Request) {
+		StatsDBHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	srv := &http.Server{

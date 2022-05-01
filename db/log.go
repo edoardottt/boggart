@@ -25,6 +25,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"reflect"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -40,6 +41,11 @@ type Log struct {
 	Headers   map[string][]string `json:"headers"`
 	Body      string              `json:"body"`
 	Timestamp int64               `json:"timestamp"`
+}
+
+//IsEmpty checks if a Log is a new one (just created)
+func (log Log) IsEmpty() bool {
+	return reflect.DeepEqual(log, Log{})
 }
 
 //InsertLog inserts a log record into the logs collection
