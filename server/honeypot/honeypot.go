@@ -38,82 +38,66 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func genericWriter(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client, response string) {
+func genericWriter(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client, tmpl template.Template, response string) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
+	if !ignorePath(req.URL.Path, tmpl) {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
 
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
+		database := db.GetDatabase(client, dbName)
+		collection := db.GetLogs(database)
 
-	bodyBytes, err := io.ReadAll(req.Body)
-	if err != nil {
-		log.Fatal(err)
+		bodyBytes, err := io.ReadAll(req.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bodyString := string(bodyBytes)
+
+		remoteIP := strings.Split(req.RemoteAddr, ":")[0]
+
+		db.InsertLog(client, collection, ctx, db.Log{
+			IP:        remoteIP,
+			Method:    req.Method,
+			Path:      req.RequestURI,
+			Headers:   req.Header,
+			Body:      bodyString,
+			Timestamp: time.Now().Unix(),
+		})
 	}
-	bodyString := string(bodyBytes)
-
-	remoteIP := strings.Split(req.RemoteAddr, ":")[0]
-
-	db.InsertLog(client, collection, ctx, db.Log{
-		IP:        remoteIP,
-		Method:    req.Method,
-		Path:      req.RequestURI,
-		Headers:   req.Header,
-		Body:      bodyString,
-		Timestamp: time.Now().Unix(),
-	})
-
-	/* =========== DEBUG ============
-	insertedID := db.InsertLog(client, collection, ctx, db.Log{
-		IP:        req.RemoteAddr,
-		Method:    req.Method,
-		Path:      req.RequestURI,
-		Headers:   req.Header,
-		Body:      bodyString,
-		Timestamp: time.Now().Unix(),
-	})
-	fmt.Println("Inserted: ", insertedID)
-
-	insertedLog, err := db.GetLogByID(client, collection, ctx, insertedID)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(insertedLog)
-	*/
 
 	fmt.Fprint(w, response)
 }
 
-func fileWriter(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client, inputFile string) {
+func fileWriter(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client, tmpl template.Template, inputFile string) {
 	content, err := file.ReadFile(inputFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
+	if !ignorePath(req.URL.Path, tmpl) {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
 
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
+		database := db.GetDatabase(client, dbName)
+		collection := db.GetLogs(database)
 
-	bodyBytes, err := io.ReadAll(req.Body)
-	if err != nil {
-		log.Fatal(err)
+		bodyBytes, err := io.ReadAll(req.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bodyString := string(bodyBytes)
+
+		remoteIP := strings.Split(req.RemoteAddr, ":")[0]
+
+		db.InsertLog(client, collection, ctx, db.Log{
+			IP:        remoteIP,
+			Method:    req.Method,
+			Path:      req.RequestURI,
+			Headers:   req.Header,
+			Body:      bodyString,
+			Timestamp: time.Now().Unix(),
+		})
 	}
-	bodyString := string(bodyBytes)
-
-	remoteIP := strings.Split(req.RemoteAddr, ":")[0]
-
-	db.InsertLog(client, collection, ctx, db.Log{
-		IP:        remoteIP,
-		Method:    req.Method,
-		Path:      req.RequestURI,
-		Headers:   req.Header,
-		Body:      bodyString,
-		Timestamp: time.Now().Unix(),
-	})
 
 	fmt.Fprint(w, content)
 }
@@ -142,14 +126,14 @@ func Raw(tmpl template.Template) {
 
 				r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
-					genericWriter(w, r, dbName, client, request2.Content)
+					genericWriter(w, r, dbName, client, tmpl, request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
 
 			} else if request2.ResponseType == "file" {
 
 				r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
-					fileWriter(w, r, dbName, client, staticPath+request2.Content)
+					fileWriter(w, r, dbName, client, tmpl, staticPath+request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
 			}
 		}
@@ -161,14 +145,14 @@ func Raw(tmpl template.Template) {
 
 		r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
-			genericWriter(w, r, dbName, client, defaultRequest.Content)
+			genericWriter(w, r, dbName, client, tmpl, defaultRequest.Content)
 		})
 
 	} else if defaultRequest.ResponseType == "file" {
 
 		r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
-			fileWriter(w, r, dbName, client, staticPath+defaultRequest.Content)
+			fileWriter(w, r, dbName, client, tmpl, staticPath+defaultRequest.Content)
 		})
 	}
 
@@ -181,4 +165,14 @@ func Raw(tmpl template.Template) {
 	}
 
 	log.Fatal(srv.ListenAndServe())
+}
+
+//ignorePath
+func ignorePath(path string, tmpl template.Template) bool {
+	for _, elem := range tmpl.Ignore {
+		if elem == path {
+			return true
+		}
+	}
+	return false
 }
