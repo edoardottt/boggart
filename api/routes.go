@@ -39,8 +39,10 @@ const (
 	//This endpoint is intended to serve a summary
 	//of the information available for the IP taken
 	//as input.
+	//Parameter: top
 	//Which info? Number of requests, timestamp of
-	//the last activity, top 10 of methods, path, headers.
+	//the last activity, top X (default 10)
+	//methods, path, headers.
 	IPInfo = "/api/info/{ip}"
 
 	//This endpoint is intended to serve information about
