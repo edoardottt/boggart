@@ -37,10 +37,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//HealthCheck tells you if the API server is listening
-func HealthCheck(w http.ResponseWriter, req *http.Request) {
+//NotFoundHandler tells you if the API server is listening
+func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
+	//set content-type
 	w.Header().Add("Content-Type", "application/json")
+	//specify status code
+	w.WriteHeader(http.StatusNotFound)
+	//update response writer
+	fmt.Fprintf(w, "404 page not found")
+}
 
+//HealthHandler tells you if the API server is listening
+func HealthHandler(w http.ResponseWriter, req *http.Request) {
+	//set content-type
+	w.Header().Add("Content-Type", "application/json")
 	//specify status code
 	w.WriteHeader(http.StatusOK)
 	//update response writer

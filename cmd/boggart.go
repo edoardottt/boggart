@@ -39,5 +39,5 @@ func main() {
 		log.Fatal(err)
 	}
 	go honeypot.Raw(tmpl)
-	api.ApiServer()
+	api.Server()
 }
