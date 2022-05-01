@@ -22,15 +22,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 package api
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
-	"github.com/edoardottt/boggart/db"
-	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -44,56 +38,6 @@ func HealthCheck(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "OK")
 }
 
-//LogsDateHandler >
-func LogsDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
-	w.Header().Add("Content-Type", "application/json")
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-
-	vars := mux.Vars(req)
-	dateT, err := time.Parse("2006-01-02", vars["date"])
-
-	// 400 BAD REQUEST: Time format != YYYY-MM-DD
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "Cannot convert the date. Time format is YYYY-MM-DD.")
-		return
-	}
-
-	filter := db.BuildFilter(map[string]interface{}{})
-	db.AddMultipleCondition(filter, "$and", []bson.M{
-		{"timestamp": bson.M{"$gte": dateT.Unix()}},
-		{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
-	})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
-
-	// 500 INTERNAL SERVER ERROR: generic error
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
-		fmt.Println(err)
-		return
-	}
-
-	if len(logs) == 0 {
-		fmt.Fprintf(w, "{}")
-	} else {
-		err = json.NewEncoder(w).Encode(logs)
-		if err != nil {
-			fmt.Println(err) //DEBUG: logging!
-		}
-	}
-}
-
-//LogsRangeHandler >
-func LogsRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
-	w.Header().Add("Content-Type", "application/json")
-
-	fmt.Fprint(w, "TODO")
-}
-
 //IPInfoHandler >
 func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
@@ -101,188 +45,29 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	fmt.Fprint(w, "TODO")
 }
 
-//LogsIPHandler >
-func LogsIPHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
-	w.Header().Add("Content-Type", "application/json")
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-
-	vars := mux.Vars(req)
-	ip := vars["ip"]
-
-	filter := db.BuildFilter(map[string]interface{}{"ip": ip})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
-
-	// 500 INTERNAL SERVER ERROR: generic error
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
-		fmt.Println(err)
-		return
-	}
-
-	if len(logs) == 0 {
-		fmt.Fprintf(w, "{}")
-	} else {
-		err = json.NewEncoder(w).Encode(logs)
-		if err != nil {
-			fmt.Println(err) //DEBUG: logging!
-		}
-	}
-}
-
-//LogsIPDateHandler >
-func LogsIPDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
-	w.Header().Add("Content-Type", "application/json")
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-
-	vars := mux.Vars(req)
-	ip := vars["ip"]
-	dateT, err := time.Parse("2006-01-02", vars["date"])
-
-	// 400 BAD REQUEST: Time format != YYYY-MM-DD
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "Cannot convert the date. Time format is YYYY-MM-DD.")
-		return
-	}
-
-	filter := db.BuildFilter(map[string]interface{}{"ip": ip})
-	filter = db.AddMultipleCondition(filter, "$and", []bson.M{
-		{"timestamp": bson.M{"$gte": dateT.Unix()}},
-		{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
-	})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
-
-	// 500 INTERNAL SERVER ERROR: generic error
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
-		fmt.Println(err)
-		return
-	}
-
-	if len(logs) == 0 {
-		fmt.Fprintf(w, "{}")
-	} else {
-		err = json.NewEncoder(w).Encode(logs)
-		if err != nil {
-			fmt.Println(err) //DEBUG: logging!
-		}
-	}
-}
-
-//LogsIPRangeHandler >
-func LogsIPRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+//LogsHandler >
+func LogsHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-//LogsPathHandler >
-func LogsPathHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+//LogsDetectHandler >
+func LogsDetectHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-//LogsPathDateHandler >
-func LogsPathDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+//StatsHandler >
+func StatsHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-//LogsPathRangeHandler >
-func LogsPathRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
-	w.Header().Add("Content-Type", "application/json")
-
-	fmt.Fprint(w, "TODO")
-}
-
-//LogsMethodHandler >
-func LogsMethodHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
-	w.Header().Add("Content-Type", "application/json")
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-
-	vars := mux.Vars(req)
-	method := vars["method"]
-
-	filter := db.BuildFilter(map[string]interface{}{"method": method})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
-
-	// 500 INTERNAL SERVER ERROR: generic error
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
-		fmt.Println(err)
-		return
-	}
-
-	if len(logs) == 0 {
-		fmt.Fprintf(w, "{}")
-	} else {
-		err = json.NewEncoder(w).Encode(logs)
-		if err != nil {
-			fmt.Println(err) //DEBUG: logging!
-		}
-	}
-}
-
-//LogsMethodDateHandler >
-func LogsMethodDateHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
-	w.Header().Add("Content-Type", "application/json")
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-
-	vars := mux.Vars(req)
-	method := vars["method"]
-	dateT, err := time.Parse("2006-01-02", vars["date"])
-
-	// 400 BAD REQUEST: Time format != YYYY-MM-DD
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "Cannot convert the date. Time format is YYYY-MM-DD.")
-		return
-	}
-
-	filter := db.BuildFilter(map[string]interface{}{"method": method})
-	filter = db.AddMultipleCondition(filter, "$and", []bson.M{
-		{"timestamp": bson.M{"$gte": dateT.Unix()}},
-		{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
-	})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
-
-	// 500 INTERNAL SERVER ERROR: generic error
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
-		fmt.Println(err)
-		return
-	}
-
-	if len(logs) == 0 {
-		fmt.Fprintf(w, "{}")
-	} else {
-		err = json.NewEncoder(w).Encode(logs)
-		if err != nil {
-			fmt.Println(err) //DEBUG: logging!
-		}
-	}
-}
-
-//LogsMethodRangeHandler >
-func LogsMethodRangeHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
+//StatsDBHandler >
+func StatsDBHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")

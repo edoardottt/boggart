@@ -27,20 +27,13 @@ const (
 
 	Health = "/api/health"
 
-	IPInfo = "/api/{ip}"
+	IPInfo = "/api/info/{ip}"
 
-	LogsDate  = "/api/date/{date}"
-	LogsRange = "/api/range/{range}"
+	ApiLogs = "api/logs"
 
-	LogsIP      = "/api/logs/ip/{ip}"
-	LogsIPDate  = "/api/logs/ip/{ip}/date/{date}"
-	LogsIPRange = "/api/logs/ip/{ip}/range/{range}"
+	ApiDetect = "api/detect"
 
-	LogsPath      = "/api/logs/path/{path}"
-	LogsPathDate  = "/api/logs/path/{path}/date/{date}"
-	LogsPathRange = "/api/logs/path/{path}/range/{range}"
+	ApiStats = "api/stats"
 
-	LogsMethod      = "/api/logs/method/{method}"
-	LogsMethodDate  = "/api/logs/method/{method}/date/{date}"
-	LogsMethodRange = "/api/logs/method/{method}/range/{range}"
+	ApiStatsDB = "api/stats/db"
 )
