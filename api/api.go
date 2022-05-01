@@ -65,7 +65,11 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 
 	vars := mux.Vars(req)
 	ip := vars["ip"]
-	top, err := IsIntInTheRange(req.URL.Query().Get("top"), 4, 50)
+	topParam := req.URL.Query().Get("top")
+	if topParam == "" {
+		topParam = "10"
+	}
+	top, err := IsIntInTheRange(topParam, 4, 50)
 	// 400 BAD REQUEST: top parameter not in the correct range
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -92,7 +96,7 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
+		fmt.Fprint(w, "Error while retrieving data2.")
 		fmt.Println(err)
 		return
 	}
@@ -173,14 +177,19 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
 
-	filter := db.BuildFilter(map[string]interface{}{"$sortByCount": what})
-	filter = db.AddMultipleCondition(filter, "$match", []bson.M{{"ip": IP}})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
+	filter := []bson.M{
+		{"$match": bson.M{"ip": IP}},
+		{"$sortByCount": "$" + what},
+		{"$limit": howMany},
+	}
+	logs, err := db.GetAggregatedLogs(client, collection, ctx, filter)
+
+	fmt.Println(err)
 
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
+		fmt.Fprint(w, "Error while retrieving data1.")
 		return nil, err
 	}
 
@@ -193,17 +202,19 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 
 	var result []string
 	for i := 0; i < howMany; i++ {
-		var elem string
-		if what == "method" {
-			elem = logs[i].Method
+		if i < len(logs) {
+			var elem string
+			if what == "method" {
+				elem = logs[i].Method
+			}
+			if what == "path" {
+				elem = logs[i].Path
+			}
+			if what == "body" {
+				elem = logs[i].Body
+			}
+			result = append(result, elem)
 		}
-		if what == "path" {
-			elem = logs[i].Path
-		}
-		if what == "body" {
-			elem = logs[i].Body
-		}
-		result = append(result, elem)
 	}
 
 	return result, nil
@@ -218,14 +229,19 @@ func LastActivity(w http.ResponseWriter, req *http.Request, dbName string,
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
 
-	filter := db.BuildFilter(map[string]interface{}{"ip": IP})
-	filter = db.AddMultipleCondition(filter, "$sort", []bson.M{{"timestamp": -1}})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter)
+	filter := []bson.M{
+		{"$match": bson.M{"ip": IP}},
+		{"$sort": bson.M{"timestamp": -1}},
+		{"$limit": 1},
+	}
+	logs, err := db.GetAggregatedLogs(client, collection, ctx, filter)
+
+	fmt.Println(err)
 
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
+		fmt.Fprint(w, "Error while retrieving data3.")
 		return time.Time{}, err
 	}
 
@@ -240,7 +256,7 @@ func LastActivity(w http.ResponseWriter, req *http.Request, dbName string,
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "Error while retrieving data.")
+		fmt.Fprint(w, "Error while retrieving data4.")
 		return time.Time{}, err
 	}
 	return time.Unix(i, 0), nil
