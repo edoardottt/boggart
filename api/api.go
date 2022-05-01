@@ -94,7 +94,7 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	filter := db.BuildFilter(map[string]interface{}{"ip": ip})
 	findOptions := options.Find()
 	// Sort by `timestamp` field descending
-	findOptions.SetSort(bson.D{{"timestamp", -1}})
+	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter, findOptions)
 
 	// 500 INTERNAL SERVER ERROR: generic error
