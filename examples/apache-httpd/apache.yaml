@@ -19,3 +19,5 @@ requests:
     response-type: "file"
     content-type: "text/html"
     content: "apache-404.html"
+
+ignore: ["/favicon.ico"]

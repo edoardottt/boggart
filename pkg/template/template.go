@@ -24,6 +24,8 @@ package template
 import (
 	"errors"
 	"strings"
+
+	"github.com/edoardottt/boggart/internal/slice"
 )
 
 //Type contains all the types that a template can assume
@@ -76,8 +78,13 @@ type Request struct {
 type Template struct {
 	Type     Type      `yaml:"type,omitempty"`
 	Requests []Request `yaml:"requests,omitempty"`
+	Ignore   []string  `yaml:"ignore,omitempty"`
 	IP       string    `yaml:"ip,omitempty"`
 }
+
+//----------------------------------------
+// -------------- HELPERS ----------------
+//----------------------------------------
 
 //CheckTemplate checks if a generic template is formatted in a proper way.
 func CheckTemplate(tmpl Template) (bool, error) {
@@ -98,6 +105,9 @@ func CheckRawTeplate(tmpl Template) (bool, error) {
 	if !IDUnique(tmpl) {
 		return false, errors.New("template: request IDs are not unique")
 	}
+	if !EndpointUnique(tmpl) {
+		return false, errors.New("template: request endpoints are not unique")
+	}
 	if MissingTemplateDefault(tmpl) {
 		return false, errors.New("template: missing default request")
 	}
@@ -106,6 +116,10 @@ func CheckRawTeplate(tmpl Template) (bool, error) {
 		return false, err
 	}
 	_, err = CheckDefaultRequest(tmpl)
+	if err != nil {
+		return false, err
+	}
+	_, err = CheckIgnore(tmpl)
 	if err != nil {
 		return false, err
 	}
@@ -128,6 +142,24 @@ func IDUnique(tmpl Template) bool {
 			if _, value := keys[entry.ID]; !value {
 				keys[entry.ID] = true
 				list = append(list, entry.ID)
+			}
+		}
+		return len(tmpl.Requests) == len(list)
+	}
+	return true
+}
+
+//EndpointUnique checks if in a raw template there are
+//duplicate request endpoints.
+//True for shodan template
+func EndpointUnique(tmpl Template) bool {
+	if tmpl.Type == "raw" {
+		keys := make(map[string]bool)
+		list := []string{}
+		for _, entry := range tmpl.Requests {
+			if _, value := keys[entry.Endpoint]; !value {
+				keys[entry.Endpoint] = true
+				list = append(list, entry.Endpoint)
 			}
 		}
 		return len(tmpl.Requests) == len(list)
@@ -232,5 +264,33 @@ func CheckDefaultRequest(tmpl Template) (bool, error) {
 	if strings.Trim(entry.Content, " ") == "" {
 		return false, errors.New("template: missing content in default request")
 	}
+	return true, nil
+}
+
+//CheckIgnore checks if the ignore array
+//is ok. True if everything is correct.
+//True for shodan template
+func CheckIgnore(tmpl Template) (bool, error) {
+	input := tmpl.Ignore
+	if len(input) == 0 {
+		return true, nil
+	}
+	if len(input) != len(slice.RemoveDuplicateValues(input)) {
+		return false, errors.New("template: duplicate paths in ignore array")
+	}
+	for _, path := range input {
+		if path[0] != '/' {
+			return false, errors.New("template: all paths in ignore array must start with a forward slash")
+		}
+	}
+	// here check if ignore is defined as endpoint in requests
+	for _, ignoreElem := range input {
+		for _, request := range tmpl.Requests {
+			if ignoreElem == request.Endpoint {
+				return false, errors.New("template: path defined both in ignore and requests")
+			}
+		}
+	}
+
 	return true, nil
 }
