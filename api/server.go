@@ -32,8 +32,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//ApiServer > to be filled
-func ApiServer() {
+//Server > to be filled
+func Server() {
 
 	// DB setup
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
@@ -49,13 +49,12 @@ func ApiServer() {
 
 	//NotFound
 	r.HandleFunc(NotFound, func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "404 page not found")
+		NotFoundHandler(w, r)
 	}).Methods("GET")
 
 	//Health
 	r.HandleFunc(Health, func(w http.ResponseWriter, r *http.Request) {
-		HealthCheck(w, r)
+		HealthHandler(w, r)
 	}).Methods("GET")
 
 	//IPInfo

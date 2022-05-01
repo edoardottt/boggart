@@ -24,9 +24,9 @@ down:
 clean:
 	docker rmi boggart_boggart:latest
 
-#---Delete the mongo-volume volume---
+#---Delete the volume---
 cleanvol:
-	sudo rm -rf /mongo-volume
+	sudo rm -rf /boggart-data
 
 #---Prune---
 prune:

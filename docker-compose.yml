@@ -9,7 +9,7 @@ services:
       - "27017" # exposed only internally
     restart: always
     volumes:
-      - "/mongo-volume:/data/db"
+      - "/boggart-data:/data/db"
 
   boggart:
     build: "."

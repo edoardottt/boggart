@@ -35,9 +35,9 @@ func main() {
 		log.Fatal(err)
 	}
 	//Check Template format
-	if _, err := template.CheckTemplate(tmpl); err != nil {
+	if err := template.CheckTemplate(tmpl); err != nil {
 		log.Fatal(err)
 	}
 	go honeypot.Raw(tmpl)
-	api.ApiServer()
+	api.Server()
 }

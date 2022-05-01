@@ -33,3 +33,13 @@ func RemoveDuplicateValues(strSlice []string) []string {
 	}
 	return list
 }
+
+//StringInSlice checks if the string is present in the slice.
+func StringInSlice(input string, slice []string) bool {
+	for _, elem := range slice {
+		if elem == input {
+			return true
+		}
+	}
+	return false
+}

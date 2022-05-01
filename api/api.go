@@ -27,20 +27,34 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/edoardottt/boggart/db"
+	net "github.com/edoardottt/boggart/internal/net"
+	"github.com/edoardottt/boggart/internal/slice"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//HealthCheck tells you if the API server is listening
-func HealthCheck(w http.ResponseWriter, req *http.Request) {
+//NotFoundHandler tells you if the API server is listening
+func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
+	//set content-type
 	w.Header().Add("Content-Type", "application/json")
+	//specify status code
+	w.WriteHeader(http.StatusNotFound)
+	//update response writer
+	fmt.Fprintf(w, "404 page not found")
+}
 
+//HealthHandler tells you if the API server is listening
+func HealthHandler(w http.ResponseWriter, req *http.Request) {
+	//set content-type
+	w.Header().Add("Content-Type", "application/json")
 	//specify status code
 	w.WriteHeader(http.StatusOK)
 	//update response writer
@@ -212,4 +226,171 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	}
 
 	return result, nil
+}
+
+//GetApiLogsQuery >
+// - id
+// - ip
+// - method
+// - header
+// - path
+// - date (YYYY-MM-DD)
+// - lt (less than YYYY-MM-DD-HH-MM-SS)
+// - gt (greater than YYYY-MM-DD-HH-MM-SS)
+func GetApiLogsQuery(req *http.Request) ([]bson.M, error) {
+	id := req.URL.Query().Get("id")
+	ip := req.URL.Query().Get("ip")
+	method := req.URL.Query().Get("method")
+	header := req.URL.Query().Get("header")
+	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
+	if err != nil {
+		return []bson.M{}, err
+	}
+	date := req.URL.Query().Get("date")
+	lt := req.URL.Query().Get("lt")
+	gt := req.URL.Query().Get("gt")
+	err = CheckApiLogsParams(id, ip, method, header, path, date, lt, gt)
+	if err != nil {
+		return []bson.M{}, err
+	}
+	//build query
+	return []bson.M{}, nil
+}
+
+//CheckApiLogsParams >
+func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error {
+	//if id is present, the others are blank
+	if id != "" {
+		if ip != "" || method != "" || header != "" || path != "" || date != "" || lt != "" || gt != "" {
+			return errors.New("if id is defined, no other parameters need to be defined")
+		}
+	}
+	//if date is present, lt and gt are blank
+	if date != "" {
+		if lt != "" || gt != "" {
+			return errors.New("if date is defined, lt and gt must be blank")
+		}
+		_, err := TranslateTime(date)
+		if err != nil {
+			return err
+		}
+	}
+	if lt != "" {
+		_, err := TranslateTime(lt)
+		if err != nil {
+			return err
+		}
+	}
+	if gt != "" {
+		_, err := TranslateTime(gt)
+		if err != nil {
+			return err
+		}
+	}
+	if lt != "" && gt != "" {
+		ltInt, _ := TranslateTime(lt)
+		gtInt, _ := TranslateTime(gt)
+		if ltInt < gtInt {
+			return errors.New("lt cannot be before gt")
+		}
+	}
+	if method != "" {
+		method = strings.ToUpper(method)
+		if !slice.StringInSlice(method, []string{"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE"}) {
+			return errors.New("http method unknown")
+		}
+	}
+	if ip != "" {
+		if !net.ValidIPAddress(ip) {
+			return errors.New("ip address is not valid")
+		}
+	}
+	return nil
+}
+
+//GetApiDetectQuery >
+// - regex (Go format)
+// - attack (use a list of well known regex)
+// - target (where to apply the regex)
+// - ip
+// - method
+// - header
+// - path
+// - date
+// - lt (less than YYYY-MM-DD-HH-MM-SS)
+// - gt (greater than YYYY-MM-DD-HH-MM-SS)
+func GetApiDetectQuery(req *http.Request) ([]bson.M, error) {
+	regex := req.URL.Query().Get("regex")
+	attack := req.URL.Query().Get("attack")
+	target := req.URL.Query().Get("target")
+	ip := req.URL.Query().Get("ip")
+	method := req.URL.Query().Get("method")
+	header := req.URL.Query().Get("header")
+	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
+	if err != nil {
+		return []bson.M{}, err
+	}
+	date := req.URL.Query().Get("date")
+	lt := req.URL.Query().Get("lt")
+	gt := req.URL.Query().Get("gt")
+	err = CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt)
+	if err != nil {
+		return []bson.M{}, err
+	}
+	//build query
+	return []bson.M{}, nil
+}
+
+//CheckApiDetectParams >
+func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt string) error {
+	//if date is present, lt and gt are blank
+	if date != "" {
+		if lt != "" || gt != "" {
+			return errors.New("if date is defined, lt and gt must be blank")
+		}
+		_, err := TranslateTime(date)
+		if err != nil {
+			return err
+		}
+	}
+	if lt != "" {
+		_, err := TranslateTime(lt)
+		if err != nil {
+			return err
+		}
+	}
+	if gt != "" {
+		_, err := TranslateTime(gt)
+		if err != nil {
+			return err
+		}
+	}
+	if lt != "" && gt != "" {
+		ltInt, _ := TranslateTime(lt)
+		gtInt, _ := TranslateTime(gt)
+		if ltInt < gtInt {
+			return errors.New("lt cannot be before gt")
+		}
+	}
+	if method != "" {
+		method = strings.ToUpper(method)
+		if !slice.StringInSlice(method, []string{"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE"}) {
+			return errors.New("http method unknown")
+		}
+	}
+	if ip != "" {
+		if !net.ValidIPAddress(ip) {
+			return errors.New("ip address is not valid")
+		}
+	}
+	return nil
+}
+
+//TranslateTime >
+func TranslateTime(input string) (int64, error) {
+	t, err := time.Parse("2006-01-02T15:04:05-0700", input)
+	if err != nil {
+		return 0, errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
+	}
+	return t.Unix(), nil
 }

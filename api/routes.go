@@ -65,6 +65,9 @@ const (
 	// - attack (use a list of well known regex)
 	// - target (where to apply the regex)
 	// - ip
+	// - method
+	// - header
+	// - path
 	// - date
 	// - lt (less than YYYY-MM-DD-HH-MM-SS)
 	// - gt (greater than YYYY-MM-DD-HH-MM-SS)

@@ -87,48 +87,51 @@ type Template struct {
 //----------------------------------------
 
 //CheckTemplate checks if a generic template is formatted in a proper way.
-func CheckTemplate(tmpl Template) (bool, error) {
+func CheckTemplate(tmpl Template) error {
 	if tmpl.Type == "" {
-		return false, errors.New("template: missing template type")
+		return errors.New("template: missing template type")
 	}
 	if tmpl.Type == "raw" {
 		return CheckRawTeplate(tmpl)
 	}
 	if tmpl.Type == "shodan" {
-		return CheckShodanTemplate(tmpl), nil
+		return CheckShodanTemplate(tmpl)
 	}
-	return true, nil
+	return nil
 }
 
 //CheckRawTeplate checks if a raw template is formatted in a proper way.
-func CheckRawTeplate(tmpl Template) (bool, error) {
+func CheckRawTeplate(tmpl Template) error {
 	if !IDUnique(tmpl) {
-		return false, errors.New("template: request IDs are not unique")
+		return errors.New("template: request IDs are not unique")
 	}
 	if !EndpointUnique(tmpl) {
-		return false, errors.New("template: request endpoints are not unique")
+		return errors.New("template: request endpoints are not unique")
 	}
 	if MissingTemplateDefault(tmpl) {
-		return false, errors.New("template: missing default request")
+		return errors.New("template: missing default request")
 	}
-	_, err := CheckRequests(tmpl)
+	err := CheckRequests(tmpl)
 	if err != nil {
-		return false, err
+		return err
 	}
-	_, err = CheckDefaultRequest(tmpl)
+	err = CheckDefaultRequest(tmpl)
 	if err != nil {
-		return false, err
+		return err
 	}
-	_, err = CheckIgnore(tmpl)
+	err = CheckIgnore(tmpl)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
 }
 
 //CheckShodanTemplate checks if a shodan template is formatted in a proper way.
-func CheckShodanTemplate(tmpl Template) bool {
-	return tmpl.IP != ""
+func CheckShodanTemplate(tmpl Template) error {
+	if tmpl.IP != "" {
+		return errors.New("template: ip is mandatory")
+	}
+	return nil
 }
 
 //IDUnique checks if in a raw template there are
@@ -224,73 +227,73 @@ func HTTPMethodsAsString(methods []HTTPMethod) []string {
 //CheckRequests checks if the requests (except for default one)
 //are ok. True if everything is correct.
 //True for shodan template
-func CheckRequests(tmpl Template) (bool, error) {
+func CheckRequests(tmpl Template) error {
 	for _, entry := range tmpl.Requests {
 		if strings.Trim(entry.ID, " ") == "" {
-			return false, errors.New("template: missing id in request")
+			return errors.New("template: missing id in request")
 		}
 		if entry.ID != "default" {
 			if strings.Trim(entry.Endpoint, " ") == "" {
-				return false, errors.New("template: missing endpoint in request with id " + entry.ID)
+				return errors.New("template: missing endpoint in request with id " + entry.ID)
 			}
 			if len(entry.Methods) == 0 {
-				return false, errors.New("template: missing methods in request with id " + entry.ID)
+				return errors.New("template: missing methods in request with id " + entry.ID)
 			}
 			if strings.Trim(string(entry.ResponseType), " ") == "" {
-				return false, errors.New("template: missing response type in request with id " + entry.ID)
+				return errors.New("template: missing response type in request with id " + entry.ID)
 			}
 			if strings.Trim(entry.ContentType, " ") == "" {
-				return false, errors.New("template: missing content type in request with id " + entry.ID)
+				return errors.New("template: missing content type in request with id " + entry.ID)
 			}
 			if strings.Trim(entry.Content, " ") == "" {
-				return false, errors.New("template: missing content in request with id " + entry.ID)
+				return errors.New("template: missing content in request with id " + entry.ID)
 			}
 		}
 	}
-	return true, nil
+	return nil
 }
 
 //CheckDefaultRequest checks if the default request
 //is ok. True if everything is correct.
 //True for shodan template
-func CheckDefaultRequest(tmpl Template) (bool, error) {
+func CheckDefaultRequest(tmpl Template) error {
 	entry := Default(tmpl)
 	if strings.Trim(string(entry.ResponseType), " ") == "" {
-		return false, errors.New("template: missing response type in default request")
+		return errors.New("template: missing response type in default request")
 	}
 	if strings.Trim(entry.ContentType, " ") == "" {
-		return false, errors.New("template: missing content type in default request")
+		return errors.New("template: missing content type in default request")
 	}
 	if strings.Trim(entry.Content, " ") == "" {
-		return false, errors.New("template: missing content in default request")
+		return errors.New("template: missing content in default request")
 	}
-	return true, nil
+	return nil
 }
 
 //CheckIgnore checks if the ignore array
 //is ok. True if everything is correct.
 //True for shodan template
-func CheckIgnore(tmpl Template) (bool, error) {
+func CheckIgnore(tmpl Template) error {
 	input := tmpl.Ignore
 	if len(input) == 0 {
-		return true, nil
+		return nil
 	}
 	if len(input) != len(slice.RemoveDuplicateValues(input)) {
-		return false, errors.New("template: duplicate paths in ignore array")
+		return errors.New("template: duplicate paths in ignore array")
 	}
 	for _, path := range input {
 		if path[0] != '/' {
-			return false, errors.New("template: all paths in ignore array must start with a forward slash")
+			return errors.New("template: all paths in ignore array must start with a forward slash")
 		}
 	}
 	// here check if ignore is defined as endpoint in requests
 	for _, ignoreElem := range input {
 		for _, request := range tmpl.Requests {
 			if ignoreElem == request.Endpoint {
-				return false, errors.New("template: path defined both in ignore and requests")
+				return errors.New("template: path defined both in ignore and requests")
 			}
 		}
 	}
 
-	return true, nil
+	return nil
 }
