@@ -93,3 +93,81 @@ func HostIPInfo(hostIP string, apiKey string) {
 	url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
 	fmt.Println(url)
 }
+
+//ShodanHost >
+type ShodanHost struct {
+	RegionCode  string        `json:"region_code"`
+	Tags        []interface{} `json:"tags"`
+	IP          int64         `json:"ip"`
+	AreaCode    interface{}   `json:"area_code"`
+	Domains     []string      `json:"domains"`
+	Hostnames   []string      `json:"hostnames"`
+	CountryCode string        `json:"country_code"`
+	Org         string        `json:"org"`
+	Data        []struct {
+		IP     int64 `json:"ip"`
+		Shodan struct {
+			ID      string `json:"id"`
+			Ptr     bool   `json:"ptr"`
+			Options struct {
+			} `json:"options"`
+			Module  string `json:"module"`
+			Crawler string `json:"crawler"`
+		} `json:"_shodan"`
+		Product string `json:"product"`
+		HTTP    struct {
+			Status      int           `json:"status"`
+			RobotsHash  interface{}   `json:"robots_hash"`
+			Redirects   []interface{} `json:"redirects"`
+			Securitytxt interface{}   `json:"securitytxt"`
+			Title       string        `json:"title"`
+			SitemapHash interface{}   `json:"sitemap_hash"`
+			Robots      interface{}   `json:"robots"`
+			Server      string        `json:"server"`
+			HeadersHash int           `json:"headers_hash"`
+			Host        string        `json:"host"`
+			HTML        string        `json:"html"`
+			Location    string        `json:"location"`
+			Components  struct {
+			} `json:"components"`
+			SecuritytxtHash interface{} `json:"securitytxt_hash"`
+			Sitemap         interface{} `json:"sitemap"`
+			HTMLHash        int         `json:"html_hash"`
+		} `json:"http,omitempty"`
+		Os   interface{} `json:"os"`
+		Opts struct {
+		} `json:"opts"`
+		Timestamp string   `json:"timestamp"`
+		Isp       string   `json:"isp"`
+		Cpe       []string `json:"cpe"`
+		IPStr     string   `json:"ip_str"`
+		Asn       string   `json:"asn"`
+		Hostnames []string `json:"hostnames"`
+		Cpe23     []string `json:"cpe23"`
+		Org       string   `json:"org"`
+		Domains   []string `json:"domains"`
+		Hash      int      `json:"hash"`
+		Data      string   `json:"data"`
+		Port      int      `json:"port"`
+		Transport string   `json:"transport"`
+		Location  struct {
+			City        string      `json:"city"`
+			RegionCode  string      `json:"region_code"`
+			AreaCode    interface{} `json:"area_code"`
+			Longitude   float64     `json:"longitude"`
+			CountryName string      `json:"country_name"`
+			CountryCode string      `json:"country_code"`
+			Latitude    float64     `json:"latitude"`
+		} `json:"location"`
+	} `json:"data"`
+	Asn         string      `json:"asn"`
+	City        string      `json:"city"`
+	Latitude    float64     `json:"latitude"`
+	Isp         string      `json:"isp"`
+	Longitude   float64     `json:"longitude"`
+	LastUpdate  string      `json:"last_update"`
+	CountryName string      `json:"country_name"`
+	IPStr       string      `json:"ip_str"`
+	Os          interface{} `json:"os"`
+	Ports       []int       `json:"ports"`
+}
