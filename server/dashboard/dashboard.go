@@ -31,7 +31,9 @@ func Start() {
 	fs := http.FileServer(http.Dir("assets"))
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl, err := template.ParseFiles(baseTemplatePath + "index.tmpl")
+		tmpl, err := template.ParseFiles(baseTemplatePath+"index.html",
+			baseTemplatePath+"navbar.html",
+			baseTemplatePath+"footer.html")
 		if err != nil {
 			log.Fatal(err)
 		}
