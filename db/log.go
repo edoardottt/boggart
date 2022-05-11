@@ -30,6 +30,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 //Log defines the structure of a log record
@@ -162,6 +163,24 @@ func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx cont
 		},
 	}
 	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return result, err
+	}
+	if err = cursor.All(ctx, &result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+//GetLatestNLogs returns a slice of the latest inserted N logs.
+//If they are not present in the database err won't be nil.
+func GetLatestNLogs(client *mongo.Client, collection *mongo.Collection, ctx context.Context, n int64) ([]Log, error) {
+	var result []Log
+	findOptions := options.Find()
+	// Sort by `timestamp` field descending
+	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
+	findOptions.Limit = &n
+	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
 	if err != nil {
 		return result, err
 	}
