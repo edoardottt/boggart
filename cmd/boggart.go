@@ -26,6 +26,7 @@ import (
 
 	"github.com/edoardottt/boggart/api"
 	"github.com/edoardottt/boggart/pkg/template"
+	"github.com/edoardottt/boggart/server/dashboard"
 	"github.com/edoardottt/boggart/server/honeypot"
 )
 
@@ -39,5 +40,6 @@ func main() {
 		log.Fatal(err)
 	}
 	go honeypot.Raw(tmpl)
+	go dashboard.Start()
 	api.Server()
 }

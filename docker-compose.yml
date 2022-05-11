@@ -17,5 +17,6 @@ services:
       - 'mongo'
     ports:
       - "8092:8092" # honeypot
+      - "8093:8093" # dashboard
       - "8094:8094" # API
     restart: always
