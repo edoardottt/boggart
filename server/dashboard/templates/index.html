@@ -16,9 +16,15 @@
 <body>
     {{ template "navbar" . }}
 
-    <h1>Hello World!</h1>
-    <br>
-    <h2>boggart dashboard</h2>
+    <div class="container">
+
+        <h1>Hello World!</h1>
+        <br>
+        <h2>boggart dashboard</h2>
+
+        {{ template "latest" . }}
+
+    </div>
 
     {{ template "footer" . }}
 </body>

@@ -1,0 +1,15 @@
+{{ define "latest" }}
+
+<div class="row">
+
+    {{range .}}
+    <div class="col-12">
+        <input type="button" class="btn btn-outline-primary float-left" value="
+        {{.IP}}
+        {{.Method}}
+        {{.Path}}">
+    </div>
+    {{end}}
+</div>
+
+{{end}}
