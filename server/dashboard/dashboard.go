@@ -41,8 +41,11 @@ func Start() {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		buf.WriteTo(w)
+		_, err = buf.WriteTo(w)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	})
 
 	r.Handle("/assets/", http.StripPrefix("/assets/", fs))
