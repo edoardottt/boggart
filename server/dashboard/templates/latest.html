@@ -1,15 +1,15 @@
 {{ define "latest" }}
 
-<div class="row">
-
-    {{range .}}
-    <div class="col-12">
-        <input type="button" class="btn btn-outline-primary float-left" value="
-        {{.IP}}
-        {{.Method}}
-        {{.Path}}">
-    </div>
-    {{end}}
+{{range .}}
+<div class="row w-25 mw-25">
+    <a class="col-md-12" href="/id/{{idtostring .ID}}">
+        <input type="button" class="col-md-12 btn btn-outline-primary float-left text-left .text-truncate" value="
+        IP: {{.IP}}
+        Method: {{.Method}}
+        Path: {{.Path}}">
+    </a>
 </div>
+<br>
+{{end}}
 
 {{end}}

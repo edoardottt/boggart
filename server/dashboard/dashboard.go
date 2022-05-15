@@ -12,7 +12,11 @@ import (
 
 	"github.com/edoardottt/boggart/db"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+var baseTemplatePath = "./server/dashboard/templates/"
+var funcs = template.FuncMap{"idtostring": func(value primitive.ObjectID) string { return value.Hex() }}
 
 //Start starts the dashboard >
 func Start() {
@@ -25,8 +29,7 @@ func Start() {
 	if client != nil {
 		fmt.Println("DASHBOARD: Connected to MongoDB!")
 	}
-	baseTemplatePath := "./server/dashboard/templates/"
-	tmpl, err := template.ParseFiles(baseTemplatePath+"index.html",
+	tmpl, err := template.New("index.html").Funcs(funcs).ParseFiles(baseTemplatePath+"index.html",
 		baseTemplatePath+"navbar.html",
 		baseTemplatePath+"latest.html",
 		baseTemplatePath+"footer.html")
@@ -62,8 +65,11 @@ func Start() {
 		}
 	})
 
-	fs := http.FileServer(http.Dir("assets"))
-	r.Handle("/assets/", http.StripPrefix("/assets/", fs))
+	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))
+	jsHandler := http.FileServer(http.Dir("./server/dashboard/assets/js/"))
+
+	r.Handle("/assets/css/{asset}", http.StripPrefix("/assets/css/", cssHandler))
+	r.Handle("/assets/js/{asset}", http.StripPrefix("/assets/js/", jsHandler))
 
 	srv := &http.Server{
 		Handler: r,

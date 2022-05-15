@@ -29,6 +29,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -36,6 +37,7 @@ import (
 //Log defines the structure of a log record
 //in the database
 type Log struct {
+	ID        primitive.ObjectID  `json:"_id"`
 	IP        string              `json:"ip"`
 	Method    string              `json:"method"`
 	Path      string              `json:"path"`
@@ -51,6 +53,7 @@ func (log Log) IsEmpty() bool {
 
 //InsertLog inserts a log record into the logs collection
 func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.Context, record Log) interface{} {
+	record.ID = primitive.NewObjectID()
 	result, err := collection.InsertOne(ctx, record) //result
 	if err != nil {
 		log.Fatal(err)
