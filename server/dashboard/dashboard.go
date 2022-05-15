@@ -65,8 +65,11 @@ func Start() {
 		}
 	})
 
-	fs := http.FileServer(http.Dir("assets"))
-	r.Handle("/assets/", http.StripPrefix("/assets/", fs))
+	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))
+	jsHandler := http.FileServer(http.Dir("./server/dashboard/assets/js/"))
+
+	r.Handle("/assets/css/{asset}", http.StripPrefix("/assets/css/", cssHandler))
+	r.Handle("/assets/js/{asset}", http.StripPrefix("/assets/js/", jsHandler))
 
 	srv := &http.Server{
 		Handler: r,
