@@ -13,6 +13,7 @@ import (
 	"github.com/edoardottt/boggart/db"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var baseTemplatePath = "./server/dashboard/templates/"
@@ -41,28 +42,7 @@ func Start() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-		defer cancel()
-
-		database := db.GetDatabase(client, dbName)
-		collection := db.GetLogs(database)
-		logs, err := db.GetLatestNLogs(client, collection, ctx, 30)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		buf := &bytes.Buffer{}
-		err = tmpl.Execute(buf, logs)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		_, err = buf.WriteTo(w)
-		if err != nil {
-			log.Fatal(err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		dashboardHandler(w, r, client, dbName, tmpl)
 	})
 
 	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))
@@ -80,4 +60,29 @@ func Start() {
 	}
 
 	log.Fatal(srv.ListenAndServe())
+}
+
+func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client, dbName string, tmpl *template.Template) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	database := db.GetDatabase(client, dbName)
+	collection := db.GetLogs(database)
+	logs, err := db.GetLatestNLogs(client, collection, ctx, 30)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	buf := &bytes.Buffer{}
+	err = tmpl.Execute(buf, logs)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err = buf.WriteTo(w)
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
