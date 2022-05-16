@@ -1,4 +1,5 @@
 SHELL := /bin/bash
+BOGGART_IMAGE := boggart_boggart:latest
 
 #---Run testcases---
 test:
@@ -22,7 +23,7 @@ down:
 
 #---Delete the image created---
 clean:
-	docker rmi boggart_boggart:latest
+	docker rmi $(BOGGART_IMAGE)
 
 #---Delete the volume---
 cleanvol:
@@ -35,5 +36,5 @@ prune:
 #---Restart the service (applying the changes made)---
 restart:
 	docker-compose down
-	docker rmi boggart_boggart:latest
+	docker rmi $(BOGGART_IMAGE)
 	docker-compose up
