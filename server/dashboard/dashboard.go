@@ -17,7 +17,11 @@ import (
 )
 
 var baseTemplatePath = "./server/dashboard/templates/"
-var funcs = template.FuncMap{"idtostring": func(value primitive.ObjectID) string { return value.Hex() }}
+var funcs = template.FuncMap{
+	"idtostring": func(value primitive.ObjectID) string {
+		return value.Hex()
+	},
+}
 
 //Start starts the dashboard >
 func Start() {
@@ -38,11 +42,23 @@ func Start() {
 		log.Fatal(err)
 	}
 
+	tmplID, err := template.New("id.html").Funcs(funcs).ParseFiles(baseTemplatePath+"id.html",
+		baseTemplatePath+"navbar.html",
+		baseTemplatePath+"latest.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Routes setup
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		dashboardHandler(w, r, client, dbName, tmpl)
+	})
+
+	r.HandleFunc("/id/{id}", func(w http.ResponseWriter, r *http.Request) {
+		dashboardIDHandler(w, r, client, dbName, tmplID, mux.Vars(r)["id"])
 	})
 
 	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))
@@ -75,6 +91,31 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Clie
 
 	buf := &bytes.Buffer{}
 	err = tmpl.Execute(buf, logs)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err = buf.WriteTo(w)
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func dashboardIDHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client, dbName string, tmpl *template.Template, id string) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	database := db.GetDatabase(client, dbName)
+	collection := db.GetLogs(database)
+	logID, err := db.GetLogByID(client, collection, ctx, id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	buf := &bytes.Buffer{}
+	err = tmpl.Execute(buf, logID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

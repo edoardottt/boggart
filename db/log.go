@@ -23,6 +23,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"reflect"
@@ -37,13 +38,13 @@ import (
 //Log defines the structure of a log record
 //in the database
 type Log struct {
-	ID        primitive.ObjectID  `json:"_id"`
-	IP        string              `json:"ip"`
-	Method    string              `json:"method"`
-	Path      string              `json:"path"`
-	Headers   map[string][]string `json:"headers"`
-	Body      string              `json:"body"`
-	Timestamp int64               `json:"timestamp"`
+	ID        primitive.ObjectID  `bson:"_id"`
+	IP        string              `bson:"ip"`
+	Method    string              `bson:"method"`
+	Path      string              `bson:"path"`
+	Headers   map[string][]string `bson:"headers"`
+	Body      string              `bson:"body"`
+	Timestamp int64               `bson:"timestamp"`
 }
 
 //IsEmpty checks if a Log is a new one (just created)
@@ -64,10 +65,13 @@ func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.C
 
 //GetLogByID returns a log struct with the defined ID.
 //If the ID is not present in the database err won't be nil.
-func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.Context, ID interface{}) (Log, error) {
+func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.Context, ID string) (Log, error) {
 	var result Log
-	filter := bson.M{"_id": ID}
-
+	objectId, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return result, errors.New("invalid id")
+	}
+	filter := bson.M{"_id": objectId}
 	if err := collection.FindOne(ctx, filter).Decode(&result); err != nil {
 		return result, err
 	}
