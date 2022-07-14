@@ -11,19 +11,19 @@ lint:
 
 #---Run the service---
 up:
-	docker-compose up
+	sudo docker-compose up
 
 #---Stop the service---
 stop:
-	docker-compose stop
+	sudo docker-compose stop
 
 #---Delete the service---
 down:
-	docker-compose down
+	sudo docker-compose down
 
 #---Delete the image created---
 clean:
-	docker rmi $(BOGGART_IMAGE)
+	sudo docker rmi $(BOGGART_IMAGE)
 
 #---Delete the volume---
 cleanvol:
@@ -31,10 +31,10 @@ cleanvol:
 
 #---Prune---
 prune:
-	docker system prune -f
+	sudo docker system prune -f
 
 #---Restart the service (applying the changes made)---
 restart:
-	docker-compose down
-	docker rmi $(BOGGART_IMAGE)
-	docker-compose up
+	sudo docker-compose down
+	sudo docker rmi $(BOGGART_IMAGE)
+	sudo docker-compose up
