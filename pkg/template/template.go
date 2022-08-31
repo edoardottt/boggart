@@ -82,6 +82,8 @@ type Template struct {
 	IP       string    `yaml:"ip,omitempty"`
 }
 
+const DefaultId string = "default"
+
 // ---------------------------------------
 // -------------- HELPERS ----------------
 // ---------------------------------------
@@ -91,7 +93,7 @@ func CheckTemplate(tmpl Template) error {
 	if tmpl.Type == "" {
 		return errors.New("template: missing template type")
 	}
-	if tmpl.Type == "raw" {
+	if tmpl.Type == RawTemplateType {
 		return CheckRawTeplate(tmpl)
 	}
 	if tmpl.Type == "shodan" {
@@ -138,7 +140,7 @@ func CheckShodanTemplate(tmpl Template) error {
 // duplicate request IDs.
 // True for shodan template.
 func IDUnique(tmpl Template) bool {
-	if tmpl.Type == "raw" {
+	if tmpl.Type == RawTemplateType {
 		keys := make(map[string]bool)
 		list := []string{}
 		for _, entry := range tmpl.Requests {
@@ -156,7 +158,7 @@ func IDUnique(tmpl Template) bool {
 // duplicate request endpoints.
 // True for shodan template.
 func EndpointUnique(tmpl Template) bool {
-	if tmpl.Type == "raw" {
+	if tmpl.Type == RawTemplateType {
 		keys := make(map[string]bool)
 		list := []string{}
 		for _, entry := range tmpl.Requests {
@@ -175,9 +177,9 @@ func EndpointUnique(tmpl Template) bool {
 // True for shodan template.
 func MissingTemplateDefault(tmpl Template) bool {
 	var missing = true
-	if tmpl.Type == "raw" {
+	if tmpl.Type == RawTemplateType {
 		for _, entry := range tmpl.Requests {
-			if entry.ID == "default" {
+			if entry.ID == DefaultId {
 				missing = false
 			}
 		}
@@ -191,7 +193,7 @@ func MissingTemplateDefault(tmpl Template) bool {
 // the root endpoint exists.
 // True for shodan template.
 func RootEndpointExists(tmpl Template) bool {
-	if tmpl.Type == "raw" {
+	if tmpl.Type == RawTemplateType {
 		for _, entry := range tmpl.Requests {
 			if entry.Endpoint == "/" {
 				return true
@@ -204,9 +206,9 @@ func RootEndpointExists(tmpl Template) bool {
 // Default returns the default response.
 // Empty request for shodan template.
 func Default(tmpl Template) Request {
-	if tmpl.Type == "raw" {
+	if tmpl.Type == RawTemplateType {
 		for _, entry := range tmpl.Requests {
-			if entry.ID == "default" {
+			if entry.ID == DefaultId {
 				return entry
 			}
 		}
@@ -232,7 +234,7 @@ func CheckRequests(tmpl Template) error {
 		if strings.Trim(entry.ID, " ") == "" {
 			return errors.New("template: missing id in request")
 		}
-		if entry.ID != "default" {
+		if entry.ID != DefaultId {
 			if strings.Trim(entry.Endpoint, " ") == "" {
 				return errors.New("template: missing endpoint in request with id " + entry.ID)
 			}
