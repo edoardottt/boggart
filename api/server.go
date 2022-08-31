@@ -45,45 +45,45 @@ func Server() {
 	}
 
 	// Routes setup.
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 
 	// NotFound.
-	r.HandleFunc(NotFound, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(NotFound, func(w http.ResponseWriter, r *http.Request) {
 		NotFoundHandler(w, r)
 	}).Methods("GET")
 
 	// Health.
-	r.HandleFunc(Health, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(Health, func(w http.ResponseWriter, r *http.Request) {
 		HealthHandler(w, r)
 	}).Methods("GET")
 
 	// IPInfo.
-	r.HandleFunc(IPInfo, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(IPInfo, func(w http.ResponseWriter, r *http.Request) {
 		IPInfoHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	// ApiLogs.
-	r.HandleFunc(ApiLogs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(ApiLogs, func(w http.ResponseWriter, r *http.Request) {
 		LogsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	// ApiDetect.
-	r.HandleFunc(ApiDetect, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(ApiDetect, func(w http.ResponseWriter, r *http.Request) {
 		LogsDetectHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	// ApiStats.
-	r.HandleFunc(ApiStats, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(ApiStats, func(w http.ResponseWriter, r *http.Request) {
 		StatsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	// ApiStatsDB.
-	r.HandleFunc(ApiStatsDB, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(ApiStatsDB, func(w http.ResponseWriter, r *http.Request) {
 		StatsDBHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	srv := &http.Server{
-		Handler: r,
+		Handler: router,
 		Addr:    ":8094",
 		// Good practice: enforce timeouts for servers you create.
 		WriteTimeout: 15 * time.Second,

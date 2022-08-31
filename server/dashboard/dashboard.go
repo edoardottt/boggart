@@ -51,24 +51,24 @@ func Start() {
 	}
 
 	// Routes setup.
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		dashboardHandler(w, r, client, dbName, tmpl)
 	})
 
-	r.HandleFunc("/id/{id}", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/id/{id}", func(w http.ResponseWriter, r *http.Request) {
 		dashboardIDHandler(w, r, client, dbName, tmplID, mux.Vars(r)["id"])
 	})
 
 	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))
 	jsHandler := http.FileServer(http.Dir("./server/dashboard/assets/js/"))
 
-	r.Handle("/assets/css/{asset}", http.StripPrefix("/assets/css/", cssHandler))
-	r.Handle("/assets/js/{asset}", http.StripPrefix("/assets/js/", jsHandler))
+	router.Handle("/assets/css/{asset}", http.StripPrefix("/assets/css/", cssHandler))
+	router.Handle("/assets/js/{asset}", http.StripPrefix("/assets/js/", jsHandler))
 
 	srv := &http.Server{
-		Handler: r,
+		Handler: router,
 		Addr:    ":8093",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,

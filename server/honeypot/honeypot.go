@@ -115,7 +115,7 @@ func Raw(tmpl template.Template) {
 	}
 
 	// Routes setup.
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 	var staticPath = "public/honeypot/"
 
 	// registering endpoints.
@@ -124,14 +124,14 @@ func Raw(tmpl template.Template) {
 			request2 := request
 			if request2.ResponseType == "raw" {
 
-				r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
+				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 					genericWriter(w, r, dbName, client, tmpl, request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
 
 			} else if request2.ResponseType == "file" {
 
-				r.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
+				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 					fileWriter(w, r, dbName, client, tmpl, staticPath+request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
@@ -143,21 +143,21 @@ func Raw(tmpl template.Template) {
 	defaultRequest := template.Default(tmpl)
 	if defaultRequest.ResponseType == "raw" {
 
-		r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
 			genericWriter(w, r, dbName, client, tmpl, defaultRequest.Content)
 		})
 
 	} else if defaultRequest.ResponseType == "file" {
 
-		r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
 			fileWriter(w, r, dbName, client, tmpl, staticPath+defaultRequest.Content)
 		})
 	}
 
 	srv := &http.Server{
-		Handler: r,
+		Handler: router,
 		Addr:    ":8092",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
