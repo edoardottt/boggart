@@ -323,6 +323,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 	var filter bson.M
 	if id != "" {
 		filter = db.BuildFilter(map[string]interface{}{"_id": id})
+
 		return filter
 	}
 	if ip != "" {
@@ -368,6 +369,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 		})
 	}
 	filter = AddTimestampToQuery(lt, gt, filter)
+
 	return filter
 }
 
@@ -400,6 +402,7 @@ func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 	if err != nil {
 		return bson.M{}, err
 	}
+
 	// build query.
 	return bson.M{}, nil
 }
@@ -456,6 +459,7 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 			return errors.New("ip address is not valid")
 		}
 	}
+
 	return nil
 }
 
@@ -509,6 +513,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 		})
 	}
 	filter = AddTimestampToQuery(lt, gt, filter)
+
 	return filter
 }
 
@@ -518,6 +523,7 @@ func TranslateTime(input string) (time.Time, error) {
 	if err != nil {
 		return time.Time{}, errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
 	}
+
 	return t, nil
 }
 
@@ -550,5 +556,6 @@ func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 			{"$gte": gtT.Unix()},
 		})
 	}
+
 	return filter
 }

@@ -95,12 +95,14 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Clie
 	err = tmpl.Execute(buf, logs)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+
 		return
 	}
 	_, err = buf.WriteTo(w)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+
 		return
 	}
 }
@@ -121,12 +123,14 @@ func dashboardIDHandler(w http.ResponseWriter, r *http.Request, client *mongo.Cl
 	err = tmpl.Execute(buf, logID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+
 		return
 	}
 	_, err = buf.WriteTo(w)
 	if err != nil {
 		log.Fatal(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+
 		return
 	}
 }

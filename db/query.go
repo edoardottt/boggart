@@ -36,6 +36,7 @@ func BuildFilter(query map[string]interface{}) bson.M {
 	for k, v := range query {
 		result[k] = v
 	}
+
 	return result
 }
 
@@ -43,6 +44,7 @@ func BuildFilter(query map[string]interface{}) bson.M {
 // the query passed as input.
 func AddCondition(query bson.M, condition string, add interface{}) bson.M {
 	query[condition] = add
+
 	return query
 }
 
@@ -50,6 +52,7 @@ func AddCondition(query bson.M, condition string, add interface{}) bson.M {
 // the multiple queries passed as input.
 func AddMultipleCondition(query bson.M, condition string, add []bson.M) bson.M {
 	query[condition] = add
+
 	return query
 }
 
@@ -66,6 +69,7 @@ func GetLogsWithFilter(client *mongo.Client, collection *mongo.Collection,
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -88,5 +92,6 @@ func GetAggregatedLogs(client *mongo.Client, collection *mongo.Collection,
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
