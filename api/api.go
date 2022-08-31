@@ -73,22 +73,28 @@ type IPInfoResponse struct {
 // IPInfoHandler.
 func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
+
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+
 	defer cancel()
+
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
 
 	vars := mux.Vars(req)
 	ip := vars["ip"]
 	topParam := req.URL.Query().Get("top")
+
 	if topParam == "" {
 		topParam = "10"
 	}
+
 	top, err := IsIntInTheRange(topParam, 4, 50)
 	// 400 BAD REQUEST: top parameter not in the correct range.
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, "The parameter top accept an integer between 4 and 50.")
+
 		return
 	}
 
@@ -96,10 +102,12 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	if err != nil {
 		return
 	}
+
 	topPaths, err := Top(w, req, dbName, client, "path", top, ip)
 	if err != nil {
 		return
 	}
+
 	topBodies, err := Top(w, req, dbName, client, "body", top, ip)
 	if err != nil {
 		return
@@ -116,6 +124,7 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, "Error while retrieving data.")
 		fmt.Println(err) //DEBUG: logging!
+
 		return
 	}
 
@@ -125,6 +134,7 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, "Error while retrieving data.")
 		fmt.Println(err) //DEBUG: logging!
+
 		return
 	}
 
@@ -178,9 +188,11 @@ func IsIntInTheRange(input string, start int, end int) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+
 	if intVar >= start && intVar <= end {
 		return intVar, nil
 	}
+
 	return 0, errors.New("integer not in the range >= " + fmt.Sprint(start) + " && <= " + fmt.Sprint(end))
 }
 
@@ -193,7 +205,9 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+
 	defer cancel()
+
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
 
@@ -208,6 +222,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, "Error while retrieving data.")
+
 		return nil, err
 	}
 
@@ -215,10 +230,12 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	if len(logs) == 0 {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, "no stats available for the specified IP.")
+
 		return nil, ErrNoStatsIP
 	}
 
 	var result []string
+
 	for i := 0; i < howMany; i++ {
 		if i < len(logs) {
 			result = append(result, logs[i].ID)
@@ -243,16 +260,20 @@ func GetApiLogsQuery(req *http.Request) (bson.M, error) {
 	method := req.URL.Query().Get("method")
 	header := req.URL.Query().Get("header")
 	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
+
 	if err != nil {
 		return bson.M{}, err
 	}
+
 	date := req.URL.Query().Get("date")
 	lt := req.URL.Query().Get("lt")
 	gt := req.URL.Query().Get("gt")
 	err = CheckApiLogsParams(id, ip, method, header, path, date, lt, gt)
+
 	if err != nil {
 		return bson.M{}, err
 	}
+
 	// build query.
 	return bson.M{}, nil
 }
@@ -270,30 +291,39 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 		if lt != "" || gt != "" {
 			return ErrDateDefined
 		}
+
 		_, err := TranslateTime(date)
 		if err != nil {
 			return err
 		}
 	}
+
 	if lt != "" {
 		_, err := TranslateTime(lt)
+
 		if err != nil {
 			return err
 		}
 	}
+
 	if gt != "" {
 		_, err := TranslateTime(gt)
+
 		if err != nil {
 			return err
 		}
 	}
+
 	if lt != "" && gt != "" {
+
 		ltT, _ := TranslateTime(lt)
 		gtT, _ := TranslateTime(gt)
+
 		if ltT.Unix() < gtT.Unix() {
 			return ErrLtBeforeGt
 		}
 	}
+
 	if method != "" {
 		method = strings.ToUpper(method)
 		if !slice.StringInSlice(method,
@@ -310,11 +340,13 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 			return ErrHTTPMethodUnknown
 		}
 	}
+
 	if ip != "" {
 		if !net.ValidIPAddress(ip) {
 			return ErrInvalidIP
 		}
 	}
+
 	return nil
 }
 
@@ -326,9 +358,11 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 
 		return filter
 	}
+
 	if ip != "" {
 		filter = db.BuildFilter(map[string]interface{}{"ip": ip})
 	}
+
 	if method != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "method", method)
@@ -336,6 +370,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 			filter = db.BuildFilter(map[string]interface{}{"method": method})
 		}
 	}
+
 	// DEBUG: map[string][]string.
 	if header != "" {
 		if len(filter) != 0 {
@@ -344,6 +379,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 			filter = db.BuildFilter(map[string]interface{}{"header": header})
 		}
 	}
+
 	if path != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "path", path)
@@ -351,6 +387,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 			filter = db.BuildFilter(map[string]interface{}{"path": path})
 		}
 	}
+
 	if path != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "path", path)
@@ -358,16 +395,20 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 			filter = db.BuildFilter(map[string]interface{}{"path": path})
 		}
 	}
+
 	if date != "" {
 		dateT, _ := TranslateTime(date)
+
 		if len(filter) == 0 {
 			filter = db.BuildFilter(map[string]interface{}{})
 		}
+
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": dateT.Unix()}},
 			{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
 		})
 	}
+
 	filter = AddTimestampToQuery(lt, gt, filter)
 
 	return filter
@@ -392,13 +433,16 @@ func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 	method := req.URL.Query().Get("method")
 	header := req.URL.Query().Get("header")
 	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
+
 	if err != nil {
 		return bson.M{}, err
 	}
+
 	date := req.URL.Query().Get("date")
 	lt := req.URL.Query().Get("lt")
 	gt := req.URL.Query().Get("gt")
 	err = CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt)
+
 	if err != nil {
 		return bson.M{}, err
 	}
@@ -414,30 +458,36 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 		if lt != "" || gt != "" {
 			return ErrDateDefined
 		}
+
 		_, err := TranslateTime(date)
 		if err != nil {
 			return err
 		}
 	}
+
 	if lt != "" {
 		_, err := TranslateTime(lt)
 		if err != nil {
 			return err
 		}
 	}
+
 	if gt != "" {
 		_, err := TranslateTime(gt)
 		if err != nil {
 			return err
 		}
 	}
+
 	if lt != "" && gt != "" {
 		ltT, _ := TranslateTime(lt)
 		gtT, _ := TranslateTime(gt)
+
 		if ltT.Unix() < gtT.Unix() {
 			return ErrLtBeforeGt
 		}
 	}
+
 	if method != "" {
 		method = strings.ToUpper(method)
 		if !slice.StringInSlice(method,
@@ -454,6 +504,7 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 			return ErrHTTPMethodUnknown
 		}
 	}
+
 	if ip != "" {
 		if !net.ValidIPAddress(ip) {
 			return ErrInvalidIP
@@ -473,6 +524,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 	if ip != "" {
 		filter = db.BuildFilter(map[string]interface{}{"ip": ip})
 	}
+
 	if method != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "method", method)
@@ -480,6 +532,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 			filter = db.BuildFilter(map[string]interface{}{"method": method})
 		}
 	}
+
 	// DEBUG: map[string][]string.
 	if header != "" {
 		if len(filter) != 0 {
@@ -488,6 +541,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 			filter = db.BuildFilter(map[string]interface{}{"header": header})
 		}
 	}
+
 	if path != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "path", path)
@@ -495,6 +549,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 			filter = db.BuildFilter(map[string]interface{}{"path": path})
 		}
 	}
+
 	if path != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "path", path)
@@ -502,16 +557,20 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 			filter = db.BuildFilter(map[string]interface{}{"path": path})
 		}
 	}
+
 	if date != "" {
 		dateT, _ := TranslateTime(date)
+
 		if len(filter) == 0 {
 			filter = db.BuildFilter(map[string]interface{}{})
 		}
+
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": dateT.Unix()}},
 			{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
 		})
 	}
+
 	filter = AddTimestampToQuery(lt, gt, filter)
 
 	return filter
@@ -532,9 +591,11 @@ func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 	if lt != "" && gt != "" {
 		ltT, _ := TranslateTime(lt)
 		gtT, _ := TranslateTime(gt)
+
 		if len(filter) == 0 {
 			filter = db.BuildFilter(map[string]interface{}{})
 		}
+
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": gtT.Unix()}},
 			{"timestamp": bson.M{"$lt": ltT.Add(time.Hour * 24).Unix()}},

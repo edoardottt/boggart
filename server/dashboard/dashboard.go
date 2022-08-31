@@ -33,6 +33,7 @@ func Start() {
 	if client != nil {
 		fmt.Println("DASHBOARD: Connected to MongoDB!")
 	}
+
 	tmpl, err := template.New("index.html").Funcs(funcs).ParseFiles(baseTemplatePath+"index.html",
 		baseTemplatePath+"navbar.html",
 		baseTemplatePath+"latest.html",
@@ -84,19 +85,22 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Clie
 
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
-	logs, err := db.GetLatestNLogs(client, collection, ctx, 30)
+
+	logs, err := db.GetLatestNLogs(ctx, client, collection, 30)
 	if err != nil {
 		cancel()
 		log.Fatal(err)
 	}
 
 	buf := &bytes.Buffer{}
+
 	err = tmpl.Execute(buf, logs)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
+
 	_, err = buf.WriteTo(w)
 	if err != nil {
 		log.Fatal(err)
@@ -113,18 +117,21 @@ func dashboardIDHandler(w http.ResponseWriter, r *http.Request, client *mongo.Cl
 
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
-	logID, err := db.GetLogByID(client, collection, ctx, id)
+	logID, err := db.GetLogByID(ctx, client, collection, id)
+
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	buf := &bytes.Buffer{}
 	err = tmpl.Execute(buf, logID)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
+
 	_, err = buf.WriteTo(w)
 	if err != nil {
 		log.Fatal(err)

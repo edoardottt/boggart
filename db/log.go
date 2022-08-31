@@ -56,10 +56,12 @@ func InsertLog(ctx context.Context, client *mongo.Client, collection *mongo.Coll
 	record Log) interface{} {
 	record.ID = primitive.NewObjectID()
 	result, err := collection.InsertOne(ctx, record)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Inserted: ", result.InsertedID)
+
 	return result.InsertedID
 }
 
@@ -68,14 +70,19 @@ func InsertLog(ctx context.Context, client *mongo.Client, collection *mongo.Coll
 func GetLogByID(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	ID string) (Log, error) {
 	var result Log
+
 	objectID, err := primitive.ObjectIDFromHex(ID)
+
 	if err != nil {
 		return result, ErrInvalidID
 	}
+
 	filter := bson.M{"_id": objectID}
+
 	if err := collection.FindOne(ctx, filter).Decode(&result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -84,14 +91,18 @@ func GetLogByID(ctx context.Context, client *mongo.Client, collection *mongo.Col
 func GetLogsByIP(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	IP string) ([]Log, error) {
 	var result []Log
+
 	filter := bson.M{"ip": IP}
 	cursor, err := collection.Find(ctx, filter)
+
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -100,14 +111,18 @@ func GetLogsByIP(ctx context.Context, client *mongo.Client, collection *mongo.Co
 func GetLogsByMethod(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	method string) ([]Log, error) {
 	var result []Log
+
 	filter := bson.M{"method": method}
 	cursor, err := collection.Find(ctx, filter)
+
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -116,14 +131,18 @@ func GetLogsByMethod(ctx context.Context, client *mongo.Client, collection *mong
 func GetLogsByPath(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	path string) ([]Log, error) {
 	var result []Log
+
 	filter := bson.M{"path": path}
 	cursor, err := collection.Find(ctx, filter)
+
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -132,14 +151,18 @@ func GetLogsByPath(ctx context.Context, client *mongo.Client, collection *mongo.
 func GetLogsByBody(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	body string) ([]Log, error) {
 	var result []Log
+
 	filter := bson.M{"body": body}
 	cursor, err := collection.Find(ctx, filter)
+
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -148,6 +171,7 @@ func GetLogsByBody(ctx context.Context, client *mongo.Client, collection *mongo.
 func GetLogsByDate(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	date time.Time) ([]Log, error) {
 	var result []Log
+
 	nextDateInt := date.Add(time.Hour * 24).Unix()
 	filter := bson.M{
 		"$and": []bson.M{
@@ -155,13 +179,16 @@ func GetLogsByDate(ctx context.Context, client *mongo.Client, collection *mongo.
 			{"timestamp": bson.M{"$lt": nextDateInt}},
 		},
 	}
+
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -170,6 +197,7 @@ func GetLogsByDate(ctx context.Context, client *mongo.Client, collection *mongo.
 func GetLogsByRange(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	dateStart time.Time, dateEnd time.Time) ([]Log, error) {
 	var result []Log
+
 	filter := bson.M{
 		"$and": []bson.M{
 			{"timestamp": bson.M{"$gte": dateStart.Unix()}},
@@ -177,12 +205,15 @@ func GetLogsByRange(ctx context.Context, client *mongo.Client, collection *mongo
 		},
 	}
 	cursor, err := collection.Find(ctx, filter)
+
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }
 
@@ -191,16 +222,20 @@ func GetLogsByRange(ctx context.Context, client *mongo.Client, collection *mongo
 func GetLatestNLogs(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	n int64) ([]Log, error) {
 	var result []Log
+
 	findOptions := options.Find()
 	// Sort by `timestamp` field descending.
 	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 	findOptions.Limit = &n
 	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
+
 	return result, nil
 }

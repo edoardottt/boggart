@@ -30,5 +30,6 @@ import (
 func ReadFile(inputFile string) (string, error) {
 	var content []byte
 	content, err := ioutil.ReadFile(inputFile)
+
 	return string(content), err
 }

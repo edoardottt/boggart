@@ -52,11 +52,11 @@ func genericWriter(w http.ResponseWriter, req *http.Request, dbName string,
 		if err != nil {
 			log.Fatal(err)
 		}
-		bodyString := string(bodyBytes)
 
+		bodyString := string(bodyBytes)
 		remoteIP := strings.Split(req.RemoteAddr, ":")[0]
 
-		db.InsertLog(client, collection, ctx, db.Log{
+		db.InsertLog(ctx, client, collection, db.Log{
 			IP:        remoteIP,
 			Method:    req.Method,
 			Path:      req.RequestURI,
@@ -87,11 +87,11 @@ func fileWriter(w http.ResponseWriter, req *http.Request, dbName string,
 		if err != nil {
 			log.Fatal(err)
 		}
-		bodyString := string(bodyBytes)
 
+		bodyString := string(bodyBytes)
 		remoteIP := strings.Split(req.RemoteAddr, ":")[0]
 
-		db.InsertLog(client, collection, ctx, db.Log{
+		db.InsertLog(ctx, client, collection, db.Log{
 			IP:        remoteIP,
 			Method:    req.Method,
 			Path:      req.RequestURI,
@@ -169,5 +169,6 @@ func ignorePath(path string, tmpl template.Template) bool {
 			return true
 		}
 	}
+
 	return false
 }

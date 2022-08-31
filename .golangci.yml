@@ -52,3 +52,7 @@ linters-settings:
       - T any
       - m map[string]int
       - w http.ResponseWriter
+
+  wsl:
+    strict-append: false
+    enforce-err-cuddling: true

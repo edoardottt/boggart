@@ -62,22 +62,22 @@ func Server() {
 	}).Methods("GET")
 
 	// ApiLogs.
-	router.HandleFunc(ApiLogs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(APILogs, func(w http.ResponseWriter, r *http.Request) {
 		LogsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	// ApiDetect.
-	router.HandleFunc(ApiDetect, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(APIDetect, func(w http.ResponseWriter, r *http.Request) {
 		LogsDetectHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	// ApiStats.
-	router.HandleFunc(ApiStats, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(APIStats, func(w http.ResponseWriter, r *http.Request) {
 		StatsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
 	// ApiStatsDB.
-	router.HandleFunc(ApiStatsDB, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc(APIStatsDB, func(w http.ResponseWriter, r *http.Request) {
 		StatsDBHandler(w, r, dbName, client)
 	}).Methods("GET")
 

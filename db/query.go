@@ -62,10 +62,12 @@ func AddMultipleCondition(query bson.M, condition string, add []bson.M) bson.M {
 func GetLogsWithFilter(client *mongo.Client, collection *mongo.Collection,
 	ctx context.Context, filter bson.M, findOptions *options.FindOptions) ([]Log, error) {
 	var result []Log
+
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}
@@ -85,10 +87,12 @@ type AggregatedResult struct {
 func GetAggregatedLogs(client *mongo.Client, collection *mongo.Collection,
 	ctx context.Context, filter []bson.M) ([]AggregatedResult, error) {
 	var result []AggregatedResult
+
 	cursor, err := collection.Aggregate(ctx, filter)
 	if err != nil {
 		return result, err
 	}
+
 	if err = cursor.All(ctx, &result); err != nil {
 		return result, err
 	}

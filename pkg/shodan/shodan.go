@@ -47,6 +47,7 @@ func GetShodanAPIKey() (string, error) {
 	if strings.Trim(apiKey, " ") == "" {
 		return "", ErrAPIKeyEmpty
 	}
+
 	return apiKey, nil
 }
 
@@ -75,15 +76,20 @@ func APIInfo(apiKey string) APIInfoResponse {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	body, err := ioutil.ReadAll(resp.Body)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var response APIInfoResponse
 	err = json.Unmarshal([]byte(body), &response)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	return response
 }
 

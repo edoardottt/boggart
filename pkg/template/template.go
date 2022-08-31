@@ -93,12 +93,15 @@ func CheckTemplate(tmpl Template) error {
 	if tmpl.Type == "" {
 		return ErrMissingType
 	}
+
 	if tmpl.Type == RawTemplateType {
 		return CheckRawTeplate(tmpl)
 	}
+
 	if tmpl.Type == "shodan" {
 		return CheckShodanTemplate(tmpl)
 	}
+
 	return nil
 }
 
@@ -107,24 +110,30 @@ func CheckRawTeplate(tmpl Template) error {
 	if !IDUnique(tmpl) {
 		return ErrUniqueRequestID
 	}
+
 	if !EndpointUnique(tmpl) {
 		return ErrUniqueRequestEndpoint
 	}
+
 	if MissingTemplateDefault(tmpl) {
 		return ErrMissingDefaultRequest
 	}
+
 	err := CheckRequests(tmpl)
 	if err != nil {
 		return err
 	}
+
 	err = CheckDefaultRequest(tmpl)
 	if err != nil {
 		return err
 	}
+
 	err = CheckIgnore(tmpl)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -133,6 +142,7 @@ func CheckShodanTemplate(tmpl Template) error {
 	if tmpl.IP != "" {
 		return ErrMandatoryIP
 	}
+
 	return nil
 }
 
@@ -143,14 +153,18 @@ func IDUnique(tmpl Template) bool {
 	if tmpl.Type == RawTemplateType {
 		keys := make(map[string]bool)
 		list := []string{}
+
 		for _, entry := range tmpl.Requests {
 			if _, value := keys[entry.ID]; !value {
 				keys[entry.ID] = true
+
 				list = append(list, entry.ID)
 			}
 		}
+
 		return len(tmpl.Requests) == len(list)
 	}
+
 	return true
 }
 
@@ -161,14 +175,17 @@ func EndpointUnique(tmpl Template) bool {
 	if tmpl.Type == RawTemplateType {
 		keys := make(map[string]bool)
 		list := []string{}
+
 		for _, entry := range tmpl.Requests {
 			if _, value := keys[entry.Endpoint]; !value {
 				keys[entry.Endpoint] = true
 				list = append(list, entry.Endpoint)
 			}
 		}
+
 		return len(tmpl.Requests) == len(list)
 	}
+
 	return true
 }
 
@@ -177,6 +194,7 @@ func EndpointUnique(tmpl Template) bool {
 // True for shodan template.
 func MissingTemplateDefault(tmpl Template) bool {
 	var missing = true
+
 	if tmpl.Type == RawTemplateType {
 		for _, entry := range tmpl.Requests {
 			if entry.ID == DefaultID {
@@ -186,6 +204,7 @@ func MissingTemplateDefault(tmpl Template) bool {
 	} else {
 		return false
 	}
+
 	return missing
 }
 
@@ -200,6 +219,7 @@ func RootEndpointExists(tmpl Template) bool {
 			}
 		}
 	}
+
 	return true
 }
 
@@ -213,6 +233,7 @@ func Default(tmpl Template) Request {
 			}
 		}
 	}
+
 	return Request{}
 }
 
@@ -223,6 +244,7 @@ func HTTPMethodsAsString(methods []HTTPMethod) []string {
 	for _, method := range methods {
 		result = append(result, string(method))
 	}
+
 	return result
 }
 
@@ -238,20 +260,25 @@ func CheckRequests(tmpl Template) error {
 			if strings.Trim(entry.Endpoint, " ") == "" {
 				return fmt.Errorf("%w %s", ErrMissingEndpointID, entry.ID)
 			}
+
 			if len(entry.Methods) == 0 {
 				return fmt.Errorf("%w %s", ErrMissingMethodsID, entry.ID)
 			}
+
 			if strings.Trim(string(entry.ResponseType), " ") == "" {
 				return fmt.Errorf("%w %s", ErrMissingResponseTypeID, entry.ID)
 			}
+
 			if strings.Trim(entry.ContentType, " ") == "" {
 				return fmt.Errorf("%w %s", ErrMissingContentTypeID, entry.ID)
 			}
+
 			if strings.Trim(entry.Content, " ") == "" {
 				return fmt.Errorf("%w %s", ErrMissingContentID, entry.ID)
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -263,12 +290,15 @@ func CheckDefaultRequest(tmpl Template) error {
 	if strings.Trim(string(entry.ResponseType), " ") == "" {
 		return ErrMissingDefaultResponseType
 	}
+
 	if strings.Trim(entry.ContentType, " ") == "" {
 		return ErrMissingDefaultContentType
 	}
+
 	if strings.Trim(entry.Content, " ") == "" {
 		return ErrMissingDefaultContent
 	}
+
 	return nil
 }
 
@@ -280,9 +310,11 @@ func CheckIgnore(tmpl Template) error {
 	if len(input) == 0 {
 		return nil
 	}
+
 	if len(input) != len(slice.RemoveDuplicateValues(input)) {
 		return ErrDuplicatePathsIgnore
 	}
+
 	for _, path := range input {
 		if path[0] != '/' {
 			return ErrMissingSlashIgnore
