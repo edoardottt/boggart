@@ -1,6 +1,8 @@
 # boggart
 Highly customizable low-interaction experimental honeypot that mimics specific hosts, behaviors, and CVEs.
 
+*Disclaimer*: This is an ongoing and experimental project: this means there are features not yet available and features not (fully) tested. It is designed for home labs / home environments, not for professional or industrial purposes. Deploy in your network at your own risk.
+
 Installation 📡
 -------
 
@@ -13,7 +15,7 @@ git clone https://github.com/edoardottt/boggart
 Usage 💻
 -------
 
-- Edit the configuration file `config.yaml`
+- Edit the configuration file `config.yaml` setting up the machine you want to create
 - Execute `make up` (inside the boggart folder)
 
 Changelog 📌
