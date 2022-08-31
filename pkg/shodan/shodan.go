@@ -42,7 +42,7 @@ const (
 	apiInfo        = "/api-info"
 )
 
-// GetShodanAPIKey returns the Shodan Api Key
+// GetShodanAPIKey returns the Shodan Api Key.
 func GetShodanAPIKey() (string, error) {
 	apiKey := os.Getenv("SHODAN_KEY")
 	if strings.Trim(apiKey, " ") == "" {
@@ -52,7 +52,7 @@ func GetShodanAPIKey() (string, error) {
 }
 
 // APIInfoResponse defines the structure of the Info
-// Api response
+// Api response.
 type APIInfoResponse struct {
 	ScanCredits int `json:"scan_credits"`
 	UsageLimits struct {
@@ -70,7 +70,7 @@ type APIInfoResponse struct {
 }
 
 // APIInfo returns the struct ApiInfoResponse filled
-// with the Api account information
+// with the Api account information.
 func APIInfo(apiKey string) APIInfoResponse {
 	resp, err := http.Get(baseURL + apiInfo + "?key=" + apiKey)
 	if err != nil {
@@ -88,13 +88,13 @@ func APIInfo(apiKey string) APIInfoResponse {
 	return response
 }
 
-// HostIPInfo > TODO
+// HostIPInfo > TODO.
 func HostIPInfo(hostIP string, apiKey string) {
 	url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
 	fmt.Println(url)
 }
 
-// ShodanHost >
+// ShodanHost.
 type ShodanHost struct {
 	RegionCode  string        `json:"region_code"`
 	Tags        []interface{} `json:"tags"`

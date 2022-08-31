@@ -32,52 +32,52 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Server > to be filled
+// Server > to be filled.
 func Server() {
 
-	// DB setup
-	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
+	// DB setup.
+	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017".
 	dbName := os.Getenv("MONGO_DB")
 	client := db.ConnectDB(connString)
-	// ------- debug -------
+	// ------- debug -------.
 	if client != nil {
 		fmt.Println("API: Connected to MongoDB!")
 	}
 
-	// Routes setup
+	// Routes setup.
 	r := mux.NewRouter()
 
-	//NotFound
+	// NotFound.
 	r.HandleFunc(NotFound, func(w http.ResponseWriter, r *http.Request) {
 		NotFoundHandler(w, r)
 	}).Methods("GET")
 
-	//Health
+	// Health.
 	r.HandleFunc(Health, func(w http.ResponseWriter, r *http.Request) {
 		HealthHandler(w, r)
 	}).Methods("GET")
 
-	//IPInfo
+	// IPInfo.
 	r.HandleFunc(IPInfo, func(w http.ResponseWriter, r *http.Request) {
 		IPInfoHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//ApiLogs
+	// ApiLogs.
 	r.HandleFunc(ApiLogs, func(w http.ResponseWriter, r *http.Request) {
 		LogsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//ApiDetect
+	// ApiDetect.
 	r.HandleFunc(ApiDetect, func(w http.ResponseWriter, r *http.Request) {
 		LogsDetectHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//ApiStats
+	// ApiStats.
 	r.HandleFunc(ApiStats, func(w http.ResponseWriter, r *http.Request) {
 		StatsHandler(w, r, dbName, client)
 	}).Methods("GET")
 
-	//ApiStatsDB
+	// ApiStatsDB.
 	r.HandleFunc(ApiStatsDB, func(w http.ResponseWriter, r *http.Request) {
 		StatsDBHandler(w, r, dbName, client)
 	}).Methods("GET")
@@ -85,7 +85,7 @@ func Server() {
 	srv := &http.Server{
 		Handler: r,
 		Addr:    ":8094",
-		// Good practice: enforce timeouts for servers you create!
+		// Good practice: enforce timeouts for servers you create.
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

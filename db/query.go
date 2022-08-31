@@ -39,8 +39,8 @@ func BuildFilter(query map[string]interface{}) bson.M {
 	return result
 }
 
-//AddCondition returns the query passed as input with
-//the query passed as input.
+// AddCondition returns the query passed as input with
+// the query passed as input.
 func AddCondition(query bson.M, condition string, add interface{}) bson.M {
 	query[condition] = add
 	return query
@@ -69,7 +69,7 @@ func GetLogsWithFilter(client *mongo.Client, collection *mongo.Collection,
 	return result, nil
 }
 
-// AggregatedResult >
+// AggregatedResult.
 type AggregatedResult struct {
 	ID    string `bson:"_id"`
 	Count int    `bson:"count"`

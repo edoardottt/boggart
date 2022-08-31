@@ -28,19 +28,19 @@ import (
 	"github.com/edoardottt/boggart/internal/slice"
 )
 
-// Type contains all the types that a template can assume
+// Type contains all the types that a template can assume.
 type Type string
 
-// Types a template can assume
+// Types a template can assume.
 const (
 	RawTemplateType    Type = "raw"
 	ShodanTemplateType Type = "shodan"
 )
 
-// HTTPMethod contains all the methods that a HTTP request can assume
+// HTTPMethod contains all the methods that a HTTP request can assume.
 type HTTPMethod string
 
-// HTTP Methods a request can have
+// HTTP Methods a request can have.
 const (
 	MethodGet     HTTPMethod = "GET"
 	MethodHead    HTTPMethod = "HEAD"
@@ -53,17 +53,17 @@ const (
 	MethodTrace   HTTPMethod = "TRACE"
 )
 
-// ResponseType contains all the types that a HTTP response can assume
+// ResponseType contains all the types that a HTTP response can assume.
 type ResponseType string
 
-// Types a response can have
+// Types a response can have.
 const (
 	RawResponseType  ResponseType = "raw"
 	FileResponseType ResponseType = "file"
 )
 
 // Request is the struct defining an HTTP request structure in a
-// valid template
+// valid template.
 type Request struct {
 	ID           string       `yaml:"id"` // Id is mandatory
 	Methods      []HTTPMethod `yaml:"methods,omitempty"`
@@ -136,7 +136,7 @@ func CheckShodanTemplate(tmpl Template) error {
 
 // IDUnique checks if in a raw template there are
 // duplicate request IDs.
-// True for shodan template
+// True for shodan template.
 func IDUnique(tmpl Template) bool {
 	if tmpl.Type == "raw" {
 		keys := make(map[string]bool)
@@ -154,7 +154,7 @@ func IDUnique(tmpl Template) bool {
 
 // EndpointUnique checks if in a raw template there are
 // duplicate request endpoints.
-// True for shodan template
+// True for shodan template.
 func EndpointUnique(tmpl Template) bool {
 	if tmpl.Type == "raw" {
 		keys := make(map[string]bool)
@@ -172,7 +172,7 @@ func EndpointUnique(tmpl Template) bool {
 
 // MissingTemplateDefault checks if in a raw template there is
 // a request with a default action.
-// True for shodan template
+// True for shodan template.
 func MissingTemplateDefault(tmpl Template) bool {
 	var missing = true
 	if tmpl.Type == "raw" {
@@ -189,7 +189,7 @@ func MissingTemplateDefault(tmpl Template) bool {
 
 // RootEndpointExists checks if a request handling for
 // the root endpoint exists.
-// True for shodan template
+// True for shodan template.
 func RootEndpointExists(tmpl Template) bool {
 	if tmpl.Type == "raw" {
 		for _, entry := range tmpl.Requests {
@@ -202,7 +202,7 @@ func RootEndpointExists(tmpl Template) bool {
 }
 
 // Default returns the default response.
-// Empty request for shodan template
+// Empty request for shodan template.
 func Default(tmpl Template) Request {
 	if tmpl.Type == "raw" {
 		for _, entry := range tmpl.Requests {
@@ -226,7 +226,7 @@ func HTTPMethodsAsString(methods []HTTPMethod) []string {
 
 // CheckRequests checks if the requests (except for default one)
 // are ok. True if everything is correct.
-// True for shodan template
+// True for shodan template.
 func CheckRequests(tmpl Template) error {
 	for _, entry := range tmpl.Requests {
 		if strings.Trim(entry.ID, " ") == "" {
@@ -255,7 +255,7 @@ func CheckRequests(tmpl Template) error {
 
 // CheckDefaultRequest checks if the default request
 // is ok. True if everything is correct.
-// True for shodan template
+// True for shodan template.
 func CheckDefaultRequest(tmpl Template) error {
 	entry := Default(tmpl)
 	if strings.Trim(string(entry.ResponseType), " ") == "" {
@@ -272,7 +272,7 @@ func CheckDefaultRequest(tmpl Template) error {
 
 // CheckIgnore checks if the ignore array
 // is ok. True if everything is correct.
-// True for shodan template
+// True for shodan template.
 func CheckIgnore(tmpl Template) error {
 	input := tmpl.Ignore
 	if len(input) == 0 {
@@ -286,7 +286,7 @@ func CheckIgnore(tmpl Template) error {
 			return errors.New("template: all paths in ignore array must start with a forward slash")
 		}
 	}
-	// here check if ignore is defined as endpoint in requests
+	// here check if ignore is defined as endpoint in requests.
 	for _, ignoreElem := range input {
 		for _, request := range tmpl.Requests {
 			if ignoreElem == request.Endpoint {

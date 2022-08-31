@@ -23,14 +23,14 @@ var funcs = template.FuncMap{
 	},
 }
 
-// Start starts the dashboard >
+// Start starts the dashboard.
 func Start() {
 
-	// DB setup
-	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
+	// DB setup.
+	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017".
 	dbName := os.Getenv("MONGO_DB")
 	client := db.ConnectDB(connString)
-	// ------- debug -------
+	// ------- debug -------.
 	if client != nil {
 		fmt.Println("DASHBOARD: Connected to MongoDB!")
 	}
@@ -50,7 +50,7 @@ func Start() {
 		log.Fatal(err)
 	}
 
-	// Routes setup
+	// Routes setup.
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

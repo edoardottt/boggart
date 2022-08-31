@@ -102,23 +102,23 @@ func fileWriter(w http.ResponseWriter, req *http.Request, dbName string, client 
 	fmt.Fprint(w, content)
 }
 
-// Raw > to be filled
+// Raw > to be filled.
 func Raw(tmpl template.Template) {
 
 	// DB setup
-	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017"
+	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017".
 	dbName := os.Getenv("MONGO_DB")
 	client := db.ConnectDB(connString)
-	// ------- debug -------
+	// ------- debug -------.
 	if client != nil {
 		fmt.Println("HONEYPOT: Connected to MongoDB!")
 	}
 
-	// Routes setup
+	// Routes setup.
 	r := mux.NewRouter()
 	var staticPath = "public/honeypot/"
 
-	//registering endpoints
+	// registering endpoints.
 	for _, request := range tmpl.Requests {
 		if request.ID != "default" {
 			request2 := request
@@ -139,7 +139,7 @@ func Raw(tmpl template.Template) {
 		}
 	}
 
-	//default response
+	// default response.
 	defaultRequest := template.Default(tmpl)
 	if defaultRequest.ResponseType == "raw" {
 
@@ -167,7 +167,7 @@ func Raw(tmpl template.Template) {
 	log.Fatal(srv.ListenAndServe())
 }
 
-// ignorePath
+// ignorePath.
 func ignorePath(path string, tmpl template.Template) bool {
 	for _, elem := range tmpl.Ignore {
 		if elem == path {

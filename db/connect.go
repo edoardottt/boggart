@@ -44,7 +44,7 @@ func ConnectDB(connectionString string) *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Check the connection
+	// Check the connection.
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +59,7 @@ func GetDatabase(client *mongo.Client, databaseName string) *mongo.Database {
 	return database
 }
 
-// GetLogs returns the collection of logs
+// GetLogs returns the collection of logs.
 func GetLogs(database *mongo.Database) *mongo.Collection {
 	return database.Collection("logs")
 }

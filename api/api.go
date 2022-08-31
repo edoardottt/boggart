@@ -41,27 +41,27 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// NotFoundHandler tells you if the API server is listening
+// NotFoundHandler tells you if the API server is listening.
 func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
-	//set content-type
+	//set content-type.
 	w.Header().Add("Content-Type", "application/json")
-	//specify status code
+	//specify status code.
 	w.WriteHeader(http.StatusNotFound)
-	//update response writer
+	//update response writer.
 	fmt.Fprintf(w, "404 page not found")
 }
 
-// HealthHandler tells you if the API server is listening
+// HealthHandler tells you if the API server is listening.
 func HealthHandler(w http.ResponseWriter, req *http.Request) {
-	//set content-type
+	//set content-type.
 	w.Header().Add("Content-Type", "application/json")
-	//specify status code
+	//specify status code.
 	w.WriteHeader(http.StatusOK)
-	//update response writer
+	//update response writer.
 	fmt.Fprintf(w, "OK")
 }
 
-// IPInfoResponse >
+// IPInfoResponse.
 type IPInfoResponse struct {
 	Logs         int
 	LastActivity time.Time
@@ -70,7 +70,7 @@ type IPInfoResponse struct {
 	TopBodies    []string
 }
 
-// IPInfoHandler >
+// IPInfoHandler.
 func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -85,7 +85,7 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 		topParam = "10"
 	}
 	top, err := IsIntInTheRange(topParam, 4, 50)
-	// 400 BAD REQUEST: top parameter not in the correct range
+	// 400 BAD REQUEST: top parameter not in the correct range.
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, "The parameter top accept an integer between 4 and 50.")
@@ -107,11 +107,11 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 
 	filter := db.BuildFilter(map[string]interface{}{"ip": ip})
 	findOptions := options.Find()
-	// Sort by `timestamp` field descending
+	// Sort by `timestamp` field descending.
 	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter, findOptions)
 
-	// 500 INTERNAL SERVER ERROR: generic error
+	// 500 INTERNAL SERVER ERROR: generic error.
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, "Error while retrieving data.")
@@ -140,28 +140,28 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	}
 }
 
-// LogsHandler >
+// LogsHandler.
 func LogsHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-// LogsDetectHandler >
+// LogsDetectHandler.
 func LogsDetectHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-// StatsHandler >
+// StatsHandler.
 func StatsHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-// StatsDBHandler >
+// StatsDBHandler.
 func StatsDBHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
@@ -172,7 +172,7 @@ func StatsDBHandler(w http.ResponseWriter, req *http.Request, dbName string, cli
 // -------------- HELPERS ----------------
 // ---------------------------------------
 
-// IsIntInTheRange >
+// IsIntInTheRange.
 func IsIntInTheRange(input string, start int, end int) (int, error) {
 	intVar, err := strconv.Atoi(input)
 	if err != nil {
@@ -184,7 +184,7 @@ func IsIntInTheRange(input string, start int, end int) (int, error) {
 	return 0, errors.New("integer not in the range >= " + fmt.Sprint(start) + " && <= " + fmt.Sprint(end))
 }
 
-// Top >
+// Top.
 func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	client *mongo.Client, what string, howMany int, IP string) ([]string, error) {
 
@@ -236,7 +236,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 // - path
 // - date (YYYY-MM-DD)
 // - lt (less than YYYY-MM-DD-HH-MM-SS)
-// - gt (greater than YYYY-MM-DD-HH-MM-SS)
+// - gt (greater than YYYY-MM-DD-HH-MM-SS).
 func GetApiLogsQuery(req *http.Request) (bson.M, error) {
 	id := req.URL.Query().Get("id")
 	ip := req.URL.Query().Get("ip")
@@ -253,19 +253,19 @@ func GetApiLogsQuery(req *http.Request) (bson.M, error) {
 	if err != nil {
 		return bson.M{}, err
 	}
-	//build query
+	// build query.
 	return bson.M{}, nil
 }
 
-// CheckApiLogsParams >
+// CheckApiLogsParams.
 func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error {
-	//if id is present, the others are blank
+	// if id is present, the others are blank.
 	if id != "" {
 		if ip != "" || method != "" || header != "" || path != "" || date != "" || lt != "" || gt != "" {
 			return errors.New("if id is defined, no other parameters need to be defined")
 		}
 	}
-	//if date is present, lt and gt are blank
+	// if date is present, lt and gt are blank.
 	if date != "" {
 		if lt != "" || gt != "" {
 			return errors.New("if date is defined, lt and gt must be blank")
@@ -308,7 +308,7 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 	return nil
 }
 
-// BuildApiLogsQuery >
+// BuildApiLogsQuery.
 func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M {
 	var filter bson.M
 	if id != "" {
@@ -325,7 +325,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 			filter = db.BuildFilter(map[string]interface{}{"method": method})
 		}
 	}
-	// DEBUG: map[string][]string
+	// DEBUG: map[string][]string.
 	if header != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "header", header)
@@ -371,7 +371,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 // - path
 // - date
 // - lt (less than YYYY-MM-DD-HH-MM-SS)
-// - gt (greater than YYYY-MM-DD-HH-MM-SS)
+// - gt (greater than YYYY-MM-DD-HH-MM-SS).
 func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 	regex := req.URL.Query().Get("regex")
 	attack := req.URL.Query().Get("attack")
@@ -390,13 +390,13 @@ func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 	if err != nil {
 		return bson.M{}, err
 	}
-	//build query
+	// build query.
 	return bson.M{}, nil
 }
 
-// CheckApiDetectParams >
+// CheckApiDetectParams.
 func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt string) error {
-	//if date is present, lt and gt are blank
+	//if date is present, lt and gt are blank.
 	if date != "" {
 		if lt != "" || gt != "" {
 			return errors.New("if date is defined, lt and gt must be blank")
@@ -439,12 +439,12 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 	return nil
 }
 
-// BuildApiDetectQuery
+// BuildApiDetectQuery.
 func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, lt, gt string) bson.M {
 	var filter bson.M
 	/*
 		DEBUG
-		Implement regex, attack, target
+		Implement regex, attack, target.
 	*/
 	if ip != "" {
 		filter = db.BuildFilter(map[string]interface{}{"ip": ip})
@@ -456,7 +456,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 			filter = db.BuildFilter(map[string]interface{}{"method": method})
 		}
 	}
-	// DEBUG: map[string][]string
+	// DEBUG: map[string][]string.
 	if header != "" {
 		if len(filter) != 0 {
 			filter = db.AddCondition(filter, "header", header)
@@ -492,7 +492,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 	return filter
 }
 
-// TranslateTime >
+// TranslateTime.
 func TranslateTime(input string) (time.Time, error) {
 	t, err := time.Parse("2006-01-02T15:04:05-0700", input)
 	if err != nil {
@@ -501,7 +501,7 @@ func TranslateTime(input string) (time.Time, error) {
 	return t, nil
 }
 
-// AddTimestampToQuery >
+// AddTimestampToQuery.
 func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 	if lt != "" && gt != "" {
 		ltT, _ := TranslateTime(lt)

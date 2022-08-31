@@ -36,7 +36,7 @@ import (
 )
 
 // Log defines the structure of a log record
-// in the database
+// in the database.
 type Log struct {
 	ID        primitive.ObjectID  `bson:"_id"`
 	IP        string              `bson:"ip"`
@@ -47,15 +47,15 @@ type Log struct {
 	Timestamp int64               `bson:"timestamp"`
 }
 
-// IsEmpty checks if a Log is a new one (just created)
+// IsEmpty checks if a Log is a new one (just created).
 func (log Log) IsEmpty() bool {
 	return reflect.DeepEqual(log, Log{})
 }
 
-// InsertLog inserts a log record into the logs collection
+// InsertLog inserts a log record into the logs collection.
 func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.Context, record Log) interface{} {
 	record.ID = primitive.NewObjectID()
-	result, err := collection.InsertOne(ctx, record) //result
+	result, err := collection.InsertOne(ctx, record)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -184,7 +184,7 @@ func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx cont
 func GetLatestNLogs(client *mongo.Client, collection *mongo.Collection, ctx context.Context, n int64) ([]Log, error) {
 	var result []Log
 	findOptions := options.Find()
-	// Sort by `timestamp` field descending
+	// Sort by `timestamp` field descending.
 	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 	findOptions.Limit = &n
 	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
