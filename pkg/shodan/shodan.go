@@ -23,7 +23,6 @@ package shodan
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -46,7 +45,7 @@ const (
 func GetShodanAPIKey() (string, error) {
 	apiKey := os.Getenv("SHODAN_KEY")
 	if strings.Trim(apiKey, " ") == "" {
-		return "", errors.New("shodan: Api key is empty")
+		return "", APIKeyEmpty
 	}
 	return apiKey, nil
 }

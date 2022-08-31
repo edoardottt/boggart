@@ -22,7 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 package template
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/edoardottt/boggart/internal/slice"
@@ -91,7 +91,7 @@ const DefaultId string = "default"
 // CheckTemplate checks if a generic template is formatted in a proper way.
 func CheckTemplate(tmpl Template) error {
 	if tmpl.Type == "" {
-		return errors.New("template: missing template type")
+		return MissingTypeErr
 	}
 	if tmpl.Type == RawTemplateType {
 		return CheckRawTeplate(tmpl)
@@ -105,13 +105,13 @@ func CheckTemplate(tmpl Template) error {
 // CheckRawTeplate checks if a raw template is formatted in a proper way.
 func CheckRawTeplate(tmpl Template) error {
 	if !IDUnique(tmpl) {
-		return errors.New("template: request IDs are not unique")
+		return UniqueRequestIDErr
 	}
 	if !EndpointUnique(tmpl) {
-		return errors.New("template: request endpoints are not unique")
+		return UniqueRequestEndpointErr
 	}
 	if MissingTemplateDefault(tmpl) {
-		return errors.New("template: missing default request")
+		return MissingDefaultRequestErr
 	}
 	err := CheckRequests(tmpl)
 	if err != nil {
@@ -131,7 +131,7 @@ func CheckRawTeplate(tmpl Template) error {
 // CheckShodanTemplate checks if a shodan template is formatted in a proper way.
 func CheckShodanTemplate(tmpl Template) error {
 	if tmpl.IP != "" {
-		return errors.New("template: ip is mandatory")
+		return MandatoryIPErr
 	}
 	return nil
 }
@@ -232,23 +232,23 @@ func HTTPMethodsAsString(methods []HTTPMethod) []string {
 func CheckRequests(tmpl Template) error {
 	for _, entry := range tmpl.Requests {
 		if strings.Trim(entry.ID, " ") == "" {
-			return errors.New("template: missing id in request")
+			return MissingIDErr
 		}
 		if entry.ID != DefaultId {
 			if strings.Trim(entry.Endpoint, " ") == "" {
-				return errors.New("template: missing endpoint in request with id " + entry.ID)
+				return fmt.Errorf("%w %s", MissingEndpointIDErr, entry.ID)
 			}
 			if len(entry.Methods) == 0 {
-				return errors.New("template: missing methods in request with id " + entry.ID)
+				return fmt.Errorf("%w %s", MissingMethodsIDErr, entry.ID)
 			}
 			if strings.Trim(string(entry.ResponseType), " ") == "" {
-				return errors.New("template: missing response type in request with id " + entry.ID)
+				return fmt.Errorf("%w %s", MissingResponseTypeIDErr, entry.ID)
 			}
 			if strings.Trim(entry.ContentType, " ") == "" {
-				return errors.New("template: missing content type in request with id " + entry.ID)
+				return fmt.Errorf("%w %s", MissingContentTypeIDErr, entry.ID)
 			}
 			if strings.Trim(entry.Content, " ") == "" {
-				return errors.New("template: missing content in request with id " + entry.ID)
+				return fmt.Errorf("%w %s", MissingContentIDErr, entry.ID)
 			}
 		}
 	}
@@ -261,13 +261,13 @@ func CheckRequests(tmpl Template) error {
 func CheckDefaultRequest(tmpl Template) error {
 	entry := Default(tmpl)
 	if strings.Trim(string(entry.ResponseType), " ") == "" {
-		return errors.New("template: missing response type in default request")
+		return MissingDefaultResponseTypeErr
 	}
 	if strings.Trim(entry.ContentType, " ") == "" {
-		return errors.New("template: missing content type in default request")
+		return MissingDefaultContentTypeErr
 	}
 	if strings.Trim(entry.Content, " ") == "" {
-		return errors.New("template: missing content in default request")
+		return MissingDefaultContentErr
 	}
 	return nil
 }
@@ -281,18 +281,18 @@ func CheckIgnore(tmpl Template) error {
 		return nil
 	}
 	if len(input) != len(slice.RemoveDuplicateValues(input)) {
-		return errors.New("template: duplicate paths in ignore array")
+		return DuplicatePathsIgnoreErr
 	}
 	for _, path := range input {
 		if path[0] != '/' {
-			return errors.New("template: all paths in ignore array must start with a forward slash")
+			return MissingSlashIgnoreErr
 		}
 	}
 	// here check if ignore is defined as endpoint in requests.
 	for _, ignoreElem := range input {
 		for _, request := range tmpl.Requests {
 			if ignoreElem == request.Endpoint {
-				return errors.New("template: path defined both in ignore and requests")
+				return PathRequestIgnoreErr
 			}
 		}
 	}

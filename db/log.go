@@ -23,7 +23,6 @@ package db
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"reflect"
@@ -71,7 +70,7 @@ func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.
 	var result Log
 	objectId, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
-		return result, errors.New("invalid id")
+		return result, InvalidIDErr
 	}
 	filter := bson.M{"_id": objectId}
 	if err := collection.FindOne(ctx, filter).Decode(&result); err != nil {

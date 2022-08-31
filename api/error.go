@@ -19,29 +19,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	@License:		https://github.com/edoardottt/boggart/blob/main/LICENSE
 */
 
-package file
+package api
 
-import (
-	"net"
+import "errors"
+
+var (
+	PossibleTopValueErr  = errors.New("possible values for top: method / path / body")
+	NoStatsIPErr         = errors.New("no stats available for the specified IP")
+	IDDefinedErr         = errors.New("if id is defined, no other parameters need to be defined")
+	DateDefinedErr       = errors.New("if date is defined, lt and gt must be blank")
+	LtBeforeGtErr        = errors.New("lt cannot be before gt")
+	HTTPMethodUnknownErr = errors.New("http method unknown")
+	InvalidIPErr         = errors.New("ip address is not valid")
+	DatetimeFormatErr    = errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
 )
-
-// ValidIPAddress returns true if the IP taken as input
-// is a valid IP address.
-func ValidIPAddress(ip string) bool {
-	return net.ParseIP(ip) != nil
-}
-
-// PrivateIP returns true if the IP taken as input
-// is a private IP address.
-func PrivateIP(ip string) (bool, error) {
-	if !ValidIPAddress(ip) {
-		return false, InvalidIPErr
-	}
-	IP := net.ParseIP(ip)
-	private := false
-	_, private24BitBlock, _ := net.ParseCIDR("10.0.0.0/8")
-	_, private20BitBlock, _ := net.ParseCIDR("172.16.0.0/12")
-	_, private16BitBlock, _ := net.ParseCIDR("192.168.0.0/16")
-	private = private24BitBlock.Contains(IP) || private20BitBlock.Contains(IP) || private16BitBlock.Contains(IP)
-	return private, nil
-}
