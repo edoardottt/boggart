@@ -56,7 +56,7 @@ const (
 	// - date (YYYY-MM-DD)
 	// - lt (less than YYYY-MM-DD-HH-MM-SS)
 	// - gt (greater than YYYY-MM-DD-HH-MM-SS).
-	ApiLogs = "api/logs"
+	APILogs = "api/logs"
 
 	// This endpoint is intended to perform a heavy
 	// and accurate scan on the logs. It takes as input
@@ -71,12 +71,12 @@ const (
 	// - date
 	// - lt (less than YYYY-MM-DD-HH-MM-SS)
 	// - gt (greater than YYYY-MM-DD-HH-MM-SS).
-	ApiDetect = "api/detect"
+	APIDetect = "api/detect"
 
 	// This endpoint gives a general overview of the system.
-	ApiStats = "api/stats"
+	APIStats = "api/stats"
 
 	// This endpoint gives a detailed overview of the data
 	// stored in the DB.
-	ApiStatsDB = "api/stats/db"
+	APIStatsDB = "api/stats/db"
 )

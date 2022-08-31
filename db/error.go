@@ -24,5 +24,5 @@ package db
 import "errors"
 
 var (
-	InvalidIDErr = errors.New("invalid id")
+	ErrInvalidID = errors.New("invalid id")
 )

@@ -45,7 +45,7 @@ const (
 func GetShodanAPIKey() (string, error) {
 	apiKey := os.Getenv("SHODAN_KEY")
 	if strings.Trim(apiKey, " ") == "" {
-		return "", APIKeyEmpty
+		return "", ErrAPIKeyEmpty
 	}
 	return apiKey, nil
 }
@@ -93,8 +93,8 @@ func HostIPInfo(hostIP string, apiKey string) {
 	fmt.Println(url)
 }
 
-// ShodanHost.
-type ShodanHost struct {
+// Host.
+type Host struct {
 	RegionCode  string        `json:"regionCode"`
 	Tags        []interface{} `json:"tags"`
 	IP          int64         `json:"ip"`

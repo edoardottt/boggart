@@ -35,7 +35,7 @@ func ValidIPAddress(ip string) bool {
 // is a private IP address.
 func PrivateIP(ip string) (bool, error) {
 	if !ValidIPAddress(ip) {
-		return false, InvalidIPErr
+		return false, ErrInvalidIP
 	}
 	IP := net.ParseIP(ip)
 	private := false

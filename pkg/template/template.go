@@ -82,7 +82,7 @@ type Template struct {
 	IP       string    `yaml:"ip,omitempty"`
 }
 
-const DefaultId string = "default"
+const DefaultID string = "default"
 
 // ---------------------------------------
 // -------------- HELPERS ----------------
@@ -91,7 +91,7 @@ const DefaultId string = "default"
 // CheckTemplate checks if a generic template is formatted in a proper way.
 func CheckTemplate(tmpl Template) error {
 	if tmpl.Type == "" {
-		return MissingTypeErr
+		return ErrMissingType
 	}
 	if tmpl.Type == RawTemplateType {
 		return CheckRawTeplate(tmpl)
@@ -105,13 +105,13 @@ func CheckTemplate(tmpl Template) error {
 // CheckRawTeplate checks if a raw template is formatted in a proper way.
 func CheckRawTeplate(tmpl Template) error {
 	if !IDUnique(tmpl) {
-		return UniqueRequestIDErr
+		return ErrUniqueRequestID
 	}
 	if !EndpointUnique(tmpl) {
-		return UniqueRequestEndpointErr
+		return ErrUniqueRequestEndpoint
 	}
 	if MissingTemplateDefault(tmpl) {
-		return MissingDefaultRequestErr
+		return ErrMissingDefaultRequest
 	}
 	err := CheckRequests(tmpl)
 	if err != nil {
@@ -131,7 +131,7 @@ func CheckRawTeplate(tmpl Template) error {
 // CheckShodanTemplate checks if a shodan template is formatted in a proper way.
 func CheckShodanTemplate(tmpl Template) error {
 	if tmpl.IP != "" {
-		return MandatoryIPErr
+		return ErrMandatoryIP
 	}
 	return nil
 }
@@ -179,7 +179,7 @@ func MissingTemplateDefault(tmpl Template) bool {
 	var missing = true
 	if tmpl.Type == RawTemplateType {
 		for _, entry := range tmpl.Requests {
-			if entry.ID == DefaultId {
+			if entry.ID == DefaultID {
 				missing = false
 			}
 		}
@@ -208,7 +208,7 @@ func RootEndpointExists(tmpl Template) bool {
 func Default(tmpl Template) Request {
 	if tmpl.Type == RawTemplateType {
 		for _, entry := range tmpl.Requests {
-			if entry.ID == DefaultId {
+			if entry.ID == DefaultID {
 				return entry
 			}
 		}
@@ -232,23 +232,23 @@ func HTTPMethodsAsString(methods []HTTPMethod) []string {
 func CheckRequests(tmpl Template) error {
 	for _, entry := range tmpl.Requests {
 		if strings.Trim(entry.ID, " ") == "" {
-			return MissingIDErr
+			return ErrMissingID
 		}
-		if entry.ID != DefaultId {
+		if entry.ID != DefaultID {
 			if strings.Trim(entry.Endpoint, " ") == "" {
-				return fmt.Errorf("%w %s", MissingEndpointIDErr, entry.ID)
+				return fmt.Errorf("%w %s", ErrMissingEndpointID, entry.ID)
 			}
 			if len(entry.Methods) == 0 {
-				return fmt.Errorf("%w %s", MissingMethodsIDErr, entry.ID)
+				return fmt.Errorf("%w %s", ErrMissingMethodsID, entry.ID)
 			}
 			if strings.Trim(string(entry.ResponseType), " ") == "" {
-				return fmt.Errorf("%w %s", MissingResponseTypeIDErr, entry.ID)
+				return fmt.Errorf("%w %s", ErrMissingResponseTypeID, entry.ID)
 			}
 			if strings.Trim(entry.ContentType, " ") == "" {
-				return fmt.Errorf("%w %s", MissingContentTypeIDErr, entry.ID)
+				return fmt.Errorf("%w %s", ErrMissingContentTypeID, entry.ID)
 			}
 			if strings.Trim(entry.Content, " ") == "" {
-				return fmt.Errorf("%w %s", MissingContentIDErr, entry.ID)
+				return fmt.Errorf("%w %s", ErrMissingContentID, entry.ID)
 			}
 		}
 	}
@@ -261,13 +261,13 @@ func CheckRequests(tmpl Template) error {
 func CheckDefaultRequest(tmpl Template) error {
 	entry := Default(tmpl)
 	if strings.Trim(string(entry.ResponseType), " ") == "" {
-		return MissingDefaultResponseTypeErr
+		return ErrMissingDefaultResponseType
 	}
 	if strings.Trim(entry.ContentType, " ") == "" {
-		return MissingDefaultContentTypeErr
+		return ErrMissingDefaultContentType
 	}
 	if strings.Trim(entry.Content, " ") == "" {
-		return MissingDefaultContentErr
+		return ErrMissingDefaultContent
 	}
 	return nil
 }
@@ -281,18 +281,18 @@ func CheckIgnore(tmpl Template) error {
 		return nil
 	}
 	if len(input) != len(slice.RemoveDuplicateValues(input)) {
-		return DuplicatePathsIgnoreErr
+		return ErrDuplicatePathsIgnore
 	}
 	for _, path := range input {
 		if path[0] != '/' {
-			return MissingSlashIgnoreErr
+			return ErrMissingSlashIgnore
 		}
 	}
 	// here check if ignore is defined as endpoint in requests.
 	for _, ignoreElem := range input {
 		for _, request := range tmpl.Requests {
 			if ignoreElem == request.Endpoint {
-				return PathRequestIgnoreErr
+				return ErrPathRequestIgnore
 			}
 		}
 	}

@@ -24,12 +24,12 @@ package api
 import "errors"
 
 var (
-	PossibleTopValueErr  = errors.New("possible values for top: method / path / body")
-	NoStatsIPErr         = errors.New("no stats available for the specified IP")
-	IDDefinedErr         = errors.New("if id is defined, no other parameters need to be defined")
-	DateDefinedErr       = errors.New("if date is defined, lt and gt must be blank")
-	LtBeforeGtErr        = errors.New("lt cannot be before gt")
-	HTTPMethodUnknownErr = errors.New("http method unknown")
-	InvalidIPErr         = errors.New("ip address is not valid")
-	DatetimeFormatErr    = errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
+	ErrPossibleTopValue  = errors.New("possible values for top: method / path / body")
+	ErrNoStatsIP         = errors.New("no stats available for the specified IP")
+	ErrIDDefined         = errors.New("if id is defined, no other parameters need to be defined")
+	ErrDateDefined       = errors.New("if date is defined, lt and gt must be blank")
+	ErrLtBeforeGt        = errors.New("lt cannot be before gt")
+	ErrHTTPMethodUnknown = errors.New("http method unknown")
+	ErrInvalidIP         = errors.New("ip address is not valid")
+	ErrDatetimeFormat    = errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
 )

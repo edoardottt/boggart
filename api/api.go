@@ -189,7 +189,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	client *mongo.Client, what string, howMany int, IP string) ([]string, error) {
 
 	if what != "method" && what != "path" && what != "body" {
-		return nil, PossibleTopValueErr
+		return nil, ErrPossibleTopValue
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -215,7 +215,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	if len(logs) == 0 {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, "no stats available for the specified IP.")
-		return nil, NoStatsIPErr
+		return nil, ErrNoStatsIP
 	}
 
 	var result []string
@@ -262,13 +262,13 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 	// if id is present, the others are blank.
 	if id != "" {
 		if ip != "" || method != "" || header != "" || path != "" || date != "" || lt != "" || gt != "" {
-			return IDDefinedErr
+			return ErrIDDefined
 		}
 	}
 	// if date is present, lt and gt are blank.
 	if date != "" {
 		if lt != "" || gt != "" {
-			return DateDefinedErr
+			return ErrDateDefined
 		}
 		_, err := TranslateTime(date)
 		if err != nil {
@@ -291,7 +291,7 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 		ltT, _ := TranslateTime(lt)
 		gtT, _ := TranslateTime(gt)
 		if ltT.Unix() < gtT.Unix() {
-			return LtBeforeGtErr
+			return ErrLtBeforeGt
 		}
 	}
 	if method != "" {
@@ -307,12 +307,12 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 				"CONNECT",
 				"OPTIONS",
 				"TRACE"}) {
-			return HTTPMethodUnknownErr
+			return ErrHTTPMethodUnknown
 		}
 	}
 	if ip != "" {
 		if !net.ValidIPAddress(ip) {
-			return InvalidIPErr
+			return ErrInvalidIP
 		}
 	}
 	return nil
@@ -412,7 +412,7 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 	//if date is present, lt and gt are blank.
 	if date != "" {
 		if lt != "" || gt != "" {
-			return DateDefinedErr
+			return ErrDateDefined
 		}
 		_, err := TranslateTime(date)
 		if err != nil {
@@ -435,7 +435,7 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 		ltT, _ := TranslateTime(lt)
 		gtT, _ := TranslateTime(gt)
 		if ltT.Unix() < gtT.Unix() {
-			return LtBeforeGtErr
+			return ErrLtBeforeGt
 		}
 	}
 	if method != "" {
@@ -451,12 +451,12 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 				"CONNECT",
 				"OPTIONS",
 				"TRACE"}) {
-			return HTTPMethodUnknownErr
+			return ErrHTTPMethodUnknown
 		}
 	}
 	if ip != "" {
 		if !net.ValidIPAddress(ip) {
-			return InvalidIPErr
+			return ErrInvalidIP
 		}
 	}
 
@@ -521,7 +521,7 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 func TranslateTime(input string) (time.Time, error) {
 	t, err := time.Parse("2006-01-02T15:04:05-0700", input)
 	if err != nil {
-		return time.Time{}, DatetimeFormatErr
+		return time.Time{}, ErrDatetimeFormat
 	}
 
 	return t, nil

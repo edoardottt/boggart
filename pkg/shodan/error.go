@@ -24,5 +24,5 @@ package shodan
 import "errors"
 
 var (
-	APIKeyEmpty = errors.New("shodan: Api key is empty")
+	ErrAPIKeyEmpty = errors.New("shodan: Api key is empty")
 )

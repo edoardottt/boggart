@@ -24,5 +24,5 @@ package file
 import "errors"
 
 var (
-	InvalidIPErr = errors.New("invalid IP")
+	ErrInvalidIP = errors.New("invalid IP")
 )
