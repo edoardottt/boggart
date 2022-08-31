@@ -18,6 +18,13 @@ Usage 💻
 - Edit the configuration file `config.yaml` setting up the machine you want to create
 - Execute `make up` (inside the boggart folder)
 
+Now you have three open ports on your local machine:
+  - [localhost:8092](http://localhost:8092/) - This is the actual honeypot
+  - [localhost:8093](http://localhost:8093/) - This is the dashboard (do not expose this !)
+  - [localhost:8094](http://localhost:8094/) - This is the API service (do not expose this !)
+  
+You must expose on the public Internet only the service hosted on port 8092.
+
 Changelog 📌
 -------
 Detailed changes for each release are documented in the [release notes](https://github.com/edoardottt/boggart/releases).
