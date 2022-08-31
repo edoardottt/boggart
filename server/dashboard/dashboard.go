@@ -25,7 +25,6 @@ var funcs = template.FuncMap{
 
 // Start starts the dashboard.
 func Start() {
-
 	// DB setup.
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017".
 	dbName := os.Getenv("MONGO_DB")

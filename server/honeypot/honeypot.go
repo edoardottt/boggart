@@ -106,7 +106,6 @@ func fileWriter(w http.ResponseWriter, req *http.Request, dbName string,
 
 // Raw > to be filled.
 func Raw(tmpl template.Template) {
-
 	// DB setup
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017".
 	dbName := os.Getenv("MONGO_DB")
@@ -125,14 +124,11 @@ func Raw(tmpl template.Template) {
 		if request.ID != "default" {
 			request2 := request
 			if request2.ResponseType == "raw" {
-
 				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 					genericWriter(w, r, dbName, client, tmpl, request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
-
 			} else if request2.ResponseType == "file" {
-
 				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 					fileWriter(w, r, dbName, client, tmpl, staticPath+request2.Content)
@@ -144,14 +140,11 @@ func Raw(tmpl template.Template) {
 	// default response.
 	defaultRequest := template.Default(tmpl)
 	if defaultRequest.ResponseType == "raw" {
-
 		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
 			genericWriter(w, r, dbName, client, tmpl, defaultRequest.Content)
 		})
-
 	} else if defaultRequest.ResponseType == "file" {
-
 		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
 			fileWriter(w, r, dbName, client, tmpl, staticPath+defaultRequest.Content)

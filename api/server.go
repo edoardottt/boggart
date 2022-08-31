@@ -34,7 +34,6 @@ import (
 
 // Server > to be filled.
 func Server() {
-
 	// DB setup.
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017".
 	dbName := os.Getenv("MONGO_DB")
