@@ -1,5 +1,5 @@
 # boggart
-Highly customizable low-interaction experimental honeypot that mimics specific hosts, behaviors, and CVEs.
+Highly customizable low-interaction experimental honeypot that mimics specific hosts.
 
 *Disclaimer*: This is an ongoing and experimental project: this means there are features not yet available and features not (fully) tested. It is designed for home labs / home environments, not for professional or industrial purposes. Deploy in your network at your own risk.
 
