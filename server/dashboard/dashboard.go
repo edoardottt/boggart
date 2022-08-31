@@ -78,7 +78,8 @@ func Start() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client, dbName string, tmpl *template.Template) {
+func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client,
+	dbName string, tmpl *template.Template) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -104,7 +105,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Clie
 	}
 }
 
-func dashboardIDHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client, dbName string, tmpl *template.Template, id string) {
+func dashboardIDHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client,
+	dbName string, tmpl *template.Template, id string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 

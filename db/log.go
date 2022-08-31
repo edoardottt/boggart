@@ -53,7 +53,8 @@ func (log Log) IsEmpty() bool {
 }
 
 // InsertLog inserts a log record into the logs collection.
-func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.Context, record Log) interface{} {
+func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	record Log) interface{} {
 	record.ID = primitive.NewObjectID()
 	result, err := collection.InsertOne(ctx, record)
 	if err != nil {
@@ -65,7 +66,8 @@ func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.C
 
 // GetLogByID returns a log struct with the defined ID.
 // If the ID is not present in the database err won't be nil.
-func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.Context, ID string) (Log, error) {
+func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	ID string) (Log, error) {
 	var result Log
 	objectId, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
@@ -80,7 +82,8 @@ func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.
 
 // GetLogsByIP returns a slice of logs with the defined IP.
 // If the IP is not present in the database err won't be nil.
-func GetLogsByIP(client *mongo.Client, collection *mongo.Collection, ctx context.Context, IP string) ([]Log, error) {
+func GetLogsByIP(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	IP string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"ip": IP}
 	cursor, err := collection.Find(ctx, filter)
@@ -95,7 +98,8 @@ func GetLogsByIP(client *mongo.Client, collection *mongo.Collection, ctx context
 
 // GetLogsByMethod returns a slice of logs with the defined HTTP Method.
 // If the Method is not present in the database err won't be nil.
-func GetLogsByMethod(client *mongo.Client, collection *mongo.Collection, ctx context.Context, method string) ([]Log, error) {
+func GetLogsByMethod(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	method string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"method": method}
 	cursor, err := collection.Find(ctx, filter)
@@ -110,7 +114,8 @@ func GetLogsByMethod(client *mongo.Client, collection *mongo.Collection, ctx con
 
 // GetLogsByPath returns a slice of logs with the defined Path.
 // If the Path is not present in the database err won't be nil.
-func GetLogsByPath(client *mongo.Client, collection *mongo.Collection, ctx context.Context, path string) ([]Log, error) {
+func GetLogsByPath(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	path string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"path": path}
 	cursor, err := collection.Find(ctx, filter)
@@ -125,7 +130,8 @@ func GetLogsByPath(client *mongo.Client, collection *mongo.Collection, ctx conte
 
 // GetLogsByBody returns a slice of logs with the defined Body.
 // If the Body is not present in the database err won't be nil.
-func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx context.Context, body string) ([]Log, error) {
+func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	body string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"body": body}
 	cursor, err := collection.Find(ctx, filter)
@@ -140,7 +146,8 @@ func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx conte
 
 // GetLogsByDate returns a slice of logs within the defined date.
 // If the Date is not present in the database err won't be nil.
-func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time) ([]Log, error) {
+func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	date time.Time) ([]Log, error) {
 	var result []Log
 	nextDateInt := date.Add(time.Hour * 24).Unix()
 	filter := bson.M{
@@ -161,7 +168,8 @@ func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx conte
 
 // GetLogsByRange returns a slice of logs within the defined range (date to date).
 // If the Range is not present in the database err won't be nil.
-func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx context.Context, dateStart time.Time, dateEnd time.Time) ([]Log, error) {
+func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	dateStart time.Time, dateEnd time.Time) ([]Log, error) {
 	var result []Log
 	filter := bson.M{
 		"$and": []bson.M{
@@ -181,7 +189,8 @@ func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx cont
 
 // GetLatestNLogs returns a slice of the latest inserted N logs.
 // If they are not present in the database err won't be nil.
-func GetLatestNLogs(client *mongo.Client, collection *mongo.Collection, ctx context.Context, n int64) ([]Log, error) {
+func GetLatestNLogs(client *mongo.Client, collection *mongo.Collection, ctx context.Context,
+	n int64) ([]Log, error) {
 	var result []Log
 	findOptions := options.Find()
 	// Sort by `timestamp` field descending.

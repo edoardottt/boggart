@@ -38,7 +38,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func genericWriter(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client, tmpl template.Template, response string) {
+func genericWriter(w http.ResponseWriter, req *http.Request, dbName string,
+	client *mongo.Client, tmpl template.Template, response string) {
 
 	if !ignorePath(req.URL.Path, tmpl) {
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -68,7 +69,8 @@ func genericWriter(w http.ResponseWriter, req *http.Request, dbName string, clie
 	fmt.Fprint(w, response)
 }
 
-func fileWriter(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client, tmpl template.Template, inputFile string) {
+func fileWriter(w http.ResponseWriter, req *http.Request, dbName string,
+	client *mongo.Client, tmpl template.Template, inputFile string) {
 	content, err := file.ReadFile(inputFile)
 	if err != nil {
 		log.Fatal(err)

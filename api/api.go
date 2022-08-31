@@ -296,7 +296,17 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 	}
 	if method != "" {
 		method = strings.ToUpper(method)
-		if !slice.StringInSlice(method, []string{"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE"}) {
+		if !slice.StringInSlice(method,
+			[]string{
+				"GET",
+				"HEAD",
+				"POST",
+				"PUT",
+				"PATCH",
+				"DELETE",
+				"CONNECT",
+				"OPTIONS",
+				"TRACE"}) {
 			return errors.New("http method unknown")
 		}
 	}
@@ -427,7 +437,17 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 	}
 	if method != "" {
 		method = strings.ToUpper(method)
-		if !slice.StringInSlice(method, []string{"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE"}) {
+		if !slice.StringInSlice(method,
+			[]string{
+				"GET",
+				"HEAD",
+				"POST",
+				"PUT",
+				"PATCH",
+				"DELETE",
+				"CONNECT",
+				"OPTIONS",
+				"TRACE"}) {
 			return errors.New("http method unknown")
 		}
 	}
