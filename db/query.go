@@ -29,8 +29,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//BuildFilter returns a bson.M object representing the
-//mongoDB filter in a query.
+// BuildFilter returns a bson.M object representing the
+// mongoDB filter in a query.
 func BuildFilter(query map[string]interface{}) bson.M {
 	result := make(bson.M, len(query))
 	for k, v := range query {
@@ -46,16 +46,16 @@ func AddCondition(query bson.M, condition string, add interface{}) bson.M {
 	return query
 }
 
-//AddMultipleCondition returns the query passed as input with
-//the multiple queries passed as input.
+// AddMultipleCondition returns the query passed as input with
+// the multiple queries passed as input.
 func AddMultipleCondition(query bson.M, condition string, add []bson.M) bson.M {
 	query[condition] = add
 	return query
 }
 
-//GetLogsWithFilter returns a slice of logs using the
-//filter taken as input.
-//If the result is empty err won't be nil.
+// GetLogsWithFilter returns a slice of logs using the
+// filter taken as input.
+// If the result is empty err won't be nil.
 func GetLogsWithFilter(client *mongo.Client, collection *mongo.Collection,
 	ctx context.Context, filter bson.M, findOptions *options.FindOptions) ([]Log, error) {
 	var result []Log
@@ -69,15 +69,15 @@ func GetLogsWithFilter(client *mongo.Client, collection *mongo.Collection,
 	return result, nil
 }
 
-//AggregatedResult >
+// AggregatedResult >
 type AggregatedResult struct {
 	ID    string `bson:"_id"`
 	Count int    `bson:"count"`
 }
 
-//GetAggregatedLogs returns a slice of aggregated logs
-//using the filter taken as input.
-//If the result is empty err won't be nil.
+// GetAggregatedLogs returns a slice of aggregated logs
+// using the filter taken as input.
+// If the result is empty err won't be nil.
 func GetAggregatedLogs(client *mongo.Client, collection *mongo.Collection,
 	ctx context.Context, filter []bson.M) ([]AggregatedResult, error) {
 	var result []AggregatedResult

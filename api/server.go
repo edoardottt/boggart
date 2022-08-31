@@ -32,7 +32,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//Server > to be filled
+// Server > to be filled
 func Server() {
 
 	// DB setup

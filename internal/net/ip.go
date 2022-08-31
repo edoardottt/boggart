@@ -26,14 +26,14 @@ import (
 	"net"
 )
 
-//ValidIPAddress returns true if the IP taken as input
-//is a valid IP address.
+// ValidIPAddress returns true if the IP taken as input
+// is a valid IP address.
 func ValidIPAddress(ip string) bool {
 	return net.ParseIP(ip) != nil
 }
 
-//PrivateIP returns true if the IP taken as input
-//is a private IP address.
+// PrivateIP returns true if the IP taken as input
+// is a private IP address.
 func PrivateIP(ip string) (bool, error) {
 	if !ValidIPAddress(ip) {
 		return false, errors.New("invalid IP")

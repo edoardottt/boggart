@@ -23,7 +23,7 @@ var funcs = template.FuncMap{
 	},
 }
 
-//Start starts the dashboard >
+// Start starts the dashboard >
 func Start() {
 
 	// DB setup
@@ -86,6 +86,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Clie
 	collection := db.GetLogs(database)
 	logs, err := db.GetLatestNLogs(client, collection, ctx, 30)
 	if err != nil {
+		cancel()
 		log.Fatal(err)
 	}
 

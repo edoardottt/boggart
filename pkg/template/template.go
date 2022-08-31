@@ -28,19 +28,19 @@ import (
 	"github.com/edoardottt/boggart/internal/slice"
 )
 
-//Type contains all the types that a template can assume
+// Type contains all the types that a template can assume
 type Type string
 
-//Types a template can assume
+// Types a template can assume
 const (
 	RawTemplateType    Type = "raw"
 	ShodanTemplateType Type = "shodan"
 )
 
-//HTTPMethod contains all the methods that a HTTP request can assume
+// HTTPMethod contains all the methods that a HTTP request can assume
 type HTTPMethod string
 
-//HTTP Methods a request can have
+// HTTP Methods a request can have
 const (
 	MethodGet     HTTPMethod = "GET"
 	MethodHead    HTTPMethod = "HEAD"
@@ -53,19 +53,19 @@ const (
 	MethodTrace   HTTPMethod = "TRACE"
 )
 
-//ResponseType contains all the types that a HTTP response can assume
+// ResponseType contains all the types that a HTTP response can assume
 type ResponseType string
 
-//Types a response can have
+// Types a response can have
 const (
 	RawResponseType  ResponseType = "raw"
 	FileResponseType ResponseType = "file"
 )
 
-//Request is the struct defining an HTTP request structure in a
-//valid template
+// Request is the struct defining an HTTP request structure in a
+// valid template
 type Request struct {
-	ID           string       `yaml:"id"` //Id is mandatory
+	ID           string       `yaml:"id"` // Id is mandatory
 	Methods      []HTTPMethod `yaml:"methods,omitempty"`
 	Endpoint     string       `yaml:"endpoint,omitempty"`
 	ResponseType ResponseType `yaml:"response-type,omitempty"`
@@ -73,8 +73,8 @@ type Request struct {
 	Content      string       `yaml:"content,omitempty"`
 }
 
-//Template is the struct defining the structure of a configuration template.
-//The configuration file has to be a valid YAML file.
+// Template is the struct defining the structure of a configuration template.
+// The configuration file has to be a valid YAML file.
 type Template struct {
 	Type     Type      `yaml:"type,omitempty"`
 	Requests []Request `yaml:"requests,omitempty"`
@@ -82,11 +82,11 @@ type Template struct {
 	IP       string    `yaml:"ip,omitempty"`
 }
 
-//----------------------------------------
+// ---------------------------------------
 // -------------- HELPERS ----------------
-//----------------------------------------
+// ---------------------------------------
 
-//CheckTemplate checks if a generic template is formatted in a proper way.
+// CheckTemplate checks if a generic template is formatted in a proper way.
 func CheckTemplate(tmpl Template) error {
 	if tmpl.Type == "" {
 		return errors.New("template: missing template type")
@@ -100,7 +100,7 @@ func CheckTemplate(tmpl Template) error {
 	return nil
 }
 
-//CheckRawTeplate checks if a raw template is formatted in a proper way.
+// CheckRawTeplate checks if a raw template is formatted in a proper way.
 func CheckRawTeplate(tmpl Template) error {
 	if !IDUnique(tmpl) {
 		return errors.New("template: request IDs are not unique")
@@ -126,7 +126,7 @@ func CheckRawTeplate(tmpl Template) error {
 	return nil
 }
 
-//CheckShodanTemplate checks if a shodan template is formatted in a proper way.
+// CheckShodanTemplate checks if a shodan template is formatted in a proper way.
 func CheckShodanTemplate(tmpl Template) error {
 	if tmpl.IP != "" {
 		return errors.New("template: ip is mandatory")
@@ -134,9 +134,9 @@ func CheckShodanTemplate(tmpl Template) error {
 	return nil
 }
 
-//IDUnique checks if in a raw template there are
-//duplicate request IDs.
-//True for shodan template
+// IDUnique checks if in a raw template there are
+// duplicate request IDs.
+// True for shodan template
 func IDUnique(tmpl Template) bool {
 	if tmpl.Type == "raw" {
 		keys := make(map[string]bool)
@@ -152,9 +152,9 @@ func IDUnique(tmpl Template) bool {
 	return true
 }
 
-//EndpointUnique checks if in a raw template there are
-//duplicate request endpoints.
-//True for shodan template
+// EndpointUnique checks if in a raw template there are
+// duplicate request endpoints.
+// True for shodan template
 func EndpointUnique(tmpl Template) bool {
 	if tmpl.Type == "raw" {
 		keys := make(map[string]bool)
@@ -170,9 +170,9 @@ func EndpointUnique(tmpl Template) bool {
 	return true
 }
 
-//MissingTemplateDefault checks if in a raw template there is
-//a request with a default action.
-//True for shodan template
+// MissingTemplateDefault checks if in a raw template there is
+// a request with a default action.
+// True for shodan template
 func MissingTemplateDefault(tmpl Template) bool {
 	var missing = true
 	if tmpl.Type == "raw" {
@@ -187,9 +187,9 @@ func MissingTemplateDefault(tmpl Template) bool {
 	return missing
 }
 
-//RootEndpointExists checks if a request handling for
-//the root endpoint exists.
-//True for shodan template
+// RootEndpointExists checks if a request handling for
+// the root endpoint exists.
+// True for shodan template
 func RootEndpointExists(tmpl Template) bool {
 	if tmpl.Type == "raw" {
 		for _, entry := range tmpl.Requests {
@@ -201,8 +201,8 @@ func RootEndpointExists(tmpl Template) bool {
 	return true
 }
 
-//Default returns the default response.
-//Empty request for shodan template
+// Default returns the default response.
+// Empty request for shodan template
 func Default(tmpl Template) Request {
 	if tmpl.Type == "raw" {
 		for _, entry := range tmpl.Requests {
@@ -214,8 +214,8 @@ func Default(tmpl Template) Request {
 	return Request{}
 }
 
-//HTTPMethodsAsString transforms a slice of HttpMethod to a
-//slice of strings.
+// HTTPMethodsAsString transforms a slice of HttpMethod to a
+// slice of strings.
 func HTTPMethodsAsString(methods []HTTPMethod) []string {
 	var result []string
 	for _, method := range methods {
@@ -224,9 +224,9 @@ func HTTPMethodsAsString(methods []HTTPMethod) []string {
 	return result
 }
 
-//CheckRequests checks if the requests (except for default one)
-//are ok. True if everything is correct.
-//True for shodan template
+// CheckRequests checks if the requests (except for default one)
+// are ok. True if everything is correct.
+// True for shodan template
 func CheckRequests(tmpl Template) error {
 	for _, entry := range tmpl.Requests {
 		if strings.Trim(entry.ID, " ") == "" {
@@ -253,9 +253,9 @@ func CheckRequests(tmpl Template) error {
 	return nil
 }
 
-//CheckDefaultRequest checks if the default request
-//is ok. True if everything is correct.
-//True for shodan template
+// CheckDefaultRequest checks if the default request
+// is ok. True if everything is correct.
+// True for shodan template
 func CheckDefaultRequest(tmpl Template) error {
 	entry := Default(tmpl)
 	if strings.Trim(string(entry.ResponseType), " ") == "" {
@@ -270,9 +270,9 @@ func CheckDefaultRequest(tmpl Template) error {
 	return nil
 }
 
-//CheckIgnore checks if the ignore array
-//is ok. True if everything is correct.
-//True for shodan template
+// CheckIgnore checks if the ignore array
+// is ok. True if everything is correct.
+// True for shodan template
 func CheckIgnore(tmpl Template) error {
 	input := tmpl.Ignore
 	if len(input) == 0 {

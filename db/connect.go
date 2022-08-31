@@ -30,9 +30,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//ConnectDB creates and returns a client connected by a
-//connection string to mongoDB.
-//Also checks the connection if everything is ok.
+// ConnectDB creates and returns a client connected by a
+// connection string to mongoDB.
+// Also checks the connection if everything is ok.
 func ConnectDB(connectionString string) *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(connectionString))
 	if err != nil {
@@ -52,14 +52,14 @@ func ConnectDB(connectionString string) *mongo.Client {
 	return client
 }
 
-//GetDatabase returns the pointer to the database (input).
+// GetDatabase returns the pointer to the database (input).
 func GetDatabase(client *mongo.Client, databaseName string) *mongo.Database {
 	database := client.Database(databaseName)
 
 	return database
 }
 
-//GetLogs returns the collection of logs
+// GetLogs returns the collection of logs
 func GetLogs(database *mongo.Database) *mongo.Collection {
 	return database.Collection("logs")
 }

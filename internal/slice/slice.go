@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 package slice
 
-//RemoveDuplicateValues removes duplicates from a slice of strings.
+// RemoveDuplicateValues removes duplicates from a slice of strings.
 func RemoveDuplicateValues(strSlice []string) []string {
 	keys := make(map[string]bool)
 	list := []string{}
@@ -34,7 +34,7 @@ func RemoveDuplicateValues(strSlice []string) []string {
 	return list
 }
 
-//StringInSlice checks if the string is present in the slice.
+// StringInSlice checks if the string is present in the slice.
 func StringInSlice(input string, slice []string) bool {
 	for _, elem := range slice {
 		if elem == input {

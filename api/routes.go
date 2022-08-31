@@ -21,7 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 package api
 
-//Api routes
+// Api routes
 const (
 	//This is the 'fallback' endpoint, when
 	//a client tries to request a resource on an

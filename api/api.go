@@ -41,7 +41,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//NotFoundHandler tells you if the API server is listening
+// NotFoundHandler tells you if the API server is listening
 func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
 	//set content-type
 	w.Header().Add("Content-Type", "application/json")
@@ -51,7 +51,7 @@ func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "404 page not found")
 }
 
-//HealthHandler tells you if the API server is listening
+// HealthHandler tells you if the API server is listening
 func HealthHandler(w http.ResponseWriter, req *http.Request) {
 	//set content-type
 	w.Header().Add("Content-Type", "application/json")
@@ -61,7 +61,7 @@ func HealthHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "OK")
 }
 
-//IPInfoResponse >
+// IPInfoResponse >
 type IPInfoResponse struct {
 	Logs         int
 	LastActivity time.Time
@@ -70,7 +70,7 @@ type IPInfoResponse struct {
 	TopBodies    []string
 }
 
-//IPInfoHandler >
+// IPInfoHandler >
 func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -140,39 +140,39 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	}
 }
 
-//LogsHandler >
+// LogsHandler >
 func LogsHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-//LogsDetectHandler >
+// LogsDetectHandler >
 func LogsDetectHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-//StatsHandler >
+// StatsHandler >
 func StatsHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-//StatsDBHandler >
+// StatsDBHandler >
 func StatsDBHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
 	fmt.Fprint(w, "TODO")
 }
 
-//----------------------------------------
+// ---------------------------------------
 // -------------- HELPERS ----------------
-//----------------------------------------
+// ---------------------------------------
 
-//IsIntInTheRange >
+// IsIntInTheRange >
 func IsIntInTheRange(input string, start int, end int) (int, error) {
 	intVar, err := strconv.Atoi(input)
 	if err != nil {
@@ -184,7 +184,7 @@ func IsIntInTheRange(input string, start int, end int) (int, error) {
 	return 0, errors.New("integer not in the range >= " + fmt.Sprint(start) + " && <= " + fmt.Sprint(end))
 }
 
-//Top >
+// Top >
 func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	client *mongo.Client, what string, howMany int, IP string) ([]string, error) {
 
@@ -228,7 +228,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	return result, nil
 }
 
-//GetApiLogsQuery >
+// GetApiLogsQuery >
 // - id
 // - ip
 // - method
@@ -257,7 +257,7 @@ func GetApiLogsQuery(req *http.Request) (bson.M, error) {
 	return bson.M{}, nil
 }
 
-//CheckApiLogsParams >
+// CheckApiLogsParams >
 func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error {
 	//if id is present, the others are blank
 	if id != "" {
@@ -308,7 +308,7 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 	return nil
 }
 
-//BuildApiLogsQuery >
+// BuildApiLogsQuery >
 func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M {
 	var filter bson.M
 	if id != "" {
@@ -357,37 +357,11 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 			{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
 		})
 	}
-	if lt != "" && gt != "" {
-		ltT, _ := TranslateTime(lt)
-		gtT, _ := TranslateTime(gt)
-		if len(filter) == 0 {
-			filter = db.BuildFilter(map[string]interface{}{})
-		}
-		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
-			{"timestamp": bson.M{"$gte": gtT.Unix()}},
-			{"timestamp": bson.M{"$lt": ltT.Add(time.Hour * 24).Unix()}},
-		})
-	} else if lt != "" {
-		ltT, _ := TranslateTime(lt)
-		if len(filter) == 0 {
-			filter = db.BuildFilter(map[string]interface{}{})
-		}
-		filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
-			{"$lt": ltT.Unix()},
-		})
-	} else if gt != "" {
-		gtT, _ := TranslateTime(gt)
-		if len(filter) == 0 {
-			filter = db.BuildFilter(map[string]interface{}{})
-		}
-		filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
-			{"$gte": gtT.Unix()},
-		})
-	}
+	filter = AddTimestampToQuery(lt, gt, filter)
 	return filter
 }
 
-//GetApiDetectQuery >
+// GetApiDetectQuery >
 // - regex (Go format)
 // - attack (use a list of well known regex)
 // - target (where to apply the regex)
@@ -420,7 +394,7 @@ func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 	return bson.M{}, nil
 }
 
-//CheckApiDetectParams >
+// CheckApiDetectParams >
 func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt string) error {
 	//if date is present, lt and gt are blank
 	if date != "" {
@@ -465,7 +439,7 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 	return nil
 }
 
-//BuildApiDetectQuery
+// BuildApiDetectQuery
 func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, lt, gt string) bson.M {
 	var filter bson.M
 	/*
@@ -514,6 +488,21 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 			{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
 		})
 	}
+	filter = AddTimestampToQuery(lt, gt, filter)
+	return filter
+}
+
+// TranslateTime >
+func TranslateTime(input string) (time.Time, error) {
+	t, err := time.Parse("2006-01-02T15:04:05-0700", input)
+	if err != nil {
+		return time.Time{}, errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
+	}
+	return t, nil
+}
+
+// AddTimestampToQuery >
+func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 	if lt != "" && gt != "" {
 		ltT, _ := TranslateTime(lt)
 		gtT, _ := TranslateTime(gt)
@@ -542,13 +531,4 @@ func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, 
 		})
 	}
 	return filter
-}
-
-//TranslateTime >
-func TranslateTime(input string) (time.Time, error) {
-	t, err := time.Parse("2006-01-02T15:04:05-0700", input)
-	if err != nil {
-		return time.Time{}, errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
-	}
-	return t, nil
 }

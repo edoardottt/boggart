@@ -35,8 +35,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//Log defines the structure of a log record
-//in the database
+// Log defines the structure of a log record
+// in the database
 type Log struct {
 	ID        primitive.ObjectID  `bson:"_id"`
 	IP        string              `bson:"ip"`
@@ -47,12 +47,12 @@ type Log struct {
 	Timestamp int64               `bson:"timestamp"`
 }
 
-//IsEmpty checks if a Log is a new one (just created)
+// IsEmpty checks if a Log is a new one (just created)
 func (log Log) IsEmpty() bool {
 	return reflect.DeepEqual(log, Log{})
 }
 
-//InsertLog inserts a log record into the logs collection
+// InsertLog inserts a log record into the logs collection
 func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.Context, record Log) interface{} {
 	record.ID = primitive.NewObjectID()
 	result, err := collection.InsertOne(ctx, record) //result
@@ -63,8 +63,8 @@ func InsertLog(client *mongo.Client, collection *mongo.Collection, ctx context.C
 	return result.InsertedID
 }
 
-//GetLogByID returns a log struct with the defined ID.
-//If the ID is not present in the database err won't be nil.
+// GetLogByID returns a log struct with the defined ID.
+// If the ID is not present in the database err won't be nil.
 func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.Context, ID string) (Log, error) {
 	var result Log
 	objectId, err := primitive.ObjectIDFromHex(ID)
@@ -78,8 +78,8 @@ func GetLogByID(client *mongo.Client, collection *mongo.Collection, ctx context.
 	return result, nil
 }
 
-//GetLogsByIP returns a slice of logs with the defined IP.
-//If the IP is not present in the database err won't be nil.
+// GetLogsByIP returns a slice of logs with the defined IP.
+// If the IP is not present in the database err won't be nil.
 func GetLogsByIP(client *mongo.Client, collection *mongo.Collection, ctx context.Context, IP string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"ip": IP}
@@ -93,8 +93,8 @@ func GetLogsByIP(client *mongo.Client, collection *mongo.Collection, ctx context
 	return result, nil
 }
 
-//GetLogsByMethod returns a slice of logs with the defined HTTP Method.
-//If the Method is not present in the database err won't be nil.
+// GetLogsByMethod returns a slice of logs with the defined HTTP Method.
+// If the Method is not present in the database err won't be nil.
 func GetLogsByMethod(client *mongo.Client, collection *mongo.Collection, ctx context.Context, method string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"method": method}
@@ -108,8 +108,8 @@ func GetLogsByMethod(client *mongo.Client, collection *mongo.Collection, ctx con
 	return result, nil
 }
 
-//GetLogsByPath returns a slice of logs with the defined Path.
-//If the Path is not present in the database err won't be nil.
+// GetLogsByPath returns a slice of logs with the defined Path.
+// If the Path is not present in the database err won't be nil.
 func GetLogsByPath(client *mongo.Client, collection *mongo.Collection, ctx context.Context, path string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"path": path}
@@ -123,8 +123,8 @@ func GetLogsByPath(client *mongo.Client, collection *mongo.Collection, ctx conte
 	return result, nil
 }
 
-//GetLogsByBody returns a slice of logs with the defined Body.
-//If the Body is not present in the database err won't be nil.
+// GetLogsByBody returns a slice of logs with the defined Body.
+// If the Body is not present in the database err won't be nil.
 func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx context.Context, body string) ([]Log, error) {
 	var result []Log
 	filter := bson.M{"body": body}
@@ -138,8 +138,8 @@ func GetLogsByBody(client *mongo.Client, collection *mongo.Collection, ctx conte
 	return result, nil
 }
 
-//GetLogsByDate returns a slice of logs within the defined date.
-//If the Date is not present in the database err won't be nil.
+// GetLogsByDate returns a slice of logs within the defined date.
+// If the Date is not present in the database err won't be nil.
 func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx context.Context, date time.Time) ([]Log, error) {
 	var result []Log
 	nextDateInt := date.Add(time.Hour * 24).Unix()
@@ -159,8 +159,8 @@ func GetLogsByDate(client *mongo.Client, collection *mongo.Collection, ctx conte
 	return result, nil
 }
 
-//GetLogsByRange returns a slice of logs within the defined range (date to date).
-//If the Range is not present in the database err won't be nil.
+// GetLogsByRange returns a slice of logs within the defined range (date to date).
+// If the Range is not present in the database err won't be nil.
 func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx context.Context, dateStart time.Time, dateEnd time.Time) ([]Log, error) {
 	var result []Log
 	filter := bson.M{
@@ -179,8 +179,8 @@ func GetLogsByRange(client *mongo.Client, collection *mongo.Collection, ctx cont
 	return result, nil
 }
 
-//GetLatestNLogs returns a slice of the latest inserted N logs.
-//If they are not present in the database err won't be nil.
+// GetLatestNLogs returns a slice of the latest inserted N logs.
+// If they are not present in the database err won't be nil.
 func GetLatestNLogs(client *mongo.Client, collection *mongo.Collection, ctx context.Context, n int64) ([]Log, error) {
 	var result []Log
 	findOptions := options.Find()

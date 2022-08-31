@@ -30,9 +30,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//ReadTemplate gets as input a filename and returns a Template object.
-//The filename should be a YAML file.
-//To check if the template is valid YAML check the error.
+// ReadTemplate gets as input a filename and returns a Template object.
+// The filename should be a YAML file.
+// To check if the template is valid YAML check the error.
 func ReadTemplate(filename string) (template.Template, error) {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {

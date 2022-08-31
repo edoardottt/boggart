@@ -102,7 +102,7 @@ func fileWriter(w http.ResponseWriter, req *http.Request, dbName string, client 
 	fmt.Fprint(w, content)
 }
 
-//Raw > to be filled
+// Raw > to be filled
 func Raw(tmpl template.Template) {
 
 	// DB setup
@@ -167,7 +167,7 @@ func Raw(tmpl template.Template) {
 	log.Fatal(srv.ListenAndServe())
 }
 
-//ignorePath
+// ignorePath
 func ignorePath(path string, tmpl template.Template) bool {
 	for _, elem := range tmpl.Ignore {
 		if elem == path {
