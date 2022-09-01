@@ -79,6 +79,8 @@ func APIInfo(apiKey string) APIInfoResponse {
 
 	body, err := ioutil.ReadAll(resp.Body)
 
+	defer resp.Body.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}
