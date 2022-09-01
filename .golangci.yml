@@ -13,6 +13,7 @@ linters:
     - interfacer
     - golint
     - ifshort
+    - gofumpt
 
 linters-settings:
   varnamelen:
