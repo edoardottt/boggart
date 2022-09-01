@@ -61,11 +61,11 @@ func Start() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		dashboardHandler(w, r, client, dbName, tmpl)
+		dashboardHandler(w, client, dbName, tmpl)
 	})
 
 	router.HandleFunc("/id/{id}", func(w http.ResponseWriter, r *http.Request) {
-		dashboardIDHandler(w, r, client, dbName, tmplID, mux.Vars(r)["id"])
+		dashboardIDHandler(w, client, dbName, tmplID, mux.Vars(r)["id"])
 	})
 
 	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))
@@ -85,8 +85,8 @@ func Start() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client,
-	dbName string, tmpl *template.Template) {
+func dashboardHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
+	tmpl *template.Template) {
 	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 	defer cancel()
 
@@ -117,8 +117,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Clie
 	}
 }
 
-func dashboardIDHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client,
-	dbName string, tmpl *template.Template, id string) {
+func dashboardIDHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
+	tmpl *template.Template, id string) {
 	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 	defer cancel()
 
