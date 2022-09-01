@@ -59,8 +59,8 @@ func AddMultipleCondition(query bson.M, condition string, add []bson.M) bson.M {
 // GetLogsWithFilter returns a slice of logs using the
 // filter taken as input.
 // If the result is empty err won't be nil.
-func GetLogsWithFilter(client *mongo.Client, collection *mongo.Collection,
-	ctx context.Context, filter bson.M, findOptions *options.FindOptions) ([]Log, error) {
+func GetLogsWithFilter(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
+	filter bson.M, findOptions *options.FindOptions) ([]Log, error) {
 	var result []Log
 
 	cursor, err := collection.Find(ctx, filter, findOptions)
@@ -84,8 +84,8 @@ type AggregatedResult struct {
 // GetAggregatedLogs returns a slice of aggregated logs
 // using the filter taken as input.
 // If the result is empty err won't be nil.
-func GetAggregatedLogs(client *mongo.Client, collection *mongo.Collection,
-	ctx context.Context, filter []bson.M) ([]AggregatedResult, error) {
+func GetAggregatedLogs(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
+	filter []bson.M) ([]AggregatedResult, error) {
 	var result []AggregatedResult
 
 	cursor, err := collection.Aggregate(ctx, filter)

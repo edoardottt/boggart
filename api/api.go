@@ -244,7 +244,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	return result, nil
 }
 
-// GetApiLogsQuery >
+// GetAPILogsQuery >
 // - id
 // - ip
 // - method
@@ -253,7 +253,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 // - date (YYYY-MM-DD)
 // - lt (less than YYYY-MM-DD-HH-MM-SS)
 // - gt (greater than YYYY-MM-DD-HH-MM-SS).
-func GetApiLogsQuery(req *http.Request) (bson.M, error) {
+func GetAPILogsQuery(req *http.Request) (bson.M, error) {
 	id := req.URL.Query().Get("id")
 	ip := req.URL.Query().Get("ip")
 	method := req.URL.Query().Get("method")
@@ -267,7 +267,7 @@ func GetApiLogsQuery(req *http.Request) (bson.M, error) {
 	date := req.URL.Query().Get("date")
 	lt := req.URL.Query().Get("lt")
 	gt := req.URL.Query().Get("gt")
-	err = CheckApiLogsParams(id, ip, method, header, path, date, lt, gt)
+	err = CheckAPILogsParams(id, ip, method, header, path, date, lt, gt)
 
 	if err != nil {
 		return bson.M{}, err
@@ -277,8 +277,8 @@ func GetApiLogsQuery(req *http.Request) (bson.M, error) {
 	return bson.M{}, nil
 }
 
-// CheckApiLogsParams.
-func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error {
+// CheckAPILogsParams.
+func CheckAPILogsParams(id, ip, method, header, path, date, lt, gt string) error {
 	// if id is present, the others are blank.
 	if id != "" {
 		if ip != "" || method != "" || header != "" || path != "" || date != "" || lt != "" || gt != "" {
@@ -348,8 +348,8 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 	return nil
 }
 
-// BuildApiLogsQuery.
-func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M {
+// BuildAPILogsQuery.
+func BuildAPILogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M {
 	var filter bson.M
 	if id != "" {
 		filter = db.BuildFilter(map[string]interface{}{"_id": id})
@@ -412,7 +412,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 	return filter
 }
 
-// GetApiDetectQuery >
+// GetAPIDetectQuery >
 // - regex (Go format)
 // - attack (use a list of well known regex)
 // - target (where to apply the regex)
@@ -423,7 +423,7 @@ func BuildApiLogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 // - date
 // - lt (less than YYYY-MM-DD-HH-MM-SS)
 // - gt (greater than YYYY-MM-DD-HH-MM-SS).
-func GetApiDetectQuery(req *http.Request) (bson.M, error) {
+func GetAPIDetectQuery(req *http.Request) (bson.M, error) {
 	regex := req.URL.Query().Get("regex")
 	attack := req.URL.Query().Get("attack")
 	target := req.URL.Query().Get("target")
@@ -439,7 +439,7 @@ func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 	date := req.URL.Query().Get("date")
 	lt := req.URL.Query().Get("lt")
 	gt := req.URL.Query().Get("gt")
-	err = CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt)
+	err = CheckAPIDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt)
 
 	if err != nil {
 		return bson.M{}, err
@@ -449,8 +449,8 @@ func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 	return bson.M{}, nil
 }
 
-// CheckApiDetectParams.
-func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt string) error {
+// CheckAPIDetectParams.
+func CheckAPIDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt string) error {
 	// if date is present, lt and gt are blank.
 	if date != "" {
 		if lt != "" || gt != "" {
@@ -512,8 +512,8 @@ func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date,
 	return nil
 }
 
-// BuildApiDetectQuery.
-func BuildApiDetectQuery(regex, attack, target, ip, method, header, path, date, lt, gt string) bson.M {
+// BuildAPIDetectQuery.
+func BuildAPIDetectQuery(regex, attack, target, ip, method, header, path, date, lt, gt string) bson.M {
 	var filter bson.M
 	/*
 		DEBUG
