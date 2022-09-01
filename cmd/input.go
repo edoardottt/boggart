@@ -36,14 +36,14 @@ import (
 func ReadTemplate(filename string) (template.Template, error) {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return template.Template{}, fmt.Errorf("failed to read template file: %v", err)
+		return template.Template{}, fmt.Errorf("%v: %w", ErrReadTemplate, err)
 	}
 
 	result := template.Template{}
 	err = yaml.Unmarshal(buf, &result)
 
 	if err != nil {
-		return template.Template{}, fmt.Errorf("in file %q: %w", filename, err)
+		return template.Template{}, fmt.Errorf("%v %q: %w", ErrUnmarshal, filename, err)
 	}
 
 	return result, nil
