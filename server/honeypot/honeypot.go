@@ -40,7 +40,6 @@ import (
 
 func genericWriter(w http.ResponseWriter, req *http.Request, dbName string,
 	client *mongo.Client, tmpl template.Template, response string) {
-
 	if !ignorePath(req.URL.Path, tmpl) {
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 		defer cancel()

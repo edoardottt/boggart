@@ -199,7 +199,6 @@ func IsIntInTheRange(input string, start int, end int) (int, error) {
 // Top.
 func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	client *mongo.Client, what string, howMany int, ip string) ([]string, error) {
-
 	if what != "method" && what != "path" && what != "body" {
 		return nil, ErrPossibleTopValue
 	}
