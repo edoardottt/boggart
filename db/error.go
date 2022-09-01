@@ -24,5 +24,8 @@ package db
 import "errors"
 
 var (
-	ErrInvalidID = errors.New("invalid id")
+	ErrInvalidID            = errors.New("invalid id")
+	ErrFailedCursor         = errors.New("failed to get cursor for logs by")
+	ErrFailedFindLog        = errors.New("failed to get logs by")
+	ErrFailedFindLatestLogs = errors.New("failed to get latest n logs")
 )

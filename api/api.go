@@ -186,7 +186,7 @@ func StatsDBHandler(w http.ResponseWriter, req *http.Request, dbName string, cli
 func IsIntInTheRange(input string, start int, end int) (int, error) {
 	intVar, err := strconv.Atoi(input)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("failed to convert input to int: %v", err)
 	}
 
 	if intVar >= start && intVar <= end {
@@ -222,7 +222,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, "Error while retrieving data.")
 
-		return nil, err
+		return nil, fmt.Errorf("error while retrieving data: %v", err)
 	}
 
 	// 200: but
@@ -261,7 +261,7 @@ func GetAPILogsQuery(req *http.Request) (bson.M, error) {
 	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
 
 	if err != nil {
-		return bson.M{}, err
+		return bson.M{}, fmt.Errorf("failed to unescape query: %v", err)
 	}
 
 	date := req.URL.Query().Get("date")
@@ -433,7 +433,7 @@ func GetAPIDetectQuery(req *http.Request) (bson.M, error) {
 	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
 
 	if err != nil {
-		return bson.M{}, err
+		return bson.M{}, fmt.Errorf("failed to unescape query: %v", err)
 	}
 
 	date := req.URL.Query().Get("date")

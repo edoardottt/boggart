@@ -36,7 +36,7 @@ import (
 func ReadTemplate(filename string) (template.Template, error) {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return template.Template{}, err
+		return template.Template{}, fmt.Errorf("failed to read template file: %v", err)
 	}
 
 	result := template.Template{}

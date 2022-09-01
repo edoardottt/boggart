@@ -80,7 +80,7 @@ func GetLogByID(ctx context.Context, client *mongo.Client, collection *mongo.Col
 	filter := bson.M{"_id": objectID}
 
 	if err := collection.FindOne(ctx, filter).Decode(&result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v ID: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -96,11 +96,11 @@ func GetLogsByIP(ctx context.Context, client *mongo.Client, collection *mongo.Co
 	cursor, err := collection.Find(ctx, filter)
 
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v IP: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v IP: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -116,11 +116,11 @@ func GetLogsByMethod(ctx context.Context, client *mongo.Client, collection *mong
 	cursor, err := collection.Find(ctx, filter)
 
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Method: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Method: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -136,11 +136,11 @@ func GetLogsByPath(ctx context.Context, client *mongo.Client, collection *mongo.
 	cursor, err := collection.Find(ctx, filter)
 
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Path: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Path: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -156,11 +156,11 @@ func GetLogsByBody(ctx context.Context, client *mongo.Client, collection *mongo.
 	cursor, err := collection.Find(ctx, filter)
 
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Body: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Body: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -182,11 +182,11 @@ func GetLogsByDate(ctx context.Context, client *mongo.Client, collection *mongo.
 
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Date: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Date: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -207,11 +207,11 @@ func GetLogsByRange(ctx context.Context, client *mongo.Client, collection *mongo
 	cursor, err := collection.Find(ctx, filter)
 
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Range: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v Range: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -230,11 +230,11 @@ func GetLatestNLogs(ctx context.Context, client *mongo.Client, collection *mongo
 	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
 
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v latest n: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v: %v", ErrFailedFindLatestLogs, err)
 	}
 
 	return result, nil

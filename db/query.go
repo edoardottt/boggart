@@ -23,6 +23,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -65,11 +66,11 @@ func GetLogsWithFilter(ctx context.Context, client *mongo.Client, collection *mo
 
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v filters: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v filters: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
@@ -90,11 +91,11 @@ func GetAggregatedLogs(ctx context.Context, client *mongo.Client, collection *mo
 
 	cursor, err := collection.Aggregate(ctx, filter)
 	if err != nil {
-		return result, err
+		return result, fmt.Errorf("%v aggregated query: %v", ErrFailedCursor, err)
 	}
 
 	if err = cursor.All(ctx, &result); err != nil {
-		return result, err
+		return result, fmt.Errorf("%v aggregated query: %v", ErrFailedFindLog, err)
 	}
 
 	return result, nil
