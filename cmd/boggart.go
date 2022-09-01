@@ -35,7 +35,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//Check Template format
+	// Check Template format
 	if err := template.CheckTemplate(tmpl); err != nil {
 		log.Fatal(err)
 	}

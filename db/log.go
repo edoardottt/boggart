@@ -68,10 +68,10 @@ func InsertLog(ctx context.Context, client *mongo.Client, collection *mongo.Coll
 // GetLogByID returns a log struct with the defined ID.
 // If the ID is not present in the database err won't be nil.
 func GetLogByID(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
-	ID string) (Log, error) {
+	id string) (Log, error) {
 	var result Log
 
-	objectID, err := primitive.ObjectIDFromHex(ID)
+	objectID, err := primitive.ObjectIDFromHex(id)
 
 	if err != nil {
 		return result, ErrInvalidID
@@ -89,10 +89,10 @@ func GetLogByID(ctx context.Context, client *mongo.Client, collection *mongo.Col
 // GetLogsByIP returns a slice of logs with the defined IP.
 // If the IP is not present in the database err won't be nil.
 func GetLogsByIP(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
-	IP string) ([]Log, error) {
+	ip string) ([]Log, error) {
 	var result []Log
 
-	filter := bson.M{"ip": IP}
+	filter := bson.M{"ip": ip}
 	cursor, err := collection.Find(ctx, filter)
 
 	if err != nil {

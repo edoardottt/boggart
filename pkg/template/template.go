@@ -240,9 +240,9 @@ func Default(tmpl Template) Request {
 // HTTPMethodsAsString transforms a slice of HttpMethod to a
 // slice of strings.
 func HTTPMethodsAsString(methods []HTTPMethod) []string {
-	var result []string
-	for _, method := range methods {
-		result = append(result, string(method))
+	result := make([]string, len(methods))
+	for i, method := range methods {
+		result[i] = string(method)
 	}
 
 	return result

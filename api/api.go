@@ -43,21 +43,21 @@ import (
 
 // NotFoundHandler tells you if the API server is listening.
 func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
-	//set content-type.
+	// set content-type.
 	w.Header().Add("Content-Type", "application/json")
-	//specify status code.
+	// specify status code.
 	w.WriteHeader(http.StatusNotFound)
-	//update response writer.
+	// update response writer.
 	fmt.Fprintf(w, "404 page not found")
 }
 
 // HealthHandler tells you if the API server is listening.
 func HealthHandler(w http.ResponseWriter, req *http.Request) {
-	//set content-type.
+	// set content-type.
 	w.Header().Add("Content-Type", "application/json")
-	//specify status code.
+	// specify status code.
 	w.WriteHeader(http.StatusOK)
-	//update response writer.
+	// update response writer.
 	fmt.Fprintf(w, "OK")
 }
 
@@ -198,7 +198,7 @@ func IsIntInTheRange(input string, start int, end int) (int, error) {
 
 // Top.
 func Top(w http.ResponseWriter, req *http.Request, dbName string,
-	client *mongo.Client, what string, howMany int, IP string) ([]string, error) {
+	client *mongo.Client, what string, howMany int, ip string) ([]string, error) {
 
 	if what != "method" && what != "path" && what != "body" {
 		return nil, ErrPossibleTopValue
@@ -212,7 +212,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	collection := db.GetLogs(database)
 
 	filter := []bson.M{
-		{"$match": bson.M{"ip": IP}},
+		{"$match": bson.M{"ip": ip}},
 		{"$sortByCount": "$" + what},
 		{"$limit": howMany},
 	}
@@ -315,7 +315,6 @@ func CheckApiLogsParams(id, ip, method, header, path, date, lt, gt string) error
 	}
 
 	if lt != "" && gt != "" {
-
 		ltT, _ := TranslateTime(lt)
 		gtT, _ := TranslateTime(gt)
 
@@ -453,7 +452,7 @@ func GetApiDetectQuery(req *http.Request) (bson.M, error) {
 
 // CheckApiDetectParams.
 func CheckApiDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt string) error {
-	//if date is present, lt and gt are blank.
+	// if date is present, lt and gt are blank.
 	if date != "" {
 		if lt != "" || gt != "" {
 			return ErrDateDefined
