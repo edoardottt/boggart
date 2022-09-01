@@ -68,8 +68,8 @@ type Request struct {
 	ID           string       `yaml:"id"` // Id is mandatory
 	Methods      []HTTPMethod `yaml:"methods,omitempty"`
 	Endpoint     string       `yaml:"endpoint,omitempty"`
-	ResponseType ResponseType `yaml:"responseType,omitempty"`
-	ContentType  string       `yaml:"contentType,omitempty"`
+	ResponseType ResponseType `yaml:"response-type,omitempty"`
+	ContentType  string       `yaml:"content-type,omitempty"`
 	Content      string       `yaml:"content,omitempty"`
 }
 

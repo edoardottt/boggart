@@ -55,10 +55,24 @@ linters-settings:
       - m map[string]int
       - w http.ResponseWriter
       - n int64
+      - i int64
 
   wsl:
     strict-append: false
     enforce-err-cuddling: true
+
+  tagliatelle:
+    # Check the struck tag name case.
+    case:
+      # Use the struct field name to check the name of the struct tag.
+      # Default: false
+      use-field-name: true
+      rules:
+        # Any struct tag type can be used.
+        # Support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`
+        json: kebab
+        yaml: kebab
+        xml: kebab
 
 issues:
   exclude-rules:

@@ -54,18 +54,18 @@ func GetShodanAPIKey() (string, error) {
 // APIInfoResponse defines the structure of the Info
 // Api response.
 type APIInfoResponse struct {
-	ScanCredits int `json:"scanCredits"`
+	ScanCredits int `json:"scan-credits"`
 	UsageLimits struct {
-		ScanCredits  int `json:"scanCredits"`
-		QueryCredits int `json:"queryCredits"`
-		MonitoredIps int `json:"monitoredIps"`
-	} `json:"usageLimits"`
+		ScanCredits  int `json:"scan-credits"`
+		QueryCredits int `json:"query-credits"`
+		MonitoredIps int `json:"monitored-ips"`
+	} `json:"usage-limits"`
 	Plan         string `json:"plan"`
 	HTTPS        bool   `json:"https"`
 	Unlocked     bool   `json:"unlocked"`
-	QueryCredits int    `json:"queryCredits"`
-	MonitoredIps int    `json:"monitoredIps"`
-	UnlockedLeft int    `json:"unlockedLeft"`
+	QueryCredits int    `json:"query-credits"`
+	MonitoredIps int    `json:"monitored-ips"`
+	UnlockedLeft int    `json:"unlocked-left"`
 	Telnet       bool   `json:"telnet"`
 }
 
@@ -103,13 +103,13 @@ func HostIPInfo(hostIP string, apiKey string) {
 
 // Host.
 type Host struct {
-	RegionCode  string        `json:"regionCode"`
+	RegionCode  string        `json:"region-code"`
 	Tags        []interface{} `json:"tags"`
 	IP          int64         `json:"ip"`
-	AreaCode    interface{}   `json:"areaCode"`
+	AreaCode    interface{}   `json:"area-code"`
 	Domains     []string      `json:"domains"`
 	Hostnames   []string      `json:"hostnames"`
-	CountryCode string        `json:"countryCode"`
+	CountryCode string        `json:"country-code"`
 	Org         string        `json:"org"`
 	Data        []struct {
 		IP     int64 `json:"ip"`
@@ -124,22 +124,22 @@ type Host struct {
 		Product string `json:"product"`
 		HTTP    struct {
 			Status      int           `json:"status"`
-			RobotsHash  interface{}   `json:"robotsHash"`
+			RobotsHash  interface{}   `json:"robots-hash"`
 			Redirects   []interface{} `json:"redirects"`
 			Securitytxt interface{}   `json:"securitytxt"`
 			Title       string        `json:"title"`
-			SitemapHash interface{}   `json:"sitemapHash"`
+			SitemapHash interface{}   `json:"sitemap-hash"`
 			Robots      interface{}   `json:"robots"`
 			Server      string        `json:"server"`
-			HeadersHash int           `json:"headersHash"`
+			HeadersHash int           `json:"headers-hash"`
 			Host        string        `json:"host"`
 			HTML        string        `json:"html"`
 			Location    string        `json:"location"`
 			Components  struct {
 			} `json:"components"`
-			SecuritytxtHash interface{} `json:"securitytxtHash"`
+			SecuritytxtHash interface{} `json:"securitytxt-hash"`
 			Sitemap         interface{} `json:"sitemap"`
-			HTMLHash        int         `json:"htmlHash"`
+			HTMLHash        int         `json:"html-hash"`
 		} `json:"http,omitempty"`
 		Os   interface{} `json:"os"`
 		Opts struct {
@@ -147,7 +147,7 @@ type Host struct {
 		Timestamp string   `json:"timestamp"`
 		Isp       string   `json:"isp"`
 		Cpe       []string `json:"cpe"`
-		IPStr     string   `json:"ipStr"`
+		IPStr     string   `json:"ip-str"`
 		Asn       string   `json:"asn"`
 		Hostnames []string `json:"hostnames"`
 		Cpe23     []string `json:"cpe23"`
@@ -159,11 +159,11 @@ type Host struct {
 		Transport string   `json:"transport"`
 		Location  struct {
 			City        string      `json:"city"`
-			RegionCode  string      `json:"regionCode"`
-			AreaCode    interface{} `json:"areaCode"`
+			RegionCode  string      `json:"region-code"`
+			AreaCode    interface{} `json:"area-code"`
 			Longitude   float64     `json:"longitude"`
-			CountryName string      `json:"countryName"`
-			CountryCode string      `json:"countryCode"`
+			CountryName string      `json:"country-name"`
+			CountryCode string      `json:"country-code"`
 			Latitude    float64     `json:"latitude"`
 		} `json:"location"`
 	} `json:"data"`
@@ -172,9 +172,9 @@ type Host struct {
 	Latitude    float64     `json:"latitude"`
 	Isp         string      `json:"isp"`
 	Longitude   float64     `json:"longitude"`
-	LastUpdate  string      `json:"lastUpdate"`
-	CountryName string      `json:"countryName"`
-	IPStr       string      `json:"ipStr"`
+	LastUpdate  string      `json:"last-update"`
+	CountryName string      `json:"country-name"`
+	IPStr       string      `json:"ip-str"`
 	Os          interface{} `json:"os"`
 	Ports       []int       `json:"ports"`
 }
