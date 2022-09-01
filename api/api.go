@@ -117,7 +117,7 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 	findOptions := options.Find()
 	// Sort by `timestamp` field descending.
 	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
-	logs, err := db.GetLogsWithFilter(client, collection, ctx, filter, findOptions)
+	logs, err := db.GetLogsWithFilter(ctx, client, collection, filter, findOptions)
 
 	// 500 INTERNAL SERVER ERROR: generic error.
 	if err != nil {
@@ -215,7 +215,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 		{"$sortByCount": "$" + what},
 		{"$limit": howMany},
 	}
-	logs, err := db.GetAggregatedLogs(client, collection, ctx, filter)
+	logs, err := db.GetAggregatedLogs(ctx, client, collection, filter)
 
 	// 500 INTERNAL SERVER ERROR: generic error
 	if err != nil {
