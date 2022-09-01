@@ -34,6 +34,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	DayTime = time.Hour * 24
+)
+
 // Log defines the structure of a log record
 // in the database.
 type Log struct {
@@ -172,7 +176,7 @@ func GetLogsByDate(ctx context.Context, client *mongo.Client, collection *mongo.
 	date time.Time) ([]Log, error) {
 	var result []Log
 
-	nextDateInt := date.Add(time.Hour * 24).Unix()
+	nextDateInt := date.Add(DayTime).Unix()
 	filter := bson.M{
 		"$and": []bson.M{
 			{"timestamp": bson.M{"$gte": date.Unix()}},

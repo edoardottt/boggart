@@ -38,10 +38,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const (
+	ContextBackgroundDuration = 3
+	WriteTimeoutDuration      = 15
+	ReadTimeoutDuration       = 15
+)
+
 func genericWriter(w http.ResponseWriter, req *http.Request, dbName string,
 	client *mongo.Client, tmpl template.Template, response string) {
 	if !ignorePath(req.URL.Path, tmpl) {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 		defer cancel()
 
 		database := db.GetDatabase(client, dbName)
@@ -76,7 +82,7 @@ func fileWriter(w http.ResponseWriter, req *http.Request, dbName string,
 	}
 
 	if !ignorePath(req.URL.Path, tmpl) {
-		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 		defer cancel()
 
 		database := db.GetDatabase(client, dbName)
@@ -154,8 +160,8 @@ func Raw(tmpl template.Template) {
 		Handler: router,
 		Addr:    ":8092",
 		// Good practice: enforce timeouts for servers you create!
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+		WriteTimeout: WriteTimeoutDuration * time.Second,
+		ReadTimeout:  ReadTimeoutDuration * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())

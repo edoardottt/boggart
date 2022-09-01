@@ -16,6 +16,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const (
+	ContextBackgroundDuration = 3
+	WriteTimeoutDuration      = 15
+	ReadTimeoutDuration       = 15
+	LatestNLogs               = 30
+)
+
 var baseTemplatePath = "./server/dashboard/templates/"
 var funcs = template.FuncMap{
 	"idtostring": func(value primitive.ObjectID) string {
@@ -71,8 +78,8 @@ func Start() {
 		Handler: router,
 		Addr:    ":8093",
 		// Good practice: enforce timeouts for servers you create!
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+		WriteTimeout: WriteTimeoutDuration * time.Second,
+		ReadTimeout:  ReadTimeoutDuration * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())
@@ -80,13 +87,13 @@ func Start() {
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client,
 	dbName string, tmpl *template.Template) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 	defer cancel()
 
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
 
-	logs, err := db.GetLatestNLogs(ctx, client, collection, 30)
+	logs, err := db.GetLatestNLogs(ctx, client, collection, LatestNLogs)
 	if err != nil {
 		cancel()
 		log.Fatal(err)
@@ -112,7 +119,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request, client *mongo.Clie
 
 func dashboardIDHandler(w http.ResponseWriter, r *http.Request, client *mongo.Client,
 	dbName string, tmpl *template.Template, id string) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 	defer cancel()
 
 	database := db.GetDatabase(client, dbName)

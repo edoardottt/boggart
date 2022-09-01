@@ -54,7 +54,13 @@ linters-settings:
       - T any
       - m map[string]int
       - w http.ResponseWriter
+      - n int64
 
   wsl:
     strict-append: false
     enforce-err-cuddling: true
+
+issues:
+  exclude-rules:
+    - path: api/api.go
+      text: "mnd: Magic number: (10|64), in <argument> detected"

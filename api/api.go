@@ -40,6 +40,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	ContextBackgroundDuration = 3
+	DayTime                   = time.Hour * 24
+	TopParamStart             = 4
+	TopParamEnd               = 50
+)
+
 // NotFoundHandler tells you if the API server is listening.
 func NotFoundHandler(w http.ResponseWriter, req *http.Request) {
 	// set content-type.
@@ -73,7 +80,7 @@ type IPInfoResponse struct {
 func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, client *mongo.Client) {
 	w.Header().Add("Content-Type", "application/json")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 
 	defer cancel()
 
@@ -88,7 +95,7 @@ func IPInfoHandler(w http.ResponseWriter, req *http.Request, dbName string, clie
 		topParam = "10"
 	}
 
-	top, err := IsIntInTheRange(topParam, 4, 50)
+	top, err := IsIntInTheRange(topParam, TopParamStart, TopParamEnd)
 	// 400 BAD REQUEST: top parameter not in the correct range.
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -202,7 +209,7 @@ func Top(w http.ResponseWriter, req *http.Request, dbName string,
 		return nil, ErrPossibleTopValue
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 
 	defer cancel()
 
@@ -402,7 +409,7 @@ func BuildAPILogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": dateT.Unix()}},
-			{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
+			{"timestamp": bson.M{"$lt": dateT.Add(DayTime).Unix()}},
 		})
 	}
 
@@ -564,7 +571,7 @@ func BuildAPIDetectQuery(regex, attack, target, ip, method, header, path, date, 
 
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": dateT.Unix()}},
-			{"timestamp": bson.M{"$lt": dateT.Add(time.Hour * 24).Unix()}},
+			{"timestamp": bson.M{"$lt": dateT.Add(DayTime).Unix()}},
 		})
 	}
 
@@ -595,7 +602,7 @@ func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": gtT.Unix()}},
-			{"timestamp": bson.M{"$lt": ltT.Add(time.Hour * 24).Unix()}},
+			{"timestamp": bson.M{"$lt": ltT.Add(DayTime).Unix()}},
 		})
 	} else if lt != "" {
 		ltT, _ := TranslateTime(lt)

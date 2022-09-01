@@ -30,6 +30,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	ContextBackgroundDuration = 5
+)
+
 // ConnectDB creates and returns a client connected by a
 // connection string to mongoDB.
 // Also checks the connection if everything is ok.
@@ -39,7 +43,7 @@ func ConnectDB(connectionString string) *mongo.Client {
 		log.Fatal(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
 
 	defer cancel()
 

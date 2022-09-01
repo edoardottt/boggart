@@ -32,6 +32,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const (
+	WriteTimeoutDuration = 15
+	ReadTimeoutDuration  = 15
+)
+
 // Server > to be filled.
 func Server() {
 	// DB setup.
@@ -85,8 +90,8 @@ func Server() {
 		Handler: router,
 		Addr:    ":8094",
 		// Good practice: enforce timeouts for servers you create.
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+		WriteTimeout: WriteTimeoutDuration * time.Second,
+		ReadTimeout:  ReadTimeoutDuration * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())
