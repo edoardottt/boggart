@@ -55,7 +55,9 @@ func genericWriter(w http.ResponseWriter, req *http.Request, dbName string,
 
 		bodyBytes, err := io.ReadAll(req.Body)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
+
+			return
 		}
 
 		bodyString := string(bodyBytes)
@@ -90,7 +92,9 @@ func fileWriter(w http.ResponseWriter, req *http.Request, dbName string,
 
 		bodyBytes, err := io.ReadAll(req.Body)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
+
+			return
 		}
 
 		bodyString := string(bodyBytes)
@@ -122,6 +126,7 @@ func Raw(tmpl template.Template) {
 
 	// Routes setup.
 	router := mux.NewRouter()
+
 	var staticPath = "public/honeypot/"
 
 	// registering endpoints.

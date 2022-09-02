@@ -64,6 +64,7 @@ func InsertLog(ctx context.Context, client *mongo.Client, collection *mongo.Coll
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Println("Inserted: ", result.InsertedID)
 
 	return result.InsertedID

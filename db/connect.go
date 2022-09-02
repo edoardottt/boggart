@@ -23,7 +23,9 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -49,7 +51,8 @@ func ConnectDB(connectionString string) *mongo.Client {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	// Check the connection.
 	err = client.Ping(context.TODO(), nil)

@@ -256,6 +256,7 @@ func CheckRequests(tmpl Template) error {
 		if strings.Trim(entry.ID, " ") == "" {
 			return ErrMissingID
 		}
+
 		if entry.ID != DefaultID {
 			if strings.Trim(entry.Endpoint, " ") == "" {
 				return fmt.Errorf("%w %s", ErrMissingEndpointID, entry.ID)

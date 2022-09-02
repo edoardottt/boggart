@@ -21,14 +21,8 @@ const (
 	WriteTimeoutDuration      = 15
 	ReadTimeoutDuration       = 15
 	LatestNLogs               = 30
+	baseTemplatePath          = "./server/dashboard/templates/"
 )
-
-var baseTemplatePath = "./server/dashboard/templates/"
-var funcs = template.FuncMap{
-	"idtostring": func(value primitive.ObjectID) string {
-		return value.Hex()
-	},
-}
 
 // Start starts the dashboard.
 func Start() {
@@ -39,6 +33,12 @@ func Start() {
 	// ------- debug -------.
 	if client != nil {
 		fmt.Println("DASHBOARD: Connected to MongoDB!")
+	}
+
+	var funcs = template.FuncMap{
+		"idtostring": func(value primitive.ObjectID) string {
+			return value.Hex()
+		},
 	}
 
 	tmpl, err := template.New("index.html").Funcs(funcs).ParseFiles(baseTemplatePath+"index.html",
@@ -95,8 +95,9 @@ func dashboardHandler(w http.ResponseWriter, client *mongo.Client, dbName string
 
 	logs, err := db.GetLatestNLogs(ctx, client, collection, LatestNLogs)
 	if err != nil {
-		cancel()
-		log.Fatal(err)
+		fmt.Println(err)
+
+		return
 	}
 
 	buf := &bytes.Buffer{}
@@ -110,7 +111,7 @@ func dashboardHandler(w http.ResponseWriter, client *mongo.Client, dbName string
 
 	_, err = buf.WriteTo(w)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 
 		return
@@ -141,7 +142,7 @@ func dashboardIDHandler(w http.ResponseWriter, client *mongo.Client, dbName stri
 
 	_, err = buf.WriteTo(w)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 
 		return
