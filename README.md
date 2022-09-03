@@ -33,6 +33,12 @@ Contributing 🤝
 ------
 If you want to contribute to this project, you can start opening an [issue](https://github.com/edoardottt/boggart/issues).
 
+Before opening a pull request, download [golangci-lint](https://golangci-lint.run/usage/install/) and run
+```bash
+golangci-lint run
+```
+If there aren't errors, go ahead :)
+
 License 📝
 -------
 This repository is under [GNU General Public License v3.0](https://github.com/edoardottt/boggart/blob/main/LICENSE).  
