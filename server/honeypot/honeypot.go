@@ -123,6 +123,7 @@ func Raw(tmpl template.Template) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Println("HONEYPOT: Connected to MongoDB!")
 
 	// Routes setup.

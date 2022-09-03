@@ -34,6 +34,7 @@ func Start() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Println("DASHBOARD: Connected to MongoDB!")
 
 	var funcs = template.FuncMap{
