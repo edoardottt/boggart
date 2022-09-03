@@ -29,9 +29,9 @@ func Start() {
 	// DB setup.
 	connString := os.Getenv("MONGO_CONN") // "mongodb://hostname:27017".
 	dbName := os.Getenv("MONGO_DB")
-	client := db.ConnectDB(connString)
+	client, err := db.ConnectDB(connString)
 	// ------- debug -------.
-	if client != nil {
+	if err != nil {
 		fmt.Println("DASHBOARD: Connected to MongoDB!")
 	}
 

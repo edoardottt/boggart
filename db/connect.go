@@ -25,7 +25,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -39,7 +38,7 @@ const (
 // ConnectDB creates and returns a client connected by a
 // connection string to mongoDB.
 // Also checks the connection if everything is ok.
-func ConnectDB(connectionString string) *mongo.Client {
+func ConnectDB(connectionString string) (*mongo.Client, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI(connectionString))
 	if err != nil {
 		log.Fatal(err)
@@ -52,15 +51,16 @@ func ConnectDB(connectionString string) *mongo.Client {
 	err = client.Connect(ctx)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return client, nil
 	}
 	// Check the connection.
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return client, nil
 	}
 
-	return client
+	return client, nil
 }
 
 // GetDatabase returns the pointer to the database (input).

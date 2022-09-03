@@ -71,7 +71,7 @@ type APIInfoResponse struct {
 
 // APIInfo returns the struct ApiInfoResponse filled
 // with the Api account information.
-func APIInfo(apiKey string) APIInfoResponse {
+func APIInfo(apiKey string) (APIInfoResponse, error) {
 	resp, err := http.Get(baseURL + apiInfo + "?key=" + apiKey)
 	if err != nil {
 		log.Fatal(err)
@@ -82,17 +82,19 @@ func APIInfo(apiKey string) APIInfoResponse {
 	defer resp.Body.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return APIInfoResponse{}, err
 	}
 
 	var response APIInfoResponse
 	err = json.Unmarshal(body, &response)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return APIInfoResponse{}, err
 	}
 
-	return response
+	return response, nil
 }
 
 // HostIPInfo > TODO.

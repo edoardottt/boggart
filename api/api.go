@@ -592,34 +592,43 @@ func TranslateTime(input string) (time.Time, error) {
 
 // AddTimestampToQuery.
 func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
-	if lt != "" && gt != "" {
-		ltT, _ := TranslateTime(lt)
-		gtT, _ := TranslateTime(gt)
+	switch {
+	case lt != "" && gt != "":
+		{
+			ltT, _ := TranslateTime(lt)
+			gtT, _ := TranslateTime(gt)
 
-		if len(filter) == 0 {
-			filter = db.BuildFilter(map[string]interface{}{})
-		}
+			if len(filter) == 0 {
+				filter = db.BuildFilter(map[string]interface{}{})
+			}
 
-		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
-			{"timestamp": bson.M{"$gte": gtT.Unix()}},
-			{"timestamp": bson.M{"$lt": ltT.Add(DayTime).Unix()}},
-		})
-	} else if lt != "" {
-		ltT, _ := TranslateTime(lt)
-		if len(filter) == 0 {
-			filter = db.BuildFilter(map[string]interface{}{})
+			filter = db.AddMultipleCondition(filter, "$and", []bson.M{
+				{"timestamp": bson.M{"$gte": gtT.Unix()}},
+				{"timestamp": bson.M{"$lt": ltT.Add(DayTime).Unix()}},
+			})
+			break
 		}
-		filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
-			{"$lt": ltT.Unix()},
-		})
-	} else if gt != "" {
-		gtT, _ := TranslateTime(gt)
-		if len(filter) == 0 {
-			filter = db.BuildFilter(map[string]interface{}{})
+	case lt != "":
+		{
+			ltT, _ := TranslateTime(lt)
+			if len(filter) == 0 {
+				filter = db.BuildFilter(map[string]interface{}{})
+			}
+			filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
+				{"$lt": ltT.Unix()},
+			})
+			break
 		}
-		filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
-			{"$gte": gtT.Unix()},
-		})
+	case gt != "":
+		{
+			gtT, _ := TranslateTime(gt)
+			if len(filter) == 0 {
+				filter = db.BuildFilter(map[string]interface{}{})
+			}
+			filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
+				{"$gte": gtT.Unix()},
+			})
+		}
 	}
 
 	return filter
