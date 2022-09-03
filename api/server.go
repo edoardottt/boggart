@@ -45,8 +45,9 @@ func Server() {
 	client, err := db.ConnectDB(connString)
 	// ------- debug -------.
 	if err != nil {
-		fmt.Println("API: Connected to MongoDB!")
+		log.Fatal(err)
 	}
+	fmt.Println("API: Connected to MongoDB!")
 
 	// Routes setup.
 	router := mux.NewRouter()

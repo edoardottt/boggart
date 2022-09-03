@@ -32,8 +32,9 @@ func Start() {
 	client, err := db.ConnectDB(connString)
 	// ------- debug -------.
 	if err != nil {
-		fmt.Println("DASHBOARD: Connected to MongoDB!")
+		log.Fatal(err)
 	}
+	fmt.Println("DASHBOARD: Connected to MongoDB!")
 
 	var funcs = template.FuncMap{
 		"idtostring": func(value primitive.ObjectID) string {

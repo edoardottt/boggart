@@ -121,8 +121,9 @@ func Raw(tmpl template.Template) {
 	client, err := db.ConnectDB(connString)
 	// ------- debug -------.
 	if err != nil {
-		fmt.Println("HONEYPOT: Connected to MongoDB!")
+		log.Fatal(err)
 	}
+	fmt.Println("HONEYPOT: Connected to MongoDB!")
 
 	// Routes setup.
 	router := mux.NewRouter()
