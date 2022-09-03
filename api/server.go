@@ -47,6 +47,7 @@ func Server() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Println("API: Connected to MongoDB!")
 
 	// Routes setup.
