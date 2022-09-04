@@ -71,6 +71,7 @@ type Request struct {
 	ResponseType ResponseType `yaml:"response-type,omitempty"`
 	ContentType  string       `yaml:"content-type,omitempty"`
 	Content      string       `yaml:"content,omitempty"`
+	Headers      []string     `yaml:"headers,omitempty"`
 }
 
 // Template is the struct defining the structure of a configuration template.
@@ -276,6 +277,14 @@ func CheckRequests(tmpl Template) error {
 
 			if strings.Trim(entry.Content, " ") == "" {
 				return fmt.Errorf("%w %s", ErrMissingContentID, entry.ID)
+			}
+
+			if len(entry.Headers) != 0 {
+				for _, header := range entry.Headers {
+					if len(strings.Split(header, ":")) != 2 {
+						return fmt.Errorf("%w %s", ErrWrongHeader, entry.ID)
+					}
+				}
 			}
 		}
 	}

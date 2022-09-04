@@ -20,11 +20,17 @@ requests:
         <h1>Hello!</h1>
       </body>
       </html>
+    headers:
+      - "server: Akamai Resource Optimizer"
+      - "server-timing: cdn-cache; desc=HIT"
   - request:
     id: "default"
     response-type: "file"
     content-type: "text/html"
     content: "404.html"
+    headers:
+      - "server: Akamai Resource Optimizer"
+      - "server-timing: cdn-cache; desc=HIT"
 
 ignore: ["/favicon.ico"]
 ```
@@ -38,7 +44,8 @@ Then we have the definition of the endpoint and the response type. We have two t
   - "file" means you have to add the content-type (as shown, whatever it is: json, html...) and the 'content' will be the path to the file that boggart will read and use as reply to the client.
 
 There is always a default request definition with the id 'default' used for 404 responses.  
-Then we have the ignore array, that is the paths boggart must ignore.
+Then we have the ignore array, that is the paths boggart must ignore.  
+The last thing is the headers configuration, here you can add custom headers. 
 
 If you need more examples see [/examples](https://github.com/edoardottt/boggart/tree/main/examples).  
 Be aware that if you need files to be read with 'file' as response-type (as shown here, 404.html) you need to put them in the folder `public/honepot`.  

@@ -17,10 +17,16 @@ requests:
         <h1>Hello!</h1>
       </body>
       </html>
+    headers:
+      - "server: Akamai Resource Optimizer"
+      - "server-timing: cdn-cache; desc=HIT"
   - request:
     id: "default"
     response-type: "file"
     content-type: "text/html"
     content: "404.html"
+    headers:
+      - "server: Akamai Resource Optimizer"
+      - "server-timing: cdn-cache; desc=HIT"
 
 ignore: ["/favicon.ico"]

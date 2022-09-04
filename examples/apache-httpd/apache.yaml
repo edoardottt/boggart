@@ -2,22 +2,40 @@ type: "raw"
 requests:
   - request:
     id: "1"
-    methods: "GET"
+    methods: ["GET"]
     endpoint: "/"
     response-type: "file"
     content-type: "text/html"
     content: "index.html"
+    headers:
+      - "Accept-Ranges: bytes"
+      - "Connection: Keep-Alive"
+      - "Keep-Alive: timeout=5, max=97"
+      - "Server: Apache/2.4.52 (Debian)"
+      - "Vary: Accept-Encoding"
   - request:
     id: "2"
-    methods: "GET"
+    methods: ["GET"]
     endpoint: "/icons/ubuntu-logo.png"
     response-type: "file"
     content-type: "image/png"
     content: "icons/ubuntu-logo.png"
+    headers:
+      - "Accept-Ranges: bytes"
+      - "Connection: Keep-Alive"
+      - "Keep-Alive: timeout=5, max=97"
+      - "Server: Apache/2.4.52 (Debian)"
+      - "Vary: Accept-Encoding"
   - request:
     id: "default"
     response-type: "file"
     content-type: "text/html"
     content: "apache-404.html"
+    headers:
+      - "Accept-Ranges: bytes"
+      - "Connection: Keep-Alive"
+      - "Keep-Alive: timeout=5, max=97"
+      - "Server: Apache/2.4.52 (Debian)"
+      - "Vary: Accept-Encoding"
 
 ignore: ["/favicon.ico"]
