@@ -39,3 +39,5 @@ Then we have the definition of the endpoint and the response type. We have two t
 
 There is always a default request definition with the id 'default' used for 404 responses.  
 Then we have the ignore array, that is the paths boggart must ignore.
+
+If you need more examples see [/examples](https://github.com/edoardottt/boggart/tree/main/examples).  
