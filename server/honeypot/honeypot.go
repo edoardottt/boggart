@@ -138,11 +138,25 @@ func Raw(tmpl template.Template) {
 			if request2.ResponseType == "raw" {
 				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
+
+					// Add custom headers.
+					for _, elem := range request2.Headers {
+						values := strings.Split(elem, ":")
+						w.Header().Add(values[0], values[1])
+					}
+
 					genericWriter(w, r, dbName, client, tmpl, request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
 			} else if request2.ResponseType == "file" {
 				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
+
+					// Add custom headers.
+					for _, elem := range request2.Headers {
+						values := strings.Split(elem, ":")
+						w.Header().Add(values[0], values[1])
+					}
+
 					fileWriter(w, r, dbName, client, tmpl, staticPath+request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
 			}
@@ -154,11 +168,25 @@ func Raw(tmpl template.Template) {
 	if defaultRequest.ResponseType == "raw" {
 		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
+
+			// Add custom headers.
+			for _, elem := range defaultRequest.Headers {
+				values := strings.Split(elem, ":")
+				w.Header().Add(values[0], values[1])
+			}
+
 			genericWriter(w, r, dbName, client, tmpl, defaultRequest.Content)
 		})
 	} else if defaultRequest.ResponseType == "file" {
 		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
+
+			// Add custom headers.
+			for _, elem := range defaultRequest.Headers {
+				values := strings.Split(elem, ":")
+				w.Header().Add(values[0], values[1])
+			}
+
 			fileWriter(w, r, dbName, client, tmpl, staticPath+defaultRequest.Content)
 		})
 	}

@@ -46,14 +46,14 @@ linters-settings:
   wsl:
     strict-append: false
     enforce-err-cuddling: true
-
-issues:
-  exclude-rules:
-    - path: api/api.go
-      text: "mnd: Magic number: (10|64), in <argument> detected"
-
+  
   gomnd:
     # Values always ignored: "1", "1.0", "0" and "0.0"
     # Default: []
     ignored-numbers:
       - '2'
+
+issues:
+  exclude-rules:
+    - path: api/api.go
+      text: "mnd: Magic number: (10|64), in <argument> detected"

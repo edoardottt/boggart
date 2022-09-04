@@ -41,4 +41,5 @@ var (
 	ErrMissingResponseTypeID      = errors.New("template: missing response type in request with id")
 	ErrMissingContentTypeID       = errors.New("template: missing content type in request with id")
 	ErrMissingContentID           = errors.New("template: missing content in request with id")
+	ErrWrongHeader                = errors.New("template: Header don't have the format Key: value in request with id")
 )
