@@ -41,3 +41,9 @@ There is always a default request definition with the id 'default' used for 404 
 Then we have the ignore array, that is the paths boggart must ignore.
 
 If you need more examples see [/examples](https://github.com/edoardottt/boggart/tree/main/examples).  
+Be aware that if you need files to be read with 'file' as response-type (as shown here, 404.html) you need to put them in the folder `public/honepot`.  
+Use
+```bash
+./scripts/set-apache-httpd.sh
+```
+to create an Apache httpd honeypot (`./scripts/unset-apache-httpd.sh` back to basic configuration).
