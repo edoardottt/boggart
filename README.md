@@ -25,6 +25,8 @@ Now you have three open ports on your local machine:
   
 You must expose on the public Internet only the service hosted on port 8092.
 
+Read the [docs](https://github.com/edoardottt/boggart/tree/main/docs) to understand how it works and how to configure your honeypot. 
+
 Changelog 📌
 -------
 Detailed changes for each release are documented in the [release notes](https://github.com/edoardottt/boggart/releases).
