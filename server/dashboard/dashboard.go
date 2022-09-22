@@ -1,19 +1,38 @@
+/*
+=======================
+	boggart
+=======================
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+	@Repository:	https://github.com/edoardottt/boggart
+	@Author:		edoardottt, https://www.edoardoottavianelli.it
+	@License:		https://github.com/edoardottt/boggart/blob/main/LICENSE
+*/
+
 package dashboard
 
 import (
-	"bytes"
-	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"text/template"
 	"time"
 
 	"github.com/edoardottt/boggart/db"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const (
@@ -41,33 +60,96 @@ func Start() {
 		"idtostring": func(value primitive.ObjectID) string {
 			return value.Hex()
 		},
-	}
-
-	tmpl, err := template.New("index.html").Funcs(funcs).ParseFiles(baseTemplatePath+"index.html",
-		baseTemplatePath+"navbar.html",
-		baseTemplatePath+"latest.html",
-		baseTemplatePath+"footer.html")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	tmplID, err := template.New("id.html").Funcs(funcs).ParseFiles(baseTemplatePath+"id.html",
-		baseTemplatePath+"navbar.html",
-		baseTemplatePath+"latest.html",
-		baseTemplatePath+"footer.html")
-	if err != nil {
-		log.Fatal(err)
+		"maptostring": func(input map[string][]string) string {
+			var result = ""
+			for k, v := range input {
+				result += k + ": " + strings.Join(v, ",") + "<br>"
+			}
+			return result
+		},
+		"timetostring": func(input int64) string {
+			return time.Unix(input, 0).Format("01-02-2006 15:04:05")
+		},
 	}
 
 	// Routes setup.
 	router := mux.NewRouter()
 
+	tmpl, err := template.New("index.html").Funcs(funcs).ParseFiles(baseTemplatePath+"index.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		dashboardHandler(w, client, dbName, tmpl)
+		dashboardIndexHandler(w, tmpl)
 	})
+
+	tmplOverview, err := template.New("overview.html").Funcs(funcs).ParseFiles(baseTemplatePath+"overview.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.HandleFunc("/overview", func(w http.ResponseWriter, r *http.Request) {
+		dashboardOverviewHandler(w, tmplOverview)
+	})
+
+	tmplQuery, err := template.New("query.html").Funcs(funcs).ParseFiles(baseTemplatePath+"query.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
+		dashboardQueryHandler(w, tmplQuery)
+	})
+
+	tmplLatest, err := template.New("latest.html").Funcs(funcs).ParseFiles(baseTemplatePath+"latest.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.HandleFunc("/latest", func(w http.ResponseWriter, r *http.Request) {
+		dashboardLatestHandler(w, client, dbName, tmplLatest)
+	})
+
+	tmplID, err := template.New("id.html").Funcs(funcs).ParseFiles(baseTemplatePath+"id.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	router.HandleFunc("/id/{id}", func(w http.ResponseWriter, r *http.Request) {
 		dashboardIDHandler(w, client, dbName, tmplID, mux.Vars(r)["id"])
+	})
+
+	tmplDetection, err := template.New("detection.html").Funcs(funcs).ParseFiles(baseTemplatePath+"detection.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.HandleFunc("/detection", func(w http.ResponseWriter, r *http.Request) {
+		dashboardDetectionHandler(w, tmplDetection)
+	})
+
+	tmplStatus, err := template.New("status.html").Funcs(funcs).ParseFiles(baseTemplatePath+"status.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
+		dashboardStatusHandler(w, tmplStatus)
 	})
 
 	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))
@@ -85,68 +167,4 @@ func Start() {
 	}
 
 	log.Fatal(srv.ListenAndServe())
-}
-
-func dashboardHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
-	tmpl *template.Template) {
-	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
-	defer cancel()
-
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-
-	logs, err := db.GetLatestNLogs(ctx, client, collection, LatestNLogs)
-	if err != nil {
-		fmt.Println(err)
-
-		return
-	}
-
-	buf := &bytes.Buffer{}
-
-	err = tmpl.Execute(buf, logs)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-
-		return
-	}
-
-	_, err = buf.WriteTo(w)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-
-		return
-	}
-}
-
-func dashboardIDHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
-	tmpl *template.Template, id string) {
-	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
-	defer cancel()
-
-	database := db.GetDatabase(client, dbName)
-	collection := db.GetLogs(database)
-	logID, err := db.GetLogByID(ctx, client, collection, id)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	buf := &bytes.Buffer{}
-	err = tmpl.Execute(buf, logID)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-
-		return
-	}
-
-	_, err = buf.WriteTo(w)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-
-		return
-	}
 }
