@@ -1,0 +1,9 @@
+.btn-static {
+    cursor: default !important;
+}
+
+.btn-static:active {
+    -moz-box-shadow:    inset 0 0 0px;
+    -webkit-box-shadow: inset 0 0 0px;
+    box-shadow:         inset 0 0 0px;
+}

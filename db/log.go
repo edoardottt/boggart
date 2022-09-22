@@ -244,3 +244,15 @@ func GetLatestNLogs(ctx context.Context, client *mongo.Client, collection *mongo
 
 	return result, nil
 }
+
+// GetNumberOfLogs returns the number of logs in the database.
+func GetNumberOfLogs(ctx context.Context, client *mongo.Client, collection *mongo.Collection) (int64, error) {
+	filter := bson.M{}
+	result, err := collection.CountDocuments(ctx, filter)
+
+	if err != nil {
+		return result, fmt.Errorf("%v Count: %w", ErrFailedCursor, err)
+	}
+
+	return result, nil
+}

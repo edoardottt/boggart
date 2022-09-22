@@ -94,7 +94,7 @@ func Start() {
 	}
 
 	router.HandleFunc("/overview", func(w http.ResponseWriter, r *http.Request) {
-		dashboardOverviewHandler(w, tmplOverview)
+		dashboardOverviewHandler(w, client, dbName, tmplOverview)
 	})
 
 	tmplQuery, err := template.New("query.html").Funcs(funcs).ParseFiles(baseTemplatePath+"query.html",
