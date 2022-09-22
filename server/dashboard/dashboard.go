@@ -63,7 +63,7 @@ func Start() {
 		"maptostring": func(input map[string][]string) string {
 			var result = ""
 			for k, v := range input {
-				result += string(k) + ": " + strings.Join(v, ",") + "<br>"
+				result += k + ": " + strings.Join(v, ",") + "<br>"
 			}
 			return result
 		},
@@ -94,7 +94,7 @@ func Start() {
 	}
 
 	router.HandleFunc("/overview", func(w http.ResponseWriter, r *http.Request) {
-		dashboardOverviewHandler(w, client, dbName, tmplOverview)
+		dashboardOverviewHandler(w, tmplOverview)
 	})
 
 	tmplQuery, err := template.New("query.html").Funcs(funcs).ParseFiles(baseTemplatePath+"query.html",
@@ -105,7 +105,7 @@ func Start() {
 	}
 
 	router.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
-		dashboardQueryHandler(w, client, dbName, tmplQuery)
+		dashboardQueryHandler(w, tmplQuery)
 	})
 
 	tmplLatest, err := template.New("latest.html").Funcs(funcs).ParseFiles(baseTemplatePath+"latest.html",
@@ -138,7 +138,7 @@ func Start() {
 	}
 
 	router.HandleFunc("/detection", func(w http.ResponseWriter, r *http.Request) {
-		dashboardDetectionHandler(w, client, dbName, tmplDetection)
+		dashboardDetectionHandler(w, tmplDetection)
 	})
 
 	tmplStatus, err := template.New("status.html").Funcs(funcs).ParseFiles(baseTemplatePath+"status.html",
@@ -149,7 +149,7 @@ func Start() {
 	}
 
 	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-		dashboardStatusHandler(w, client, dbName, tmplStatus)
+		dashboardStatusHandler(w, tmplStatus)
 	})
 
 	cssHandler := http.FileServer(http.Dir("./server/dashboard/assets/css/"))

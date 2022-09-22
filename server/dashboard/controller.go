@@ -34,7 +34,6 @@ import (
 )
 
 func dashboardIndexHandler(w http.ResponseWriter, tmpl *template.Template) {
-
 	buf := &bytes.Buffer{}
 
 	err := tmpl.Execute(buf, nil)
@@ -117,8 +116,7 @@ func dashboardIDHandler(w http.ResponseWriter, client *mongo.Client, dbName stri
 	}
 }
 
-func dashboardOverviewHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
-	tmpl *template.Template) {
+func dashboardOverviewHandler(w http.ResponseWriter, tmpl *template.Template) {
 	buf := &bytes.Buffer{}
 
 	err := tmpl.Execute(buf, nil)
@@ -137,8 +135,7 @@ func dashboardOverviewHandler(w http.ResponseWriter, client *mongo.Client, dbNam
 	}
 }
 
-func dashboardQueryHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
-	tmpl *template.Template) {
+func dashboardQueryHandler(w http.ResponseWriter, tmpl *template.Template) {
 	buf := &bytes.Buffer{}
 
 	err := tmpl.Execute(buf, nil)
@@ -157,8 +154,7 @@ func dashboardQueryHandler(w http.ResponseWriter, client *mongo.Client, dbName s
 	}
 }
 
-func dashboardDetectionHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
-	tmpl *template.Template) {
+func dashboardDetectionHandler(w http.ResponseWriter, tmpl *template.Template) {
 	buf := &bytes.Buffer{}
 
 	err := tmpl.Execute(buf, nil)
@@ -177,8 +173,7 @@ func dashboardDetectionHandler(w http.ResponseWriter, client *mongo.Client, dbNa
 	}
 }
 
-func dashboardStatusHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
-	tmpl *template.Template) {
+func dashboardStatusHandler(w http.ResponseWriter, tmpl *template.Template) {
 	buf := &bytes.Buffer{}
 
 	err := tmpl.Execute(buf, nil)
