@@ -1,15 +1,28 @@
-{{ define "latest" }}
+{{ template "head" . }}
+                <!-- Latest content-->
+                <div class="container-fluid">
+                    <h1 class="mt-4">Latest requests</h1>
+                    <div class="col-md-12 bg-light d-none d-md-block sidebar">
+                        <div class="right-sidebar">
+                            <ul class="nav flex-column sidebar">
+                            {{range .}}
+                                <li class="nav-item">
+                                    <a class="col-md-12" href="/id/{{idtostring .ID}}">
+                                        <input type="button" class="col-md-12 btn btn-outline-primary float-left text-left .text-truncate" value="
+                                        IP: {{.IP}}
+                                        Method: {{.Method}}
+                                        Path: {{.Path}}">
+                                    </a>
+                                </li>
+                            <br>
+                            {{end}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-{{range .}}
-<div class="row w-25 mw-25">
-    <a class="col-md-12" href="/id/{{idtostring .ID}}">
-        <input type="button" class="col-md-12 btn btn-outline-primary float-left text-left .text-truncate" value="
-        IP: {{.IP}}
-        Method: {{.Method}}
-        Path: {{.Path}}">
-    </a>
-</div>
-<br>
-{{end}}
+{{ template "footer" . }}
 
-{{end}}
+
+    
+    
