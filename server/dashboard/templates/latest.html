@@ -2,12 +2,13 @@
                 <!-- Latest content-->
                 <div class="container-fluid">
                     <h1 class="mt-4">Latest requests</h1>
+                    <hr>
                     <div class="col-md-12 bg-light d-none d-md-block sidebar">
                         <div class="right-sidebar">
                             <ul class="nav flex-column sidebar">
                             {{range .}}
                                 <li class="nav-item">
-                                    <a class="col-md-12" href="/id/{{idtostring .ID}}">
+                                    <a class="col-md-10" href="/id/{{idtostring .ID}}">
                                         <input type="button" class="col-md-12 btn btn-outline-primary float-left text-left .text-truncate" value="
                                         IP: {{.IP}}
                                         Method: {{.Method}}

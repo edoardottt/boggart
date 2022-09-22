@@ -116,10 +116,29 @@ func dashboardIDHandler(w http.ResponseWriter, client *mongo.Client, dbName stri
 	}
 }
 
-func dashboardOverviewHandler(w http.ResponseWriter, tmpl *template.Template) {
+func dashboardOverviewHandler(w http.ResponseWriter, client *mongo.Client, dbName string,
+	tmpl *template.Template) {
+	type Result struct {
+		Requests int64
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
+	defer cancel()
+
+	database := db.GetDatabase(client, dbName)
+	collection := db.GetLogs(database)
+
+	logs, err := db.GetNumberOfLogs(ctx, client, collection)
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+
+	result := Result{Requests: logs}
 	buf := &bytes.Buffer{}
 
-	err := tmpl.Execute(buf, nil)
+	err = tmpl.Execute(buf, result)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 
