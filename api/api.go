@@ -408,13 +408,14 @@ func BuildAPILogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 			filter = db.BuildFilter(map[string]interface{}{})
 		}
 
+		// Greater than date start and less or equal date end.
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": dateT.Unix()}},
 			{"timestamp": bson.M{"$lt": dateT.Add(DayTime).Unix()}},
 		})
 	}
 
-	filter = AddTimestampToQuery(lt, gt, filter)
+	filter = db.AddTimeRangeToQuery(lt, gt, filter)
 
 	return filter
 }
@@ -576,51 +577,7 @@ func BuildAPIDetectQuery(regex, attack, target, ip, method, header, path, date, 
 		})
 	}
 
-	filter = AddTimestampToQuery(lt, gt, filter)
-
-	return filter
-}
-
-// AddTimestampToQuery.
-func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
-	switch {
-	case lt != "" && gt != "":
-		{
-			ltT, _ := timeUtils.TranslateTime(lt)
-			gtT, _ := timeUtils.TranslateTime(gt)
-
-			if len(filter) == 0 {
-				filter = db.BuildFilter(map[string]interface{}{})
-			}
-
-			filter = db.AddMultipleCondition(filter, "$and", []bson.M{
-				{"timestamp": bson.M{"$gte": gtT.Unix()}},
-				{"timestamp": bson.M{"$lt": ltT.Add(DayTime).Unix()}},
-			})
-			break
-		}
-	case lt != "":
-		{
-			ltT, _ := timeUtils.TranslateTime(lt)
-			if len(filter) == 0 {
-				filter = db.BuildFilter(map[string]interface{}{})
-			}
-			filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
-				{"$lt": ltT.Unix()},
-			})
-			break
-		}
-	case gt != "":
-		{
-			gtT, _ := timeUtils.TranslateTime(gt)
-			if len(filter) == 0 {
-				filter = db.BuildFilter(map[string]interface{}{})
-			}
-			filter = db.AddMultipleCondition(filter, "timestamp", []bson.M{
-				{"$gte": gtT.Unix()},
-			})
-		}
-	}
+	filter = db.AddTimeRangeToQuery(lt, gt, filter)
 
 	return filter
 }
