@@ -25,6 +25,7 @@ import (
 	"context"
 	"fmt"
 
+	timeUtils "github.com/edoardottt/boggart/internal/time"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -74,6 +75,50 @@ func GetLogsWithFilter(ctx context.Context, client *mongo.Client, collection *mo
 	}
 
 	return result, nil
+}
+
+// AddTimeRangeToQuery.
+func AddTimeRangeToQuery(lt, gt string, filter bson.M) bson.M {
+	switch {
+	case lt != "" && gt != "":
+		{
+			ltT, _ := timeUtils.TranslateTime(lt)
+			gtT, _ := timeUtils.TranslateTime(gt)
+
+			if len(filter) == 0 {
+				filter = BuildFilter(map[string]interface{}{})
+			}
+
+			filter = AddMultipleCondition(filter, "$and", []bson.M{
+				{"timestamp": bson.M{"$gte": gtT.Unix()}},
+				{"timestamp": bson.M{"$lt": ltT.Add(DayTime).Unix()}},
+			})
+			break
+		}
+	case lt != "":
+		{
+			ltT, _ := timeUtils.TranslateTime(lt)
+			if len(filter) == 0 {
+				filter = BuildFilter(map[string]interface{}{})
+			}
+			filter = AddMultipleCondition(filter, "timestamp", []bson.M{
+				{"$lt": ltT.Unix()},
+			})
+			break
+		}
+	case gt != "":
+		{
+			gtT, _ := timeUtils.TranslateTime(gt)
+			if len(filter) == 0 {
+				filter = BuildFilter(map[string]interface{}{})
+			}
+			filter = AddMultipleCondition(filter, "timestamp", []bson.M{
+				{"$gte": gtT.Unix()},
+			})
+		}
+	}
+
+	return filter
 }
 
 // AggregatedResult.
