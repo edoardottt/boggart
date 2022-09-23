@@ -34,6 +34,7 @@ import (
 	"github.com/edoardottt/boggart/db"
 	net "github.com/edoardottt/boggart/internal/net"
 	"github.com/edoardottt/boggart/internal/slice"
+	timeUtils "github.com/edoardottt/boggart/internal/time"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -297,14 +298,14 @@ func CheckAPILogsParams(id, ip, method, header, path, date, lt, gt string) error
 			return ErrDateDefined
 		}
 
-		_, err := TranslateTime(date)
+		_, err := timeUtils.TranslateTime(date)
 		if err != nil {
 			return err
 		}
 	}
 
 	if lt != "" {
-		_, err := TranslateTime(lt)
+		_, err := timeUtils.TranslateTime(lt)
 
 		if err != nil {
 			return err
@@ -312,7 +313,7 @@ func CheckAPILogsParams(id, ip, method, header, path, date, lt, gt string) error
 	}
 
 	if gt != "" {
-		_, err := TranslateTime(gt)
+		_, err := timeUtils.TranslateTime(gt)
 
 		if err != nil {
 			return err
@@ -320,8 +321,8 @@ func CheckAPILogsParams(id, ip, method, header, path, date, lt, gt string) error
 	}
 
 	if lt != "" && gt != "" {
-		ltT, _ := TranslateTime(lt)
-		gtT, _ := TranslateTime(gt)
+		ltT, _ := timeUtils.TranslateTime(lt)
+		gtT, _ := timeUtils.TranslateTime(gt)
 
 		if ltT.Unix() < gtT.Unix() {
 			return ErrLtBeforeGt
@@ -401,7 +402,7 @@ func BuildAPILogsQuery(id, ip, method, header, path, date, lt, gt string) bson.M
 	}
 
 	if date != "" {
-		dateT, _ := TranslateTime(date)
+		dateT, _ := timeUtils.TranslateTime(date)
 
 		if len(filter) == 0 {
 			filter = db.BuildFilter(map[string]interface{}{})
@@ -463,29 +464,29 @@ func CheckAPIDetectParams(regex, attack, target, ip, method, header, path, date,
 			return ErrDateDefined
 		}
 
-		_, err := TranslateTime(date)
+		_, err := timeUtils.TranslateTime(date)
 		if err != nil {
 			return err
 		}
 	}
 
 	if lt != "" {
-		_, err := TranslateTime(lt)
+		_, err := timeUtils.TranslateTime(lt)
 		if err != nil {
 			return err
 		}
 	}
 
 	if gt != "" {
-		_, err := TranslateTime(gt)
+		_, err := timeUtils.TranslateTime(gt)
 		if err != nil {
 			return err
 		}
 	}
 
 	if lt != "" && gt != "" {
-		ltT, _ := TranslateTime(lt)
-		gtT, _ := TranslateTime(gt)
+		ltT, _ := timeUtils.TranslateTime(lt)
+		gtT, _ := timeUtils.TranslateTime(gt)
 
 		if ltT.Unix() < gtT.Unix() {
 			return ErrLtBeforeGt
@@ -563,7 +564,7 @@ func BuildAPIDetectQuery(regex, attack, target, ip, method, header, path, date, 
 	}
 
 	if date != "" {
-		dateT, _ := TranslateTime(date)
+		dateT, _ := timeUtils.TranslateTime(date)
 
 		if len(filter) == 0 {
 			filter = db.BuildFilter(map[string]interface{}{})
@@ -580,23 +581,13 @@ func BuildAPIDetectQuery(regex, attack, target, ip, method, header, path, date, 
 	return filter
 }
 
-// TranslateTime.
-func TranslateTime(input string) (time.Time, error) {
-	t, err := time.Parse("2006-01-02T15:04:05-0700", input)
-	if err != nil {
-		return time.Time{}, ErrDatetimeFormat
-	}
-
-	return t, nil
-}
-
 // AddTimestampToQuery.
 func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 	switch {
 	case lt != "" && gt != "":
 		{
-			ltT, _ := TranslateTime(lt)
-			gtT, _ := TranslateTime(gt)
+			ltT, _ := timeUtils.TranslateTime(lt)
+			gtT, _ := timeUtils.TranslateTime(gt)
 
 			if len(filter) == 0 {
 				filter = db.BuildFilter(map[string]interface{}{})
@@ -610,7 +601,7 @@ func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 		}
 	case lt != "":
 		{
-			ltT, _ := TranslateTime(lt)
+			ltT, _ := timeUtils.TranslateTime(lt)
 			if len(filter) == 0 {
 				filter = db.BuildFilter(map[string]interface{}{})
 			}
@@ -621,7 +612,7 @@ func AddTimestampToQuery(lt, gt string, filter bson.M) bson.M {
 		}
 	case gt != "":
 		{
-			gtT, _ := TranslateTime(gt)
+			gtT, _ := timeUtils.TranslateTime(gt)
 			if len(filter) == 0 {
 				filter = db.BuildFilter(map[string]interface{}{})
 			}

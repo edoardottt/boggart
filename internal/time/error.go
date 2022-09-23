@@ -18,20 +18,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 	@Author:		edoardottt, https://www.edoardoottavianelli.it
 	@License:		https://github.com/edoardottt/boggart/blob/main/LICENSE
 */
-
-package api
+package time
 
 import "errors"
 
 var (
-	ErrPossibleTopValue      = errors.New("possible values for top: method / path / body")
-	ErrNoStatsIP             = errors.New("no stats available for the specified IP")
-	ErrIDDefined             = errors.New("if id is defined, no other parameters need to be defined")
-	ErrDateDefined           = errors.New("if date is defined, lt and gt must be blank")
-	ErrLtBeforeGt            = errors.New("lt cannot be before gt")
-	ErrHTTPMethodUnknown     = errors.New("http method unknown")
-	ErrInvalidIP             = errors.New("ip address is not valid")
-	ErrStringToIntConversion = errors.New("failed to convert string to int")
-	ErrRetrievingData        = errors.New("error while retrieving data")
-	ErrIntegerRange          = errors.New("integer not in the range")
+	ErrDatetimeFormat = errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
 )

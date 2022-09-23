@@ -1,9 +1,89 @@
 {{ template "head" . }}
                 <!-- Index content-->
                 <div class="container-fluid">
-                    <h1 class="mt-4">Query</h1>
+                    <h1 class="mt-4">Query DB</h1>
                     <hr>
-                    <p>Not implemented yet.</p>
+                    <div class="container-fluid">
+                    <form method="GET" action="/result">
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="ID" class="col-form-label">ID</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="ID" placeholder="632c81f9a31abb02aa05e72b">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="IP" class="col-sm-3 col-form-label">IP</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="IP" placeholder="169.75.46.9">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="Method" class="col-sm-3 col-form-label">Method</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="Method" placeholder="GET,POST,PUT">
+                                </div>  
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="Path" class="col-sm-3 col-form-label">Path</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="Path" placeholder="/login">
+                                </div>   
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="Header" class="col-sm-3 col-form-label">Header</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="Header" placeholder="User-Agent">
+                                </div>    
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="Body" class="col-sm-3 col-form-label">Body</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="Body" placeholder="Body">
+                                </div>  
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="Timestamp" class="col-sm-3 col-form-label">Timestamp</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="Timestamp" placeholder="2006-01-02T15:04:05">
+                                </div>    
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="Limit" class="col-sm-3 col-form-label">Limit</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" id="Limit" placeholder="100">
+                                </div> 
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <label for="Before" class="col-sm-3 col-form-label">Before</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="Before" placeholder="2006-01-02T15:04:05">
+                                </div>    
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="After" class="col-sm-3 col-form-label">After</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="After" placeholder="2006-01-02T15:04:05">
+                                </div> 
+                            </div>
+                        </div>
+                        <br>
+                        <div class="text-right d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                      </form>
                 </div>
 
 {{ template "footer" . }}
