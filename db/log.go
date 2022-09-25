@@ -32,6 +32,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
 const (
@@ -51,7 +52,7 @@ type Log struct {
 }
 
 // IsEmpty checks if a Log is a new one (just created).
-func (log Log) IsEmpty() bool {
+func (log *Log) IsEmpty() bool {
 	return reflect.DeepEqual(log, Log{})
 }
 
@@ -255,4 +256,32 @@ func GetNumberOfLogs(ctx context.Context, client *mongo.Client, collection *mong
 	}
 
 	return result, nil
+}
+
+// CreateHeadersIndex creates the index for text search for headers.
+func CreateHeadersIndex(ctx context.Context, client *mongo.Client, collection *mongo.Collection) error {
+	mod := mongo.IndexModel{
+		Keys: bsonx.Doc{{Key: "headers", Value: bsonx.String("text")}},
+	}
+	_, err := collection.Indexes().CreateOne(ctx, mod)
+
+	if err != nil {
+		return fmt.Errorf("%v headers: %w", ErrFailedIndexCreation, err)
+	}
+
+	return nil
+}
+
+// CreateBodyIndex creates the index for text search for body.
+func CreateBodyIndex(ctx context.Context, client *mongo.Client, collection *mongo.Collection) error {
+	mod := mongo.IndexModel{
+		Keys: bsonx.Doc{{Key: "body", Value: bsonx.String("text")}},
+	}
+	_, err := collection.Indexes().CreateOne(ctx, mod)
+
+	if err != nil {
+		return fmt.Errorf("%v body: %w", ErrFailedIndexCreation, err)
+	}
+
+	return nil
 }

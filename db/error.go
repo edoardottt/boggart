@@ -28,4 +28,5 @@ var (
 	ErrFailedCursor         = errors.New("failed to get cursor for logs by")
 	ErrFailedFindLog        = errors.New("failed to get logs by")
 	ErrFailedFindLatestLogs = errors.New("failed to get latest n logs")
+	ErrFailedIndexCreation  = errors.New("failed to create index for")
 )
