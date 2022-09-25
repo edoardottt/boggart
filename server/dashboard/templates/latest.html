@@ -11,8 +11,8 @@
                                     <a class="col-md-10" href="/id/{{idtostring .ID}}">
                                         <input type="button" class="col-md-12 btn btn-outline-primary float-left text-left .text-truncate" value="
                                         IP: {{.IP}}
-                                        Method: {{.Method}}
-                                        Path: {{.Path}}">
+                                        Method: {{escapehtml .Method}}
+                                        Path: {{escapehtml .Path}}">
                                     </a>
                                 </li>
                             <br>

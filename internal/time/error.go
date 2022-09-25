@@ -23,5 +23,6 @@ package time
 import "errors"
 
 var (
-	ErrDatetimeFormat = errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
+	ErrDatetimeFullFormat = errors.New("correct datetime format: 2006-01-02T15:04:05-0700")
+	ErrDatetimeDayFormat  = errors.New("correct datetime format: 2006-01-02")
 )

@@ -27,7 +27,17 @@ import "time"
 func TranslateTime(input string) (time.Time, error) {
 	t, err := time.Parse("2006-01-02T15:04:05-0700", input)
 	if err != nil {
-		return time.Time{}, ErrDatetimeFormat
+		return time.Time{}, ErrDatetimeFullFormat
+	}
+
+	return t, nil
+}
+
+// GetDay.
+func GetDay(input string) (time.Time, error) {
+	t, err := time.Parse("2006-01-02", input)
+	if err != nil {
+		return time.Time{}, ErrDatetimeDayFormat
 	}
 
 	return t, nil

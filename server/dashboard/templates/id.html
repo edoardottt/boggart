@@ -29,7 +29,7 @@
                     Method
                 </div>
                 <div class="col-10">
-                  {{.Method}}
+                  {{escapehtml .Method}}
                 </div>
               </div>
 
@@ -38,7 +38,7 @@
                     Path
                 </div>
                 <div class="col-10">
-                  {{.Path}}
+                  {{escapehtml .Path}}
                 </div>
               </div>
 
@@ -56,7 +56,7 @@
                     Body
                 </div>
                 <div class="col-10">
-                    {{.Body}}
+                    {{escapehtml .Body}}
                 </div>
               </div>
 
