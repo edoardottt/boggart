@@ -1,0 +1,76 @@
+{{ template "head" . }}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Query Results</h1>
+    <hr>
+    {{if eq .Error ""}}
+    {{ range .Logs}}
+    <div class="row">
+        <div class="col-2">
+          ID
+        </div>
+        <div class="col-10">
+          {{idtostring .ID}}
+        </div>
+      </div>
+    
+      <div class="row">
+          <div class="col-2">
+              IP
+          </div>
+          <div class="col-10">
+              {{.IP}}
+          </div>
+        </div>
+    
+        <div class="row">
+          <div class="col-2">
+              Method
+          </div>
+          <div class="col-10">
+            {{escapehtml .Method}}
+          </div>
+        </div>
+    
+        <div class="row">
+          <div class="col-2">
+              Path
+          </div>
+          <div class="col-10">
+            {{escapehtml .Path}}
+          </div>
+        </div>
+    
+        <div class="row">
+          <div class="col-2">
+              Headers
+          </div>
+          <div class="col-10">
+            {{maptostring .Headers}}
+          </div>
+        </div>
+    
+        <div class="row">
+          <div class="col-2">
+              Body
+          </div>
+          <div class="col-10">
+              {{escapehtml .Body}}
+          </div>
+        </div>
+    
+        <div class="row">
+          <div class="col-2">
+              Timestamp
+          </div>
+          <div class="col-10">
+              {{timetostring .Timestamp}}
+          </div>
+        </div>
+        <hr>
+    {{ end }}
+    {{ else }}
+        <b>{{ .Error }}</b>
+    {{ end }}
+
+{{ template "footer" . }}
