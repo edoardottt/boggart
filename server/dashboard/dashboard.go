@@ -76,9 +76,7 @@ func Start() {
 		"timetostring": func(input int64) string {
 			return time.Unix(input, 0).Format("01-02-2006 15:04:05")
 		},
-		"escapehtml": func(input string) string {
-			return html.EscapeString(input)
-		},
+		"escapehtml": html.EscapeString,
 	}
 
 	// Routes setup.

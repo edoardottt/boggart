@@ -283,8 +283,8 @@ func buildReturnQuery(query url.Values) (bson.M, *options.FindOptions) {
 		headers = query["headers"]
 		body    = query["body"]
 		daytime = query["day"]
-		//lt        = query["lt"]
-		//gt        = query["gt"]
+		lt      = query["lt"]
+		gt      = query["gt"]
 	)
 
 	filter := db.BuildFilter(map[string]interface{}{})
@@ -309,13 +309,33 @@ func buildReturnQuery(query url.Values) (bson.M, *options.FindOptions) {
 		filter = db.AddCondition(filter, "body", body[0])
 	}
 
-	if len(daytime) == 1 && daytime[0] != "" {
+	if daytime[0] != "" {
 		day, _ := timeUtils.GetDay(daytime[0])
 		// Greater than date start and less or equal date end.
 		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
 			{"timestamp": bson.M{"$gte": day.Unix()}},
 			{"timestamp": bson.M{"$lt": day.Add(DayTime).Unix()}},
 		})
+	}
+
+	if lt[0] != "" && gt[0] != "" {
+		start, _ := timeUtils.TranslateTime(lt[0])
+		end, _ := timeUtils.TranslateTime(gt[0])
+		// Greater than date start and less or equal date end.
+		filter = db.AddMultipleCondition(filter, "$and", []bson.M{
+			{"timestamp": bson.M{"$gte": start.Unix()}},
+			{"timestamp": bson.M{"$lt": end.Add(DayTime).Unix()}},
+		})
+	}
+
+	if lt[0] != "" {
+		start, _ := timeUtils.TranslateTime(lt[0])
+		filter = db.AddCondition(filter, "timestamp", bson.M{"$gte": start.Unix()})
+	}
+
+	if gt[0] != "" {
+		end, _ := timeUtils.TranslateTime(gt[0])
+		filter = db.AddCondition(filter, "timestamp", bson.M{"$lt": end.Add(DayTime).Unix()})
 	}
 
 	findOptions := options.Find()
@@ -377,6 +397,7 @@ func returnValuesOk(query url.Values) string {
 	if query["lt"][0] != "" && query["gt"][0] != "" {
 		ltTime, _ := timeUtils.TranslateTime(query["lt"][0])
 		gtTime, _ := timeUtils.TranslateTime(query["gt"][0])
+
 		if ltTime.Unix() >= gtTime.Unix() {
 			return "lt cannot be greater or equal than gt."
 		}
