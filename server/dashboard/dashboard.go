@@ -23,6 +23,7 @@ package dashboard
 
 import (
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"os"
@@ -63,12 +64,20 @@ func Start() {
 		"maptostring": func(input map[string][]string) string {
 			var result = ""
 			for k, v := range input {
-				result += k + ": " + strings.Join(v, ",") + "<br>"
+				result += html.EscapeString(k) + ": "
+				var safeValues []string
+				for _, x := range v {
+					safeValues = append(safeValues, html.EscapeString(x))
+				}
+				result += strings.Join(safeValues, ",") + "<br>"
 			}
 			return result
 		},
 		"timetostring": func(input int64) string {
 			return time.Unix(input, 0).Format("01-02-2006 15:04:05")
+		},
+		"escapehtml": func(input string) string {
+			return html.EscapeString(input)
 		},
 	}
 
@@ -106,6 +115,17 @@ func Start() {
 
 	router.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
 		dashboardQueryHandler(w, tmplQuery)
+	})
+
+	tmplResult, err := template.New("result.html").Funcs(funcs).ParseFiles(baseTemplatePath+"result.html",
+		baseTemplatePath+"head.html",
+		baseTemplatePath+"footer.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	router.HandleFunc("/result", func(w http.ResponseWriter, r *http.Request) {
+		dashboardResultHandler(r, w, client, dbName, tmplResult)
 	})
 
 	tmplLatest, err := template.New("latest.html").Funcs(funcs).ParseFiles(baseTemplatePath+"latest.html",
