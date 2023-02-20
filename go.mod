@@ -4,12 +4,11 @@ go 1.18
 
 require (
 	github.com/gorilla/mux v1.8.0
-	go.mongodb.org/mongo-driver v1.11.1
+	go.mongodb.org/mongo-driver v1.11.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.15.13 // indirect
 	github.com/montanaflynn/stats v0.6.6 // indirect
