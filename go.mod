@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gorilla/mux v1.8.0
-	go.mongodb.org/mongo-driver v1.11.2
+	go.mongodb.org/mongo-driver v1.11.3
 	gopkg.in/yaml.v3 v3.0.1
 )
 
