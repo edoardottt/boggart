@@ -3,6 +3,7 @@ Highly customizable low-interaction experimental honeypot that mimics specific h
 
 <a href="https://github.com/edoardottt/boggart/actions">
 	<img src="https://github.com/edoardottt/boggart/actions/workflows/go.yml/badge.svg" alt="workflows" />
+	<img src="https://goreportcard.com/badge/github.com/edoardottt/boggart" alt="goreportcard" />
 </a>
 <br><br>
 
