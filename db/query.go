@@ -31,12 +31,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	whereOp = "$where"
+)
+
 // BuildFilter returns a bson.M object representing the
 // mongoDB filter in a query.
 func BuildFilter(query map[string]interface{}) bson.M {
 	result := make(bson.M, len(query))
+
 	for k, v := range query {
-		if k != "$where" {
+		if k != whereOp {
 			result[k] = v
 		}
 	}
@@ -47,7 +52,7 @@ func BuildFilter(query map[string]interface{}) bson.M {
 // AddCondition returns the query passed as input with
 // the query passed as input.
 func AddCondition(query bson.M, condition string, add interface{}) bson.M {
-	if condition != "$where" {
+	if condition != whereOp {
 		query[condition] = add
 	}
 
@@ -57,7 +62,7 @@ func AddCondition(query bson.M, condition string, add interface{}) bson.M {
 // AddMultipleCondition returns the query passed as input with
 // the multiple queries passed as input.
 func AddMultipleCondition(query bson.M, condition string, add []bson.M) bson.M {
-	if condition != "$where" {
+	if condition != whereOp {
 		query[condition] = add
 	}
 
