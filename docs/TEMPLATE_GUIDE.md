@@ -1,7 +1,7 @@
 # Template guide
 
 This is a basic example (Same as examples/basic-raw/basic-raw.yaml):
-```
+```yaml
 type: "raw"
 requests:
   - request:
@@ -50,7 +50,7 @@ The last thing is the headers configuration, here you can add custom headers.
 If you need more examples see [/examples](https://github.com/edoardottt/boggart/tree/main/examples).  
 Be aware that if you need files to be read with 'file' as response-type (as shown here, 404.html) you need to put them in the folder `public/honepot`.  
 Use
-```bash
+```console
 ./scripts/set-apache-httpd.sh
 ```
 to create an Apache httpd honeypot (`./scripts/unset-apache-httpd.sh` back to basic configuration).
