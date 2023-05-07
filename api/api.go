@@ -185,24 +185,6 @@ func StatsDBHandler(w http.ResponseWriter, req *http.Request, dbName string, cli
 	fmt.Fprint(w, "TODO")
 }
 
-// ---------------------------------------
-// -------------- HELPERS ----------------
-// ---------------------------------------
-
-// IsIntInTheRange.
-func IsIntInTheRange(input string, start int, end int) (int, error) {
-	intVar, err := strconv.Atoi(input)
-	if err != nil {
-		return 0, fmt.Errorf("%v: %w", ErrStringToIntConversion, err)
-	}
-
-	if intVar >= start && intVar <= end {
-		return intVar, nil
-	}
-
-	return 0, fmt.Errorf("%w >= %s && <= %s", ErrIntegerRange, fmt.Sprint(start), fmt.Sprint(end))
-}
-
 // Top.
 func Top(w http.ResponseWriter, req *http.Request, dbName string,
 	client *mongo.Client, what string, howMany int, ip string) ([]string, error) {
@@ -580,4 +562,22 @@ func BuildAPIDetectQuery(regex, attack, target, ip, method, header, path, date, 
 	filter = db.AddTimeRangeToQuery(lt, gt, filter)
 
 	return filter
+}
+
+// ---------------------------------------
+// -------------- HELPERS ----------------
+// ---------------------------------------
+
+// IsIntInTheRange.
+func IsIntInTheRange(input string, start int, end int) (int, error) {
+	intVar, err := strconv.Atoi(input)
+	if err != nil {
+		return 0, fmt.Errorf("%v: %w", ErrStringToIntConversion, err)
+	}
+
+	if intVar >= start && intVar <= end {
+		return intVar, nil
+	}
+
+	return 0, fmt.Errorf("%w >= %s && <= %s", ErrIntegerRange, fmt.Sprint(start), fmt.Sprint(end))
 }
