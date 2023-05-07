@@ -36,7 +36,9 @@ import (
 func BuildFilter(query map[string]interface{}) bson.M {
 	result := make(bson.M, len(query))
 	for k, v := range query {
-		result[k] = v
+		if k != "$where" {
+			result[k] = v
+		}
 	}
 
 	return result
@@ -45,7 +47,9 @@ func BuildFilter(query map[string]interface{}) bson.M {
 // AddCondition returns the query passed as input with
 // the query passed as input.
 func AddCondition(query bson.M, condition string, add interface{}) bson.M {
-	query[condition] = add
+	if condition != "$where" {
+		query[condition] = add
+	}
 
 	return query
 }
@@ -53,7 +57,9 @@ func AddCondition(query bson.M, condition string, add interface{}) bson.M {
 // AddMultipleCondition returns the query passed as input with
 // the multiple queries passed as input.
 func AddMultipleCondition(query bson.M, condition string, add []bson.M) bson.M {
-	query[condition] = add
+	if condition != "$where" {
+		query[condition] = add
+	}
 
 	return query
 }
