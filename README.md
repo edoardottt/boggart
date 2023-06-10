@@ -14,7 +14,7 @@ Hermione put up her hand.
 *'Couldn't have put it better myself'*, said Professor Lupin, and Hermione glowed.  
 *'So the Boggart sitting in the darkness within has not yet assumed a form. He does not yet know what will frighten the person on the other side of the door. Nobody knows what a Boggart looks like when he is alone, but when I let him out, he will immediately become whatever each of us most fears'*.
 
-<p style="text-align:right;">Harry Potter and the Prisoner of Azkaban</p>
+Harry Potter and the Prisoner of Azkaban
 
 Installation 📡
 -------
