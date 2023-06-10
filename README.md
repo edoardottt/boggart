@@ -8,10 +8,10 @@ Highly customizable low-interaction experimental honeypot that mimics specific h
 </a>
 <br><br>
 
-*Disclaimer*: This is an ongoing and experimental project: there are features not yet available and features not (fully) tested. It is designed for home labs / home environments, not for professional or industrial purposes. Deploy in your network at your own risk.
-
 Installation 📡
 -------
+
+*Disclaimer*: This is an ongoing and experimental project: there are features not yet available and features not (fully) tested. It is designed for home labs / home environments, not for professional or industrial purposes. Deploy in your network at your own risk.
 
 [Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/) are needed.
 
