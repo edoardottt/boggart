@@ -8,6 +8,12 @@ Highly customizable low-interaction experimental honeypot that mimics specific h
 </a>
 <br><br>
 
+'So, the first question we must ask ourselves is, what is a Boggart?'  
+Hermione put up her hand.  
+'It's a shape-shifter', she said. 'It can take the shape of whatever it think will frighten us most'.  
+'Couldn't have put it better myself', said Professor Lupin, and Hermione glowed.  
+'So the Boggart sitting in the darkness within has not yet assumed a form. He does not yet know what will frighten the person on the other side of the door. Nobody knows what a Boggart looks like when he is alone, but when I let him out, he will immediately become whatever each of us most fears'.
+
 Installation 📡
 -------
 
