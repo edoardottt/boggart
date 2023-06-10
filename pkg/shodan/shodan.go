@@ -23,7 +23,6 @@ package shodan
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -99,8 +98,7 @@ func APIInfo(apiKey string) (APIInfoResponse, error) {
 
 // HostIPInfo > TODO.
 func HostIPInfo(hostIP string, apiKey string) {
-	url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
-	fmt.Println(url)
+	//url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
 }
 
 // Host.
