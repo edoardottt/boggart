@@ -1,9 +1,10 @@
 # boggart
+
 Highly customizable low-interaction experimental honeypot that mimics specific hosts.
 
 <a href="https://github.com/edoardottt/boggart/actions">
-	<img src="https://github.com/edoardottt/boggart/actions/workflows/go.yml/badge.svg" alt="workflows" />
-	<img src="https://goreportcard.com/badge/github.com/edoardottt/boggart" alt="goreportcard" />
+ <img src="https://github.com/edoardottt/boggart/actions/workflows/go.yml/badge.svg" alt="workflows" />
+ <img src="https://goreportcard.com/badge/github.com/edoardottt/boggart" alt="goreportcard" />
 </a>
 <br><br>
 
@@ -14,7 +15,7 @@ Installation 📡
 
 [Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/) are needed.
 
-```
+```console
 git clone https://github.com/edoardottt/boggart
 ```
 
@@ -25,30 +26,36 @@ Usage 💻
 - Execute `make up` (inside the boggart folder)
 
 Now you have three open ports on your local machine:
-  - [localhost:8092](http://localhost:8092/) - This is the actual honeypot
-  - [localhost:8093](http://localhost:8093/) - This is the dashboard (do not expose this !)
-  - [localhost:8094](http://localhost:8094/) - This is the API service (do not expose this !)
+
+- [localhost:8092](http://localhost:8092/) - This is the actual honeypot
+- [localhost:8093](http://localhost:8093/) - This is the dashboard (do not expose this !)
+- [localhost:8094](http://localhost:8094/) - This is the API service (do not expose this !)
   
 You must expose on the public Internet only the service hosted on port 8092.
 
-Read the [docs](https://github.com/edoardottt/boggart/tree/main/docs) to understand how it works and how to configure your honeypot. 
+Read the [docs](https://github.com/edoardottt/boggart/tree/main/docs) to understand how it works and how to configure your honeypot.
 
 Changelog 📌
 -------
+
 Detailed changes for each release are documented in the [release notes](https://github.com/edoardottt/boggart/releases).
 
 Contributing 🤝
 ------
+
 If you want to contribute to this project, you can start opening an [issue](https://github.com/edoardottt/boggart/issues).
 
 Before opening a pull request, download [golangci-lint](https://golangci-lint.run/usage/install/) and run
+
 ```bash
 golangci-lint run
 ```
+
 If there aren't errors, go ahead :)
 
 License 📝
 -------
+
 This repository is under [GNU General Public License v3.0](https://github.com/edoardottt/boggart/blob/main/LICENSE).  
 [edoardoottavianelli.it](https://www.edoardoottavianelli.it) to contact me.
 
