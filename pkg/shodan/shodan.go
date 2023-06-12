@@ -98,7 +98,7 @@ func APIInfo(apiKey string) (APIInfoResponse, error) {
 
 // HostIPInfo > TODO.
 func HostIPInfo(hostIP string, apiKey string) {
-	//url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
+	// url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
 }
 
 // Host.
