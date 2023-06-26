@@ -32,7 +32,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
 const (
@@ -261,7 +260,7 @@ func GetNumberOfLogs(ctx context.Context, client *mongo.Client, collection *mong
 // CreateHeadersIndex creates the index for text search for headers.
 func CreateHeadersIndex(ctx context.Context, client *mongo.Client, collection *mongo.Collection) error {
 	mod := mongo.IndexModel{
-		Keys: bsonx.Doc{{Key: "headers", Value: bsonx.String("text")}},
+		Keys: bson.D{{Key: "headers", Value: "text"}},
 	}
 	_, err := collection.Indexes().CreateOne(ctx, mod)
 
@@ -275,7 +274,7 @@ func CreateHeadersIndex(ctx context.Context, client *mongo.Client, collection *m
 // CreateBodyIndex creates the index for text search for body.
 func CreateBodyIndex(ctx context.Context, client *mongo.Client, collection *mongo.Collection) error {
 	mod := mongo.IndexModel{
-		Keys: bsonx.Doc{{Key: "body", Value: bsonx.String("text")}},
+		Keys: bson.D{{Key: "body", Value: "text"}},
 	}
 	_, err := collection.Indexes().CreateOne(ctx, mod)
 
