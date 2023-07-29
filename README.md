@@ -3,10 +3,10 @@
 Highly customizable low-interaction experimental honeypot that mimics specific hosts.
 
 <a href="https://github.com/edoardottt/boggart/actions">
-	<img src="https://github.com/edoardottt/boggart/actions/workflows/go.yml/badge.svg" alt="workflows" />
+ <img src="https://github.com/edoardottt/boggart/actions/workflows/go.yml/badge.svg" alt="workflows" />
 </a>
 <a href="https://goreportcard.com/report/github.com/edoardottt/boggart">
-	<img src="https://goreportcard.com/badge/github.com/edoardottt/boggart" alt="goreportcard" />
+ <img src="https://goreportcard.com/badge/github.com/edoardottt/boggart" alt="goreportcard" />
 </a>
 <br><br>
 
