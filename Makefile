@@ -13,6 +13,11 @@ lint:
 up:
 	@sudo docker-compose up
 
+#---Update the dependencies---
+update:
+	@go get -u ./...
+	@go mod tidy -v
+
 #---Stop the service---
 stop:
 	@sudo docker-compose stop
