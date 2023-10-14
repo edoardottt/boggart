@@ -1,6 +1,6 @@
 module github.com/edoardottt/boggart
 
-go 1.18
+go 1.21.3
 
 require (
 	github.com/gorilla/mux v1.8.0
