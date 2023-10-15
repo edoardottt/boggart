@@ -23,7 +23,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/edoardottt/boggart/pkg/template"
 
@@ -34,7 +34,7 @@ import (
 // The filename should be a YAML file.
 // To check if the template is valid YAML check the error.
 func ReadTemplate(filename string) (template.Template, error) {
-	buf, err := ioutil.ReadFile(filename)
+	buf, err := os.ReadFile(filename)
 	if err != nil {
 		return template.Template{}, fmt.Errorf("%v: %w", ErrReadTemplate, err)
 	}

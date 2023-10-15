@@ -21,15 +21,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 package file
 
-import (
-	"io/ioutil"
-)
+import "os"
 
 // ReadFile reads a file and returns the content
 // of the inputted file.
 func ReadFile(inputFile string) (string, error) {
 	var content []byte
-	content, err := ioutil.ReadFile(inputFile)
+	content, err := os.ReadFile(inputFile)
 
 	return string(content), err
 }

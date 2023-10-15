@@ -21,7 +21,7 @@ Harry Potter and the Prisoner of Azkaban
 Installation 📡
 -------
 
-*Disclaimer*: This is an ongoing and experimental project: there are features not yet available and features not (fully) tested. It is designed for home labs / home environments, not for professional or industrial purposes. Deploy in your network at your own risk.
+> *Disclaimer*: This is an ongoing and experimental project: there are features not yet available and features not (fully) tested. It is designed for home labs / home environments, not for professional or industrial purposes. Deploy in your network at your own risk.
 
 [Docker](https://docs.docker.com/get-docker/) and [Docker compose](https://docs.docker.com/compose/install/) are needed.
 
