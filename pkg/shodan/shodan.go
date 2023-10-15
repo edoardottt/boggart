@@ -23,7 +23,7 @@ package shodan
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -76,7 +76,7 @@ func APIInfo(apiKey string) (APIInfoResponse, error) {
 		log.Fatal(err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 
 	defer resp.Body.Close()
 
