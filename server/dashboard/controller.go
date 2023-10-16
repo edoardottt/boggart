@@ -26,6 +26,7 @@ import (
 	"context"
 	"fmt"
 	"html"
+	"math"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -223,8 +224,11 @@ func dashboardStatusHandler(w http.ResponseWriter, tmpl *template.Template) {
 }
 
 type Result struct {
-	Logs  []db.Log
-	Error string
+	Logs        []db.Log
+	Error       string
+	TotalPages  int
+	CurrentPage int
+	TotalLogs   int64
 }
 
 func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mongo.Client, dbName string,
@@ -243,6 +247,31 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 		filter, findOptions := buildReturnQuery(query)
 		// Sort by `timestamp` field descending.
 		findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
+
+		itemsPerPage, _ := strconv.ParseInt(query.Get("limit"), 10, 64)
+		if itemsPerPage == 0 {
+			itemsPerPage = 50
+		}
+
+		// Needed for pagination.
+		totalLogs, err := collection.CountDocuments(ctx, filter)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		result.TotalLogs = totalLogs
+		totalPages := int(math.Ceil(float64(totalLogs) / float64(itemsPerPage)))
+		result.TotalPages = totalPages
+
+		findOptions.SetLimit(itemsPerPage)
+
+		page, err := strconv.Atoi(query.Get("page"))
+		if err == nil && page > 0 {
+			page--
+			findOptions.SetSkip(int64(page) * itemsPerPage)
+		}
+		result.CurrentPage = page + 1
+
 		logs, err := db.GetLogsWithFilter(ctx, client, collection, filter, findOptions)
 
 		if err != nil {
