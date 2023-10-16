@@ -77,6 +77,27 @@ func Start() {
 			return time.Unix(input, 0).Format("01-02-2006 15:04:05")
 		},
 		"escapehtml": html.EscapeString,
+		"until": func(n int) []int {
+			var i int
+			var slice []int
+			for i = 1; i <= n; i++ {
+				slice = append(slice, i)
+			}
+			return slice
+		},
+		"subtract": func(a, b int) int {
+			return a - b
+		},
+		"add": func(a, b int) int {
+			return a + b
+		},
+		"rangeBetween": func(start, end int) []int {
+			var slice []int
+			for i := start; i <= end; i++ {
+				slice = append(slice, i)
+			}
+			return slice
+		},
 	}
 
 	// Routes setup.
