@@ -231,6 +231,8 @@ type Result struct {
 	TotalLogs   int64
 }
 
+const MaxItemsPerPage = 200
+
 func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mongo.Client, dbName string,
 	tmpl *template.Template) {
 	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
@@ -249,7 +251,7 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 		findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 
 		itemsPerPage, _ := strconv.ParseInt(query.Get("limit"), 10, 64)
-		if itemsPerPage <= 0 || itemsPerPage > 200 {
+		if itemsPerPage <= 0 || itemsPerPage > MaxItemsPerPage {
 			itemsPerPage = 50
 		}
 
