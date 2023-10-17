@@ -249,7 +249,7 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 		findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 
 		itemsPerPage, _ := strconv.ParseInt(query.Get("limit"), 10, 64)
-		if itemsPerPage == 0 {
+		if itemsPerPage <= 0 || itemsPerPage > 200 {
 			itemsPerPage = 50
 		}
 
