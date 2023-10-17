@@ -1,7 +1,37 @@
 {{ template "head" . }}
-
+<script>
+  function updatePageParam(newPage) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("page", newPage);
+    return url.toString();
+  }
+</script>
 <div class="container-fluid">
+  {{ $currentPage := .CurrentPage }}
+  {{ $startPage := (subtract $currentPage 2) }}
+  {{ $endPage := (add $currentPage 2) }}
+  
+  {{/* Ensure the start and end pages are within valid bounds */}}
+  {{ if lt $startPage 1 }}{{ $startPage = 1 }}{{ end }}
+  {{ if gt $endPage .TotalPages }}{{ $endPage = .TotalPages }}{{ end }}
+  
+    <nav aria-label="Page navigation example" style="float: right;">
+      <ul class="pagination">
+          <li class="page-item {{ if eq $currentPage 1 }}disabled{{ end }}">
+            <a class="page-link" href="#" onclick="{{ if ne $currentPage 1 }}window.location.href = updatePageParam({{subtract $currentPage 1}});{{ end }} return false;">Previous</a>
+          </li>      
+          {{ range $i := rangeBetween $startPage $endPage }}
+          <li class="page-item{{ if eq $i $currentPage }} active{{ end }}">
+              <a class="page-link" href="#" onclick="window.location.href = updatePageParam({{$i}}); return false;">{{ $i }}</a>
+          </li>
+          {{ end }}
+          <li class="page-item {{ if eq $currentPage .TotalPages }}disabled{{ end }}">
+            <a class="page-link" href="#" onclick="{{ if ne $currentPage .TotalPages }}window.location.href = updatePageParam({{add $currentPage 1}});{{ end }} return false;">Next</a>
+          </li>
+      </ul>
+    </nav>
     <h1 class="mt-4">Query Results</h1>
+    <span><b>Found {{.TotalLogs}} logs</b>, <i>showing page {{ $currentPage }} of {{ .TotalPages }}</i></span>
     <hr>
     {{if eq .Error ""}}
     {{ range .Logs}}
