@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 	@Repository:	https://github.com/edoardottt/boggart
-	@Author:		edoardottt, https://www.edoardoottavianelli.it
+	@Author:		edoardottt, https://edoardottt.com
 	@License:		https://github.com/edoardottt/boggart/blob/main/LICENSE
 */
 package time
