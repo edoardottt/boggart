@@ -7,7 +7,7 @@ ENV MONGO_DB="boggart"
 ENV SHODAN_KEY=""
 
 # Add Maintainer Info
-LABEL maintainer="edoardottt <edoardoottavianelli.it>"
+LABEL maintainer="edoardottt <edoardottt.com>"
 
 # Set the Current Working Directory inside the container
 WORKDIR /boggart
