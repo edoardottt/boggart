@@ -104,25 +104,31 @@ func AddTimeRangeToQuery(lt, gt string, filter bson.M) bson.M {
 				{"timestamp": bson.M{"$gte": gtT.Unix()}},
 				{"timestamp": bson.M{"$lt": ltT.Add(DayTime).Unix()}},
 			})
+
 			break
 		}
 	case lt != "":
 		{
 			ltT, _ := timeUtils.TranslateTime(lt)
+
 			if len(filter) == 0 {
 				filter = BuildFilter(map[string]interface{}{})
 			}
+
 			filter = AddMultipleCondition(filter, "timestamp", []bson.M{
 				{"$lt": ltT.Unix()},
 			})
+
 			break
 		}
 	case gt != "":
 		{
 			gtT, _ := timeUtils.TranslateTime(gt)
+
 			if len(filter) == 0 {
 				filter = BuildFilter(map[string]interface{}{})
 			}
+
 			filter = AddMultipleCondition(filter, "timestamp", []bson.M{
 				{"$gte": gtT.Unix()},
 			})

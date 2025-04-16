@@ -261,6 +261,7 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 			fmt.Println(err)
 			return
 		}
+
 		result.TotalLogs = totalLogs
 		totalPages := int(math.Ceil(float64(totalLogs) / float64(itemsPerPage)))
 		result.TotalPages = totalPages
@@ -272,6 +273,7 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 			page--
 			findOptions.SetSkip(int64(page) * itemsPerPage)
 		}
+
 		result.CurrentPage = page + 1
 
 		logs, err := db.GetLogsWithFilter(ctx, client, collection, filter, findOptions)
