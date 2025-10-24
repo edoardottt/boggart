@@ -65,7 +65,7 @@ func HealthHandler(w http.ResponseWriter, req *http.Request) {
 	// specify status code.
 	w.WriteHeader(http.StatusOK)
 	// update response writer.
-	fmt.Fprintf(w, "OK")
+	fmt.Fprintf(w, "{\"status\":\"OK\"")
 }
 
 // IPInfoResponse.
@@ -247,8 +247,8 @@ func GetAPILogsQuery(req *http.Request) (bson.M, error) {
 	ip := req.URL.Query().Get("ip")
 	method := req.URL.Query().Get("method")
 	header := req.URL.Query().Get("header")
-	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
 
+	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
 	if err != nil {
 		return bson.M{}, fmt.Errorf("failed to unescape query: %w", err)
 	}
@@ -256,8 +256,8 @@ func GetAPILogsQuery(req *http.Request) (bson.M, error) {
 	date := req.URL.Query().Get("date")
 	lt := req.URL.Query().Get("lt")
 	gt := req.URL.Query().Get("gt")
-	err = CheckAPILogsParams(id, ip, method, header, path, date, lt, gt)
 
+	err = CheckAPILogsParams(id, ip, method, header, path, date, lt, gt)
 	if err != nil {
 		return bson.M{}, err
 	}
@@ -288,7 +288,6 @@ func CheckAPILogsParams(id, ip, method, header, path, date, lt, gt string) error
 
 	if lt != "" {
 		_, err := timeUtils.TranslateTime(lt)
-
 		if err != nil {
 			return err
 		}
@@ -296,7 +295,6 @@ func CheckAPILogsParams(id, ip, method, header, path, date, lt, gt string) error
 
 	if gt != "" {
 		_, err := timeUtils.TranslateTime(gt)
-
 		if err != nil {
 			return err
 		}
@@ -420,8 +418,8 @@ func GetAPIDetectQuery(req *http.Request) (bson.M, error) {
 	ip := req.URL.Query().Get("ip")
 	method := req.URL.Query().Get("method")
 	header := req.URL.Query().Get("header")
-	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
 
+	path, err := url.QueryUnescape(req.URL.Query().Get("path"))
 	if err != nil {
 		return bson.M{}, fmt.Errorf("failed to unescape query: %w", err)
 	}
@@ -429,8 +427,8 @@ func GetAPIDetectQuery(req *http.Request) (bson.M, error) {
 	date := req.URL.Query().Get("date")
 	lt := req.URL.Query().Get("lt")
 	gt := req.URL.Query().Get("gt")
-	err = CheckAPIDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt)
 
+	err = CheckAPIDetectParams(regex, attack, target, ip, method, header, path, date, lt, gt)
 	if err != nil {
 		return bson.M{}, err
 	}

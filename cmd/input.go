@@ -40,8 +40,8 @@ func ReadTemplate(filename string) (template.Template, error) {
 	}
 
 	result := template.Template{}
-	err = yaml.Unmarshal(buf, &result)
 
+	err = yaml.Unmarshal(buf, &result)
 	if err != nil {
 		return template.Template{}, fmt.Errorf("%v %q: %w", ErrUnmarshal, filename, err)
 	}

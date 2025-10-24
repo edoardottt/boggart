@@ -27,6 +27,7 @@ import "os"
 // of the inputted file.
 func ReadFile(inputFile string) (string, error) {
 	var content []byte
+
 	content, err := os.ReadFile(inputFile)
 
 	return string(content), err

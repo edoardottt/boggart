@@ -59,8 +59,8 @@ func (log *Log) IsEmpty() bool {
 func InsertLog(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	record Log) interface{} {
 	record.ID = primitive.NewObjectID()
-	result, err := collection.InsertOne(ctx, record)
 
+	result, err := collection.InsertOne(ctx, record)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,7 +77,6 @@ func GetLogByID(ctx context.Context, client *mongo.Client, collection *mongo.Col
 	var result Log
 
 	objectID, err := primitive.ObjectIDFromHex(id)
-
 	if err != nil {
 		return result, ErrInvalidID
 	}
@@ -98,8 +97,8 @@ func GetLogsByIP(ctx context.Context, client *mongo.Client, collection *mongo.Co
 	var result []Log
 
 	filter := bson.M{"ip": ip}
-	cursor, err := collection.Find(ctx, filter)
 
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, fmt.Errorf("%v IP: %w", ErrFailedCursor, err)
 	}
@@ -118,8 +117,8 @@ func GetLogsByMethod(ctx context.Context, client *mongo.Client, collection *mong
 	var result []Log
 
 	filter := bson.M{"method": method}
-	cursor, err := collection.Find(ctx, filter)
 
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, fmt.Errorf("%v Method: %w", ErrFailedCursor, err)
 	}
@@ -138,8 +137,8 @@ func GetLogsByPath(ctx context.Context, client *mongo.Client, collection *mongo.
 	var result []Log
 
 	filter := bson.M{"path": path}
-	cursor, err := collection.Find(ctx, filter)
 
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, fmt.Errorf("%v Path: %w", ErrFailedCursor, err)
 	}
@@ -158,8 +157,8 @@ func GetLogsByBody(ctx context.Context, client *mongo.Client, collection *mongo.
 	var result []Log
 
 	filter := bson.M{"body": body}
-	cursor, err := collection.Find(ctx, filter)
 
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, fmt.Errorf("%v Body: %w", ErrFailedCursor, err)
 	}
@@ -209,8 +208,8 @@ func GetLogsByRange(ctx context.Context, client *mongo.Client, collection *mongo
 			{"timestamp": bson.M{"$lt": dateEnd.Unix()}},
 		},
 	}
-	cursor, err := collection.Find(ctx, filter)
 
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		return result, fmt.Errorf("%v Range: %w", ErrFailedCursor, err)
 	}
@@ -232,8 +231,8 @@ func GetLatestNLogs(ctx context.Context, client *mongo.Client, collection *mongo
 	// Sort by `timestamp` field descending.
 	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 	findOptions.Limit = &n
-	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
 
+	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
 	if err != nil {
 		return result, fmt.Errorf("%v latest n: %w", ErrFailedCursor, err)
 	}
@@ -248,8 +247,8 @@ func GetLatestNLogs(ctx context.Context, client *mongo.Client, collection *mongo
 // GetNumberOfLogs returns the number of logs in the database.
 func GetNumberOfLogs(ctx context.Context, client *mongo.Client, collection *mongo.Collection) (int64, error) {
 	filter := bson.M{}
-	result, err := collection.CountDocuments(ctx, filter)
 
+	result, err := collection.CountDocuments(ctx, filter)
 	if err != nil {
 		return result, fmt.Errorf("%v Count: %w", ErrFailedCursor, err)
 	}
@@ -262,8 +261,8 @@ func CreateHeadersIndex(ctx context.Context, client *mongo.Client, collection *m
 	mod := mongo.IndexModel{
 		Keys: bson.D{{Key: "headers", Value: "text"}},
 	}
-	_, err := collection.Indexes().CreateOne(ctx, mod)
 
+	_, err := collection.Indexes().CreateOne(ctx, mod)
 	if err != nil {
 		return fmt.Errorf("%v headers: %w", ErrFailedIndexCreation, err)
 	}
@@ -276,8 +275,8 @@ func CreateBodyIndex(ctx context.Context, client *mongo.Client, collection *mong
 	mod := mongo.IndexModel{
 		Keys: bson.D{{Key: "body", Value: "text"}},
 	}
-	_, err := collection.Indexes().CreateOne(ctx, mod)
 
+	_, err := collection.Indexes().CreateOne(ctx, mod)
 	if err != nil {
 		return fmt.Errorf("%v body: %w", ErrFailedIndexCreation, err)
 	}
