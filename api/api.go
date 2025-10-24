@@ -65,7 +65,7 @@ func HealthHandler(w http.ResponseWriter, req *http.Request) {
 	// specify status code.
 	w.WriteHeader(http.StatusOK)
 	// update response writer.
-	fmt.Fprintf(w, "{\"status\":\"OK\"")
+	fmt.Fprintf(w, "{\"status\":\"ok\"}")
 }
 
 // IPInfoResponse.
