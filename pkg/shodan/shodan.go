@@ -86,8 +86,8 @@ func APIInfo(apiKey string) (APIInfoResponse, error) {
 	}
 
 	var response APIInfoResponse
-	err = json.Unmarshal(body, &response)
 
+	err = json.Unmarshal(body, &response)
 	if err != nil {
 		log.Println(err)
 		return APIInfoResponse{}, err

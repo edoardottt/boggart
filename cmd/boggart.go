@@ -42,5 +42,6 @@ func main() {
 
 	go honeypot.Raw(tmpl)
 	go dashboard.Start()
+
 	api.Server()
 }

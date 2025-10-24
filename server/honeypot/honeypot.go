@@ -135,7 +135,8 @@ func Raw(tmpl template.Template) {
 	for _, request := range tmpl.Requests {
 		if request.ID != "default" {
 			request2 := request
-			if request2.ResponseType == "raw" {
+			switch request2.ResponseType {
+			case "raw":
 				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 
@@ -147,7 +148,7 @@ func Raw(tmpl template.Template) {
 
 					genericWriter(w, r, dbName, client, tmpl, request2.Content)
 				}).Methods(template.HTTPMethodsAsString(request2.Methods)...)
-			} else if request2.ResponseType == "file" {
+			case "file":
 				router.HandleFunc(request2.Endpoint, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Add("Content-Type", request2.ContentType)
 
@@ -165,7 +166,8 @@ func Raw(tmpl template.Template) {
 
 	// default response.
 	defaultRequest := template.Default(tmpl)
-	if defaultRequest.ResponseType == "raw" {
+	switch defaultRequest.ResponseType {
+	case "raw":
 		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
 
@@ -177,7 +179,7 @@ func Raw(tmpl template.Template) {
 
 			genericWriter(w, r, dbName, client, tmpl, defaultRequest.Content)
 		})
-	} else if defaultRequest.ResponseType == "file" {
+	case "file":
 		router.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Add("Content-Type", defaultRequest.ContentType)
 

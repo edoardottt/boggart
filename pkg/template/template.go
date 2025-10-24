@@ -37,6 +37,8 @@ const (
 	ShodanTemplateType Type = "shodan"
 )
 
+const keyValueLen = 2
+
 // HTTPMethod contains all the methods that a HTTP request can assume.
 type HTTPMethod string
 
@@ -281,7 +283,7 @@ func CheckRequests(tmpl Template) error {
 
 			if len(entry.Headers) != 0 {
 				for _, header := range entry.Headers {
-					if len(strings.Split(header, ":")) != 2 {
+					if len(strings.Split(header, ":")) != keyValueLen {
 						return fmt.Errorf("%w %s", ErrWrongHeader, entry.ID)
 					}
 				}

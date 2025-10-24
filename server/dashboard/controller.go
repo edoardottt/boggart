@@ -104,15 +104,15 @@ func dashboardIDHandler(w http.ResponseWriter, client *mongo.Client, dbName stri
 
 	database := db.GetDatabase(client, dbName)
 	collection := db.GetLogs(database)
-	logID, err := db.GetLogByID(ctx, client, collection, id)
 
+	logID, err := db.GetLogByID(ctx, client, collection, id)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	buf := &bytes.Buffer{}
-	err = tmpl.Execute(buf, logID)
 
+	err = tmpl.Execute(buf, logID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 
@@ -277,7 +277,6 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 		result.CurrentPage = page + 1
 
 		logs, err := db.GetLogsWithFilter(ctx, client, collection, filter, findOptions)
-
 		if err != nil {
 			fmt.Println(err)
 
