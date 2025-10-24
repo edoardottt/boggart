@@ -11,7 +11,7 @@ lint:
 
 #---Run the service---
 up:
-	@sudo docker-compose up
+	@sudo docker compose up
 
 #---Update the dependencies---
 update:
@@ -20,11 +20,11 @@ update:
 
 #---Stop the service---
 stop:
-	@sudo docker-compose stop
+	@sudo docker compose stop
 
 #---Delete the service---
 down:
-	@sudo docker-compose down
+	@sudo docker compose down
 
 #---Delete the image created---
 clean:
@@ -40,6 +40,6 @@ prune:
 
 #---Restart the service (applying the changes made)---
 restart:
-	@sudo docker-compose down
+	@sudo docker compose down
 	@sudo docker rmi $(BOGGART_IMAGE)
-	@sudo docker-compose up
+	@sudo docker compose up

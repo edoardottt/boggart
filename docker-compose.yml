@@ -1,7 +1,4 @@
-version: "3"
-
 services:
-
   mongo:
     container_name: mongo
     image: "mongo:latest"
@@ -10,7 +7,6 @@ services:
     restart: always
     volumes:
       - "/boggart-data:/data/db"
-
   boggart:
     build: "."
     depends_on:
