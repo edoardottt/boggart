@@ -1,5 +1,4 @@
-# Start from the latest golang base image
-FROM golang:latest
+FROM golang:1.24
 
 # Add env vars
 ENV MONGO_CONN="mongodb://mongo:27017"
