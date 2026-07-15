@@ -26,9 +26,9 @@ import (
 	"fmt"
 
 	timeUtils "github.com/edoardottt/boggart/internal/time"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 const (
@@ -73,7 +73,7 @@ func AddMultipleCondition(query bson.M, condition string, add []bson.M) bson.M {
 // filter taken as input.
 // If the result is empty err won't be nil.
 func GetLogsWithFilter(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
-	filter bson.M, findOptions *options.FindOptions) ([]Log, error) {
+	filter bson.M, findOptions *options.FindOptionsBuilder) ([]Log, error) {
 	var result []Log
 
 	cursor, err := collection.Find(ctx, filter, findOptions)

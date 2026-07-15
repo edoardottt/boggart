@@ -26,8 +26,8 @@ import (
 	"fmt"
 	"time"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 const (
@@ -38,18 +38,20 @@ const (
 // connection string to mongoDB.
 // Also checks the connection if everything is ok.
 func ConnectDB(connectionString string) (*mongo.Client, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), ContextBackgroundDuration*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(ContextBackgroundDuration)*time.Second)
 
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
+	clientOptions := options.Client().ApplyURI(connectionString)
+
+	client, err := mongo.Connect(clientOptions)
 	if err != nil {
 		fmt.Println(err)
 		return client, nil
 	}
 
 	// Check the connection.
-	err = client.Ping(context.TODO(), nil)
+	err = client.Ping(ctx, nil)
 	if err != nil {
 		fmt.Println(err)
 		return client, nil
