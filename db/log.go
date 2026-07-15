@@ -28,10 +28,9 @@ import (
 	"reflect"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 const (
@@ -41,7 +40,7 @@ const (
 // Log defines the structure of a log record
 // in the database.
 type Log struct {
-	ID        primitive.ObjectID  `bson:"_id"`
+	ID        bson.ObjectID       `bson:"_id"`
 	IP        string              `bson:"ip"`
 	Method    string              `bson:"method"`
 	Path      string              `bson:"path"`
@@ -58,7 +57,7 @@ func (log *Log) IsEmpty() bool {
 // InsertLog inserts a log record into the logs collection.
 func InsertLog(ctx context.Context, client *mongo.Client, collection *mongo.Collection,
 	record Log) interface{} {
-	record.ID = primitive.NewObjectID()
+	record.ID = bson.NewObjectID()
 
 	result, err := collection.InsertOne(ctx, record)
 	if err != nil {
@@ -76,7 +75,7 @@ func GetLogByID(ctx context.Context, client *mongo.Client, collection *mongo.Col
 	id string) (Log, error) {
 	var result Log
 
-	objectID, err := primitive.ObjectIDFromHex(id)
+	objectID, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return result, ErrInvalidID
 	}
@@ -229,10 +228,13 @@ func GetLatestNLogs(ctx context.Context, client *mongo.Client, collection *mongo
 
 	findOptions := options.Find()
 	// Sort by `timestamp` field descending.
-	findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
-	findOptions.Limit = &n
+	findOptions.SetSort(bson.D{
+		bson.E{Key: "timestamp", Value: int32(-1)},
+	})
 
-	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	opts := options.Find().SetLimit(n)
+
+	cursor, err := collection.Find(ctx, bson.M{}, opts)
 	if err != nil {
 		return result, fmt.Errorf("%v latest n: %w", ErrFailedCursor, err)
 	}
@@ -259,7 +261,7 @@ func GetNumberOfLogs(ctx context.Context, client *mongo.Client, collection *mong
 // CreateHeadersIndex creates the index for text search for headers.
 func CreateHeadersIndex(ctx context.Context, client *mongo.Client, collection *mongo.Collection) error {
 	mod := mongo.IndexModel{
-		Keys: bson.D{{Key: "headers", Value: "text"}},
+		Keys: bson.D{bson.E{Key: "headers", Value: "text"}},
 	}
 
 	_, err := collection.Indexes().CreateOne(ctx, mod)
@@ -273,7 +275,7 @@ func CreateHeadersIndex(ctx context.Context, client *mongo.Client, collection *m
 // CreateBodyIndex creates the index for text search for body.
 func CreateBodyIndex(ctx context.Context, client *mongo.Client, collection *mongo.Collection) error {
 	mod := mongo.IndexModel{
-		Keys: bson.D{{Key: "body", Value: "text"}},
+		Keys: bson.D{bson.E{Key: "body", Value: "text"}},
 	}
 
 	_, err := collection.Indexes().CreateOne(ctx, mod)

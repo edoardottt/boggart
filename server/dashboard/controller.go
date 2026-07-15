@@ -36,9 +36,9 @@ import (
 	"github.com/edoardottt/boggart/db"
 	"github.com/edoardottt/boggart/internal/slice"
 	timeUtils "github.com/edoardottt/boggart/internal/time"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 const (
@@ -247,8 +247,6 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 		result.Error = errorOk
 	} else {
 		filter, findOptions := buildReturnQuery(query)
-		// Sort by `timestamp` field descending.
-		findOptions.SetSort(bson.D{{Key: "timestamp", Value: -1}})
 
 		itemsPerPage, _ := strconv.ParseInt(query.Get("limit"), 10, 64)
 		if itemsPerPage <= 0 || itemsPerPage > MaxItemsPerPage {
@@ -307,7 +305,7 @@ func dashboardResultHandler(r *http.Request, w http.ResponseWriter, client *mong
 	}
 }
 
-func buildReturnQuery(query url.Values) (bson.M, *options.FindOptions) {
+func buildReturnQuery(query url.Values) (bson.M, *options.FindOptionsBuilder) {
 	var (
 		ip      = query["ip"]
 		method  = query["method"]

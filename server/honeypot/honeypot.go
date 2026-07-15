@@ -35,7 +35,7 @@ import (
 	"github.com/edoardottt/boggart/internal/file"
 	"github.com/edoardottt/boggart/pkg/template"
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 const (

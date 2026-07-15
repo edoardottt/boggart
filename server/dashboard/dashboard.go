@@ -33,7 +33,7 @@ import (
 
 	"github.com/edoardottt/boggart/db"
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 const (
@@ -58,19 +58,22 @@ func Start() {
 	fmt.Println("DASHBOARD: Connected to MongoDB!")
 
 	var funcs = template.FuncMap{
-		"idtostring": func(value primitive.ObjectID) string {
+		"idtostring": func(value bson.ObjectID) string {
 			return value.Hex()
 		},
 		"maptostring": func(input map[string][]string) string {
 			var result = ""
 			for k, v := range input {
 				result += html.EscapeString(k) + ": "
-				var safeValues []string
+
+				safeValues := make([]string, 0, len(v))
 				for _, x := range v {
 					safeValues = append(safeValues, html.EscapeString(x))
 				}
+
 				result += strings.Join(safeValues, ",") + "<br>"
 			}
+
 			return result
 		},
 		"timetostring": func(input int64) string {
@@ -79,10 +82,13 @@ func Start() {
 		"escapehtml": html.EscapeString,
 		"until": func(n int) []int {
 			var i int
+
 			var slice []int
+
 			for i = 1; i <= n; i++ {
 				slice = append(slice, i)
 			}
+
 			return slice
 		},
 		"subtract": func(a, b int) int {
@@ -96,6 +102,7 @@ func Start() {
 			for i := start; i <= end; i++ {
 				slice = append(slice, i)
 			}
+
 			return slice
 		},
 	}
