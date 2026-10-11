@@ -23,8 +23,8 @@ package shodan
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -73,32 +73,48 @@ type APIInfoResponse struct {
 func APIInfo(apiKey string) (APIInfoResponse, error) {
 	resp, err := http.Get(baseURL + apiInfo + "?key=" + apiKey)
 	if err != nil {
-		log.Fatal(err)
+		return APIInfoResponse{}, fmt.Errorf("shodan: requesting api info: %w", err)
 	}
-
-	body, err := io.ReadAll(resp.Body)
 
 	defer resp.Body.Close()
 
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Println(err)
-		return APIInfoResponse{}, err
+		return APIInfoResponse{}, fmt.Errorf("shodan: reading api info response: %w", err)
 	}
 
 	var response APIInfoResponse
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		log.Println(err)
-		return APIInfoResponse{}, err
+		return APIInfoResponse{}, fmt.Errorf("shodan: unmarshalling api info: %w", err)
 	}
 
 	return response, nil
 }
 
-// HostIPInfo > TODO.
-func HostIPInfo(hostIP string, apiKey string) {
-	// url := baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey
+// HostIPInfo returns the Shodan host information for the given IP address.
+func HostIPInfo(hostIP string, apiKey string) (Host, error) {
+	resp, err := http.Get(baseURL + hostIPEndpoint + hostIP + "?key=" + apiKey)
+	if err != nil {
+		return Host{}, fmt.Errorf("shodan: requesting host info: %w", err)
+	}
+
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return Host{}, fmt.Errorf("shodan: reading host info response: %w", err)
+	}
+
+	var host Host
+
+	err = json.Unmarshal(body, &host)
+	if err != nil {
+		return Host{}, fmt.Errorf("shodan: unmarshalling host info: %w", err)
+	}
+
+	return host, nil
 }
 
 // Host.
