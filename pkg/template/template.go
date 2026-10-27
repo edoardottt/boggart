@@ -142,7 +142,7 @@ func CheckRawTeplate(tmpl Template) error {
 
 // CheckShodanTemplate checks if a shodan template is formatted in a proper way.
 func CheckShodanTemplate(tmpl Template) error {
-	if tmpl.IP != "" {
+	if tmpl.IP == "" {
 		return ErrMandatoryIP
 	}
 
